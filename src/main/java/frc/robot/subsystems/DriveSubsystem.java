@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.Logger;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -206,6 +207,14 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
     m_rearRight.setDesiredState(swerveModuleStates[3]);
+    Logger.recordOutput("DesiredSwerve", swerveModuleStates);
+
+    SwerveModuleState actual[] = new SwerveModuleState[4];
+    actual[0] = m_frontLeft.getState();
+    actual[1] = m_frontRight.getState();
+    actual[2] = m_rearLeft.getState();
+    actual[3] = m_rearRight.getState();
+    Logger.recordOutput("ActualSwerve", actual);
   }
 
   /**
