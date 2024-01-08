@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -45,8 +44,7 @@ public class RobotContainer {
     configureButtonBindings();
 
     // Configure default commands
-    m_robotDrive.setDefaultCommand(
-      new DriveWithJoystick(m_robotDrive, m_driverController));
+    m_robotDrive.setDefaultCommand(new DriveWithJoystick(m_robotDrive, m_driverController));
   }
 
   /**
@@ -58,6 +56,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
     new JoystickButton(m_driverController, Button.kR1.value)
         .whileTrue(new RunCommand(() -> m_robotDrive.setX(), m_robotDrive));
+    new JoystickButton(m.driverController, Button.kR2.value)
+        .onTrue(new PIDTuneCommand(m_robotDrive));
   }
 
   // NOTE: // SwerveDrivePoseEstimator
