@@ -22,6 +22,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DriveWithJoystick;
+import frc.robot.commands.PIDTuneCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     new JoystickButton(m_driverController, Button.kR1.value)
         .whileTrue(new RunCommand(() -> m_robotDrive.setX(), m_robotDrive));
-    new JoystickButton(m.driverController, Button.kR2.value)
+    new JoystickButton(m_driverController, Button.kR2.value)
         .onTrue(new PIDTuneCommand(m_robotDrive));
   }
 
