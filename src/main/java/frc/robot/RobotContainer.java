@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -45,8 +44,7 @@ public class RobotContainer {
     configureButtonBindings();
 
     // Configure default commands
-    m_robotDrive.setDefaultCommand(
-      new DriveWithJoystick(m_robotDrive, m_driverController));
+    m_robotDrive.setDefaultCommand(new DriveWithJoystick(m_robotDrive, m_driverController));
   }
 
   /**
