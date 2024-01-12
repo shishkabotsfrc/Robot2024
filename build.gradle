@@ -177,3 +177,5 @@ spotless {
         endWithNewline()
     }
 }
+
+compileJava.dependsOn 'spotlessApply'
