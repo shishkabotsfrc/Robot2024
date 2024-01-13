@@ -5,19 +5,19 @@ public class SwerveUtils {
   /**
    * Steps a value towards a target with a specified step size.
    *
-   * @param _current The current or starting value. Can be positive or negative.
-   * @param _target The target value the algorithm will step towards. Can be positive or negative.
-   * @param _stepsize The maximum step size that can be taken.
-   * @return The new value for {@code _current} after performing the specified step towards the
+   * @param current The current or starting value. Can be positive or negative.
+   * @param target The target value the algorithm will step towards. Can be positive or negative.
+   * @param stepsize The maximum step size that can be taken.
+   * @return The new value for {@code current} after performing the specified step towards the
    *     specified target.
    */
-  public static double StepTowards(double _current, double _target, double _stepsize) {
-    if (Math.abs(_current - _target) <= _stepsize) {
-      return _target;
-    } else if (_target < _current) {
-      return _current - _stepsize;
+  public static double StepTowards(double current, double target, double stepsize) {
+    if (Math.abs(current - target) <= stepsize) {
+      return target;
+    } else if (target < current) {
+      return current - stepsize;
     } else {
-      return _current + _stepsize;
+      return current + stepsize;
     }
   }
 
