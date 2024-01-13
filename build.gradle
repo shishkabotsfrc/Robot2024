@@ -135,6 +135,7 @@ wpi.java.configureTestTasks(test)
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
+
 spotless {
     java {
         target fileTree('.') {
@@ -177,5 +178,9 @@ spotless {
         endWithNewline()
     }
 }
-
 compileJava.dependsOn 'spotlessApply'
+
+javadoc {
+    destinationDir = file("${buildDir}/docs/javadoc")
+    source = sourceSets.main.allJava
+}
