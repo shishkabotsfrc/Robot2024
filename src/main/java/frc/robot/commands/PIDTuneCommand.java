@@ -23,7 +23,7 @@ public class PIDTuneCommand extends Command {
     }
     drive.setModuleStates(swerveState);
 
-    if (((Math.abs(drive.m_frontLeft.getState().angle.getRadians() - Math.PI / 2))) < 0.1) {
+    if (((Math.abs(drive.modules[0].getState().angle.getRadians() - Math.PI / 2))) < 0.1) {
       counter++;
     } else {
       counter = 0;
