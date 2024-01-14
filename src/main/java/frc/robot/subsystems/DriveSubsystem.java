@@ -52,13 +52,13 @@ public class DriveSubsystem extends SubsystemBase {
             DriveConstants.kFrontRightTurningCanId,
             DriveConstants.kFrontRightChassisAngularOffset);
 
-    modules[ModuleId.BL.index()] =
+    modules[ModuleId.RL.index()] =
         new MAXSwerveModule(
             DriveConstants.kRearLeftDrivingCanId,
             DriveConstants.kRearLeftTurningCanId,
             DriveConstants.kBackLeftChassisAngularOffset);
 
-    modules[ModuleId.BR.index()] =
+    modules[ModuleId.RR.index()] =
         new MAXSwerveModule(
             DriveConstants.kRearRightDrivingCanId,
             DriveConstants.kRearRightTurningCanId,
@@ -71,8 +71,8 @@ public class DriveSubsystem extends SubsystemBase {
             new SwerveModulePosition[] {
               modules[ModuleId.FL.index()].getPosition(),
               modules[ModuleId.FR.index()].getPosition(),
-              modules[ModuleId.BL.index()].getPosition(),
-              modules[ModuleId.BR.index()].getPosition()
+              modules[ModuleId.RL.index()].getPosition(),
+              modules[ModuleId.RR.index()].getPosition()
             });
   }
 
@@ -90,8 +90,8 @@ public class DriveSubsystem extends SubsystemBase {
         new SwerveModulePosition[] {
           modules[ModuleId.FL.index()].getPosition(),
           modules[ModuleId.FR.index()].getPosition(),
-          modules[ModuleId.BL.index()].getPosition(),
-          modules[ModuleId.BR.index()].getPosition()
+          modules[ModuleId.RL.index()].getPosition(),
+          modules[ModuleId.RR.index()].getPosition()
         });
     outputToSmartDashboard();
   }
@@ -110,8 +110,8 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("IMU", getHeading());
     modules[ModuleId.FL.index()].outputToSmartDashboard("FL");
     modules[ModuleId.FR.index()].outputToSmartDashboard("FR");
-    modules[ModuleId.BL.index()].outputToSmartDashboard("RL");
-    modules[ModuleId.BR.index()].outputToSmartDashboard("RR");
+    modules[ModuleId.RL.index()].outputToSmartDashboard("RL");
+    modules[ModuleId.RR.index()].outputToSmartDashboard("RR");
   }
 
   /**
@@ -134,8 +134,8 @@ public class DriveSubsystem extends SubsystemBase {
         new SwerveModulePosition[] {
           modules[ModuleId.FL.index()].getPosition(),
           modules[ModuleId.FR.index()].getPosition(),
-          modules[ModuleId.BL.index()].getPosition(),
-          modules[ModuleId.FR.index()].getPosition()
+          modules[ModuleId.RL.index()].getPosition(),
+          modules[ModuleId.RR.index()].getPosition()
         },
         pose);
   }
@@ -241,9 +241,9 @@ public class DriveSubsystem extends SubsystemBase {
         new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
     modules[ModuleId.FR.index()].setDesiredState(
         new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-    modules[ModuleId.BL.index()].setDesiredState(
+    modules[ModuleId.RL.index()].setDesiredState(
         new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-    modules[ModuleId.BR.index()].setDesiredState(
+    modules[ModuleId.RR.index()].setDesiredState(
         new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
   }
 
