@@ -60,7 +60,8 @@ public class PIDTuneCommand extends Command {
 
         check = 0;
         for (int i = 0; i < swerveState.length; i++) {
-          if ((Math.abs(swerveState[i].angle.getRadians() - Math.PI / 2)) < (0.05 * Math.PI / 2)) {
+          if ((Math.abs(drive.modules[i].getState().angle.getRadians() - Math.PI / 2))
+              < (0.05 * Math.PI / 2)) {
             check++;
           }
         }

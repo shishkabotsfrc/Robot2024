@@ -57,7 +57,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     new JoystickButton(m_driverController, Button.kLeftBumper.value)
         .whileTrue(new XPositionLock(m_robotDrive));
-    new JoystickButton(m_driverController, Button.kLeftBumper.value)
+    new JoystickButton(m_driverController, Button.kRightBumper.value)
         .onTrue(new PIDTuneCommand(m_robotDrive));
   }
 
