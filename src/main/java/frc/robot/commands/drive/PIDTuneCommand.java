@@ -5,104 +5,97 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.utils.SwerveUtils;
 
 public class PIDTuneCommand extends Command {
+  private static final double NOT_SET_TIME = 0.0;
+  private static final double SETTLE_TIME = 1.0;
+
   private DriveSubsystem drive;
-  private int counter = 0;
-  private int counter2 = 0;
-  private int check = 0;
-  double startTime = WPIUtilJNI.now() * 1e-6;
-  private SwerveModuleState[] swerveState;
+  private double targetAngle;
+  private double secondsSinceTargetSet;
+  private double timeWhenTargetReached;
   private State state;
 
   private enum State {
     INITIALIZE,
     STEP,
     DONE,
-    SETTLED;
   };
 
   public PIDTuneCommand(DriveSubsystem drive) {
     this.drive = drive;
     addRequirements(drive);
-    swerveState = new SwerveModuleState[4];
-    System.out.println("PID: Constructor");
   }
 
   public void initialize() {
-    System.out.println("PID: Initialize");
-
-    counter = 0;
     state = State.INITIALIZE;
-    for (int i = 0; i < 4; i++) {
-      swerveState[i] = new SwerveModuleState(0.0, new Rotation2d(0.));
-    }
+    setTargetRotation(Math.PI);
+  }
+
+  private void setTargetRotation(double radians) {
+    secondsSinceTargetSet = WPIUtilJNI.now() * 1e-6;
+    timeWhenTargetReached = NOT_SET_TIME;
+    targetAngle = radians;
+  }
+
+  private boolean isSettled() {
+    if (timeWhenTargetReached == NOT_SET_TIME) return false;
+    return (WPIUtilJNI.now() * 1e-6 - timeWhenTargetReached) > SETTLE_TIME;
   }
 
   public void execute() {
+    SwerveModuleState[] targetSwerveStates = new SwerveModuleState[4];
+    for (int i = 0; i < 4; i++) {
+      targetSwerveStates[i] = new SwerveModuleState(0.0, new Rotation2d(targetAngle));
+    }
+    drive.setModuleStates(targetSwerveStates);
 
-    counter++;
-
+    // Motors may never reach desired state so abort after 3s
+    if (WPIUtilJNI.now() * 1e-6 - secondsSinceTargetSet > 3.0) {
+      System.out.println("[PID Tune] Aborting command due to timeout");
+      state = State.DONE;
+    }
+    // How many of the modules are within the threshold
+    int reachedModules = 0;
+    for (int i = 0; i < 4; i++) {
+      double moduleAngle = SwerveUtils.WrapAngle(drive.modules[i].getState().angle.getRadians());
+      double angleDifference = SwerveUtils.AngleDifference(moduleAngle, targetAngle);
+      drive.modules[i].setDesiredState(new SwerveModuleState(0.0, new Rotation2d(targetAngle)));
+      if (Math.abs(angleDifference) < 0.1) {
+        reachedModules += 1;
+      }
+    }
+    // If all modules reached, then update `timeWhenTargetReached`
+    // TODO: some will reverse, so angle will be off by 180 degrees
+    if (reachedModules > 0) {
+      if (timeWhenTargetReached == NOT_SET_TIME) {
+        timeWhenTargetReached = WPIUtilJNI.now() * 1e-6;
+      }
+    } else {
+      timeWhenTargetReached = NOT_SET_TIME;
+    }
+    // Zeros the angle then times
     switch (state) {
       case INITIALIZE:
-        drive.setModuleStates(swerveState);
-        if (counter >= 50) {
-          for (int i = 0; i < 4; i++) {
-            swerveState[i] = new SwerveModuleState(0.0, new Rotation2d(Math.PI / 2));
-          }
-          System.out.println("PID: Step");
+        if (isSettled()) {
+          setTargetRotation(Math.PI / 2);
           state = State.STEP;
         }
-        break;
-
       case STEP:
-        drive.setModuleStates(swerveState);
-
-        check = 0;
-        for (int i = 0; i < swerveState.length; i++) {
-          if ((Math.abs(drive.modules[i].getState().angle.getRadians() - Math.PI / 2))
-              < (0.05 * Math.PI / 2)) {
-            check++;
-          }
-        }
-        if (check == 4) {
-          counter2++;
-        } else {
-          counter2 = 0;
-        }
-        if (counter2 >= 50) {
-          System.out.println("PID: Done");
+        if (isSettled()) {
           state = State.DONE;
+
+          System.out.println(
+              "[PID Tune] seconds to settle: "
+                  + (WPIUtilJNI.now() * 1e-6 - secondsSinceTargetSet - SETTLE_TIME));
         }
-
-        break;
-
-      case DONE:
-        break;
-
-      case SETTLED:
+      default:
         break;
     }
-
-    // drive.setModuleStates(swerveState);
-
-    // if (((Math.abs(drive.m_frontLeft.getState().angle.getRadians() - Math.PI / 2))) < 0.1) {
-    //   counter++;
-    // } else {
-    //   counter = 0;
-    // }
-
-    // counter ++;
-    // if (counter > 20) {
-    //   System.out.println((WPIUtilJNI.now() * 1e-6) - startTime);
-    // }
   }
 
   public boolean isFinished() {
-    if (state.equals(State.DONE)) {
-      return true;
-    } else {
-      return false;
-    }
+    return state.equals(State.DONE);
   }
 }
