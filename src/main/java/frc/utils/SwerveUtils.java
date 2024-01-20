@@ -69,7 +69,7 @@ public class SwerveUtils {
   }
 
   /**
-   * Wraps an angle until it lies within the range from 0 to 2*PI (exclusive).
+   * Wraps an angle until it lies within the range from 0 to 2*PI radians (exclusive).
    *
    * @param angle The angle (in radians) to wrap. Can be positive or negative and can lie multiple
    *     wraps outside the output range.
@@ -77,6 +77,29 @@ public class SwerveUtils {
    */
   public static double WrapAngle(double angle) {
     double twoPi = 2 * Math.PI;
+
+    if (angle
+        == twoPi) { // Handle this case separately to avoid floating point errors with the floor
+      // after the division in the case below
+      return 0.0;
+    } else if (angle > twoPi) {
+      return angle - twoPi * Math.floor(angle / twoPi);
+    } else if (angle < 0.0) {
+      return angle + twoPi * (Math.floor((-angle) / twoPi) + 1);
+    } else {
+      return angle;
+    }
+  }
+
+  /**
+   * Wraps an angle until it lies within the range from 0 to 360 degrees (exclusive).
+   *
+   * @param angle The angle (in degress) to wrap. Can be positive or negative and can lie multiple
+   *     wraps outside the output range.
+   * @return An angle (in degrees) from 0 and 360 (exclusive).
+   */
+  public static double WrapAngleDegrees(double angle) {
+    double twoPi = 360.;
 
     if (angle
         == twoPi) { // Handle this case separately to avoid floating point errors with the floor

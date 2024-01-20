@@ -13,7 +13,9 @@ import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.ModuleConstants;
+import frc.utils.SwerveUtils;
 import org.littletonrobotics.junction.Logger;
 
 public class MAXSwerveModule {
@@ -27,7 +29,8 @@ public class MAXSwerveModule {
   private final SparkMaxPIDController m_turningPIDController;
 
   private double m_chassisAngularOffset = 0;
-  private SwerveModuleState m_desiredState = new SwerveModuleState(0.0, new Rotation2d());
+  private double m_desiredAngle = 0.;
+  private double m_desiredSpeed = 0.;
 
   /**
    * Constructs a MAXSwerveModule and configures the driving and turning motor, encoder, and PID
@@ -106,7 +109,6 @@ public class MAXSwerveModule {
     m_turningSparkMax.burnFlash();
 
     m_chassisAngularOffset = chassisAngularOffset;
-    m_desiredState.angle = new Rotation2d(m_turningEncoder.getPosition());
     m_drivingEncoder.setPosition(0);
   }
 
@@ -139,9 +141,19 @@ public class MAXSwerveModule {
   /**
    * Sets the desired state for the module.
    *
-   * @param desiredState Desired state with speed and angle.
+   * @param desiredState Desired state with speed and angle with respect to the world coordinates.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
+
+    // Store the desired angle and speed
+    m_desiredAngle = desiredState.angle.getRadians();
+    m_desiredSpeed = desiredState.speedMetersPerSecond;
+    if (m_desiredSpeed < 0.) {
+      m_desiredSpeed = -m_desiredSpeed;
+      m_desiredAngle = m_desiredAngle - Math.PI;
+    }
+    m_desiredAngle = SwerveUtils.WrapAngle(m_desiredAngle);
+
     // Apply chassis angular offset to the desired state.
     SwerveModuleState correctedDesiredState = new SwerveModuleState();
     correctedDesiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
@@ -158,8 +170,31 @@ public class MAXSwerveModule {
         optimizedDesiredState.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
     m_turningPIDController.setReference(
         optimizedDesiredState.angle.getRadians(), CANSparkMax.ControlType.kPosition);
+  }
 
-    m_desiredState = desiredState;
+  /**
+   * Returns the angle (radians) of the wheel relative to the world
+   *
+   * <p>If the module is optimizing the motion and driving the wheel backwards, thhe value is
+   * adjusted accordingly.
+   *
+   * @return Corrected angle of the wheel (radians)
+   */
+  public double getAngle() {
+    double angle = m_turningEncoder.getPosition() - m_chassisAngularOffset;
+    if (m_drivingEncoder.getVelocity() < 0.) {
+      angle = angle - Math.PI;
+    }
+    return SwerveUtils.WrapAngle(angle);
+  }
+
+  /**
+   * Returns the speed
+   *
+   * @return Speed of the wheel
+   */
+  public double getSpeed() {
+    return Math.abs(m_drivingEncoder.getVelocity());
   }
 
   /** Zeroes all the SwerveModule encoders. */
@@ -169,12 +204,9 @@ public class MAXSwerveModule {
 
   /** Outputs the values to the smart dashboard */
   void logState(String prefix) {
-    SwerveModuleState state = getState();
-    Logger.recordOutput(prefix + "/angle", state.angle.getDegrees());
-    Logger.recordOutput(prefix + "/speed", state.speedMetersPerSecond);
-    // SmartDashboard.putNumber(prefix + ": distance", position.distanceMeters);
-    // SmartDashboard.putNumber(prefix + ": angle", position.angle.getDegrees());
-    // SmartDashboard.putNumber(prefix + ": speed", state.speedMetersPerSecond);
-    // SmartDashboard.putNumber(prefix + ": angle", state.angle.getDegrees());
+    Logger.recordOutput(prefix + "/AngleDegrees", Units.radiansToDegrees(getAngle()));
+    Logger.recordOutput(prefix + "/Speed", getSpeed());
+    Logger.recordOutput(prefix + "/DesiredAngleDegrees", Units.radiansToDegrees(m_desiredAngle));
+    Logger.recordOutput(prefix + "/DesiredSpeed", m_desiredSpeed);
   }
 }

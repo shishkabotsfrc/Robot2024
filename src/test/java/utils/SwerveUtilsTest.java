@@ -56,4 +56,14 @@ public class SwerveUtilsTest {
     assertEquals(Math.PI, SwerveUtils.WrapAngle(-Math.PI), DELTA);
     assertEquals(Math.PI, SwerveUtils.WrapAngle(-3 * Math.PI), DELTA);
   }
+
+  @Test
+  void WrapAngleDegreesTest() {
+    assertEquals(0., SwerveUtils.WrapAngleDegrees(0.), DELTA);
+    assertEquals(0., SwerveUtils.WrapAngleDegrees(360.), DELTA);
+    assertEquals(180., SwerveUtils.WrapAngleDegrees(180.), DELTA);
+    assertEquals(180., SwerveUtils.WrapAngleDegrees(180. + 360.), DELTA);
+    assertEquals(180., SwerveUtils.WrapAngleDegrees(-180.), DELTA);
+    assertEquals(180., SwerveUtils.WrapAngleDegrees(-180. - 360.), DELTA);
+  }
 }
