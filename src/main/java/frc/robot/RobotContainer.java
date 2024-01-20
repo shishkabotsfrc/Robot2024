@@ -41,10 +41,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // Configure the button bindings
     configureButtonBindings();
-
-    // Configure default commands
     m_robotDrive.setDefaultCommand(new DriveWithJoystick(m_robotDrive, m_driverController));
   }
 
