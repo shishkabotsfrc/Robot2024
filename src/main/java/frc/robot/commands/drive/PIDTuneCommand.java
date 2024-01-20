@@ -2,9 +2,9 @@ package frc.robot.commands.drive;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.utils.CurrentTime;
 import frc.utils.SwerveUtils;
 
 public class PIDTuneCommand extends Command {
@@ -34,14 +34,14 @@ public class PIDTuneCommand extends Command {
   }
 
   private void setTargetRotation(double radians) {
-    secondsSinceTargetSet = WPIUtilJNI.now() * 1e-6;
+    secondsSinceTargetSet = CurrentTime.seconds();
     timeWhenTargetReached = NOT_SET_TIME;
     targetAngle = radians;
   }
 
   private boolean isSettled() {
     if (timeWhenTargetReached == NOT_SET_TIME) return false;
-    return (WPIUtilJNI.now() * 1e-6 - timeWhenTargetReached) > SETTLE_TIME;
+    return (CurrentTime.seconds() - timeWhenTargetReached) > SETTLE_TIME;
   }
 
   public void execute() {
@@ -52,7 +52,7 @@ public class PIDTuneCommand extends Command {
     drive.setModuleStates(targetSwerveStates);
 
     // Motors may never reach desired state so abort after 3s
-    if (WPIUtilJNI.now() * 1e-6 - secondsSinceTargetSet > 3.0) {
+    if (CurrentTime.seconds() - secondsSinceTargetSet > 3.0) {
       System.out.println("[PID Tune] Aborting command due to timeout");
       state = State.DONE;
     }
@@ -70,7 +70,7 @@ public class PIDTuneCommand extends Command {
     // TODO: some will reverse, so angle will be off by 180 degrees
     if (reachedModules > 0) {
       if (timeWhenTargetReached == NOT_SET_TIME) {
-        timeWhenTargetReached = WPIUtilJNI.now() * 1e-6;
+        timeWhenTargetReached = CurrentTime.seconds();
       }
     } else {
       timeWhenTargetReached = NOT_SET_TIME;
@@ -88,7 +88,7 @@ public class PIDTuneCommand extends Command {
 
           System.out.println(
               "[PID Tune] seconds to settle: "
-                  + (WPIUtilJNI.now() * 1e-6 - secondsSinceTargetSet - SETTLE_TIME));
+                  + (CurrentTime.seconds() - secondsSinceTargetSet - SETTLE_TIME));
         }
       default:
         break;

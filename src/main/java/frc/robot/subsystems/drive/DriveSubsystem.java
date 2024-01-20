@@ -13,9 +13,9 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.utils.CurrentTime;
 import frc.utils.SwerveUtils;
 import java.util.function.Consumer;
 import org.littletonrobotics.junction.Logger;
@@ -37,7 +37,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveConstants.kMagnitudeSlewRate);
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
-  private double m_prevTime = WPIUtilJNI.now() * 1e-6;
+  private double m_prevTime = CurrentTime.seconds();
 
   SwerveDriveOdometry m_odometry = null;
 
@@ -162,7 +162,7 @@ public class DriveSubsystem extends SubsystemBase {
             500.0; // some high number that means the slew rate is effectively instantaneous
       }
 
-      double currentTime = WPIUtilJNI.now() * 1e-6;
+      double currentTime = CurrentTime.seconds();
       double elapsedTime = currentTime - m_prevTime;
       double angleDif = SwerveUtils.AngleDifference(m_inputTranslationDir, m_currentTranslationDir);
       if (angleDif < 0.45 * Math.PI) {
