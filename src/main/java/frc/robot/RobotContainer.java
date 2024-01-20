@@ -20,10 +20,10 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.DriveWithJoystick;
-import frc.robot.commands.PIDTuneCommand;
-import frc.robot.commands.XPositionLock;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.commands.drive.DriveWithJoystick;
+import frc.robot.commands.drive.PIDTuneCommand;
+import frc.robot.commands.drive.XPositionLock;
+import frc.robot.subsystems.drive.DriveSubsystem;
 import java.util.List;
 
 /*

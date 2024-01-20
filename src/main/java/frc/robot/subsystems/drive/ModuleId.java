@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.drive;
 
 /** Enum that maps the index in the swerve module array to a chassis corner. */
 public enum ModuleId {
