@@ -13,8 +13,8 @@ import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ModuleConstants;
+import org.littletonrobotics.junction.Logger;
 
 public class MAXSwerveModule {
   private final CANSparkMax m_drivingSparkMax;
@@ -168,12 +168,13 @@ public class MAXSwerveModule {
   }
 
   /** Outputs the values to the smart dashboard */
-  void outputToSmartDashboard(String prefix) {
-    SwerveModulePosition position = getPosition();
+  void logState(String prefix) {
     SwerveModuleState state = getState();
-    SmartDashboard.putNumber(prefix + ": distance", position.distanceMeters);
-    SmartDashboard.putNumber(prefix + ": angle", position.angle.getDegrees());
-    SmartDashboard.putNumber(prefix + ": speed", state.speedMetersPerSecond);
-    SmartDashboard.putNumber(prefix + ": angle", state.angle.getDegrees());
+    Logger.recordOutput(prefix + "/angle", state.angle.getDegrees());
+    Logger.recordOutput(prefix + "/speed", state.speedMetersPerSecond);
+    // SmartDashboard.putNumber(prefix + ": distance", position.distanceMeters);
+    // SmartDashboard.putNumber(prefix + ": angle", position.angle.getDegrees());
+    // SmartDashboard.putNumber(prefix + ": speed", state.speedMetersPerSecond);
+    // SmartDashboard.putNumber(prefix + ": angle", state.angle.getDegrees());
   }
 }

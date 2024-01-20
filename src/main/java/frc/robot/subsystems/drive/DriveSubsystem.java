@@ -14,7 +14,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
@@ -22,7 +21,10 @@ import java.util.function.Consumer;
 import org.littletonrobotics.junction.Logger;
 
 public class DriveSubsystem extends SubsystemBase {
+
   public MAXSwerveModule[] modules = new MAXSwerveModule[4];
+  public SwerveModuleState[] m_desiredStates = new SwerveModuleState[4];
+
   // The gyro sensor
   private final Pigeon2 m_imu = new Pigeon2(DriveConstants.kPigeonCanId);
   // Slew rate filter variables for controlling lateral acceleration
@@ -63,6 +65,10 @@ public class DriveSubsystem extends SubsystemBase {
             DriveConstants.kRearRightDrivingCanId,
             DriveConstants.kRearRightTurningCanId,
             DriveConstants.kBackRightChassisAngularOffset);
+    for (int i = 0; i < 4; i++) {
+      // m_desiredStates[i] = modules[i].getState();
+      m_desiredStates[i] = new SwerveModuleState();
+    }
 
     m_odometry =
         new SwerveDriveOdometry(
@@ -84,6 +90,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    // System.out.println("--- periodic step");
+
     // Update the odometry in the periodic block
     m_odometry.update(
         Rotation2d.fromDegrees(m_imu.getAngle()),
@@ -93,26 +101,11 @@ public class DriveSubsystem extends SubsystemBase {
           modules[ModuleId.RL.index()].getPosition(),
           modules[ModuleId.RR.index()].getPosition()
         });
-    outputToSmartDashboard();
+    logState(getName());
   }
 
-  /** Outputs the values to the smart dashboard */
-  void outputToSmartDashboard() {
-
-    SmartDashboard.putNumber("POSE: x", m_odometry.getPoseMeters().getX());
-    SmartDashboard.putNumber("POSE: y", m_odometry.getPoseMeters().getY());
-    SmartDashboard.putNumber(
-        "POSE: rotation", m_odometry.getPoseMeters().getRotation().getDegrees());
-
-    SmartDashboard.putNumber("ROBOT: input direction", m_inputTranslationDir);
-    SmartDashboard.putNumber("ROBOT: input magnitude", m_inputTranslationMag);
-
-    SmartDashboard.putNumber("IMU", getHeading());
-    modules[ModuleId.FL.index()].outputToSmartDashboard("FL");
-    modules[ModuleId.FR.index()].outputToSmartDashboard("FR");
-    modules[ModuleId.RL.index()].outputToSmartDashboard("RL");
-    modules[ModuleId.RR.index()].outputToSmartDashboard("RR");
-  }
+  @Override
+  public void simulationPeriodic() {}
 
   /**
    * Returns the currently-estimated pose of the robot.
@@ -209,7 +202,7 @@ public class DriveSubsystem extends SubsystemBase {
     double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
 
-    var swerveModuleStates =
+    m_desiredStates =
         DriveConstants.kDriveKinematics.toSwerveModuleStates(
             fieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -219,20 +212,12 @@ public class DriveSubsystem extends SubsystemBase {
                     Rotation2d.fromDegrees(m_imu.getAngle()))
                 : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
+        m_desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
 
-    modules[0].setDesiredState(swerveModuleStates[0]);
-    modules[1].setDesiredState(swerveModuleStates[1]);
-    modules[2].setDesiredState(swerveModuleStates[2]);
-    modules[3].setDesiredState(swerveModuleStates[3]);
-    Logger.recordOutput("DesiredSwerve", swerveModuleStates);
-
-    SwerveModuleState actual[] = new SwerveModuleState[4];
-    actual[0] = modules[0].getState();
-    actual[1] = modules[1].getState();
-    actual[2] = modules[2].getState();
-    actual[3] = modules[3].getState();
-    Logger.recordOutput("ActualSwerve", actual);
+    modules[0].setDesiredState(m_desiredStates[0]);
+    modules[1].setDesiredState(m_desiredStates[1]);
+    modules[2].setDesiredState(m_desiredStates[2]);
+    modules[3].setDesiredState(m_desiredStates[3]);
   }
 
   /** Sets the wheels into an X formation to prevent movement. */
@@ -281,12 +266,28 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
-   * Returns the turn rate of the robot.
+   * Logs the state of the system and its children.
    *
-   * @return The turn rate of the robot, in degrees per second
+   * @param prefix The name of the module to log.
    */
-  public double getTurnRate() throws Exception {
-    throw new Exception("Not implemented");
-    // return m_imu.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+  void logState(String prefix) {
+
+    Logger.recordOutput(prefix + "/Input/Direction", m_inputTranslationDir);
+    Logger.recordOutput(prefix + "/Input/Magnitude", m_inputTranslationMag);
+    Logger.recordOutput(prefix + "/Pose2d", m_odometry.getPoseMeters());
+    Logger.recordOutput(prefix + "/IMU/HeadingDeg", m_imu.getAngle());
+
+    Logger.recordOutput(prefix + "/DesiredSwerve", m_desiredStates);
+    SwerveModuleState actual[] = new SwerveModuleState[4];
+    actual[0] = modules[0].getState();
+    actual[1] = modules[1].getState();
+    actual[2] = modules[2].getState();
+    actual[3] = modules[3].getState();
+    Logger.recordOutput(prefix + "/ActuaSwerve", actual);
+
+    modules[ModuleId.FL.index()].logState(prefix + "/Modules/FL");
+    modules[ModuleId.FR.index()].logState(prefix + "/Modules/FR");
+    modules[ModuleId.RL.index()].logState(prefix + "/Modules/RL");
+    modules[ModuleId.RR.index()].logState(prefix + "/Modules/RR");
   }
 }
