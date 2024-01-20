@@ -27,31 +27,18 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
-
-    Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
-
     if (isReal()) {
       // Logger.addDataReceiver(new WPILOGWriter("/U")); // Log to a USB stick
-      Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-      // new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
+      // Logger.addDataReceiver(new WPILOGWriter("/media/sda1/"));
+      Logger.addDataReceiver(new NT4Publisher());
     } else {
-      setUseTiming(false); // Run as fast as possible
-      // String logPath =
-      //     LogFileUtil
-      //         .findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the user)
-      // Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
-      // Logger.addDataReceiver(
-      //     new WPILOGWriter(
-      //         LogFileUtil.addPathSuffix(logPath, "_sim"))); // Save outputs to a new log
+      setUseTiming(true);
+      Logger.addDataReceiver(new NT4Publisher());
     }
+    Logger.start();
+    System.out.println("STARTING");
 
-    // Logger.disableDeterministicTimestamps() // See "Deterministic Timestamps" in the
-    // "Understanding Data Flow" page
-    Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may
-    // be added.
+    m_robotContainer = new RobotContainer();
   }
 
   /**
@@ -63,18 +50,22 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void robotPeriodic() {
-    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
-    // block in order for anything in the Command-based framework to work.
+    double start = System.currentTimeMillis();
     CommandScheduler.getInstance().run();
+    double end = System.currentTimeMillis();
+    Logger.recordOutput("Times/CommandSchedulerMs", end - start);
   }
+
+  // @Override
+  // public void simulationPeriodic() {
+  //   double t = WPIUtilJNI.now() / 1000.;
+  //   System.out.println("Robot: simulate: " + Double.toString(t - m_lastT));
+  //   m_lastT = t;
+  // }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {
-    System.out.println("disableInit");
-  }
+  public void disabledInit() {}
 
   @Override
   public void disabledPeriodic() {}
