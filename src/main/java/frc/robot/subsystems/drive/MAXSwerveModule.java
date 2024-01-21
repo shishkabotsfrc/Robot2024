@@ -31,6 +31,7 @@ public class MAXSwerveModule {
   private double m_chassisAngularOffset = 0;
   private double m_desiredAngle = 0.;
   private double m_desiredSpeed = 0.;
+  private boolean m_reversedAngle = false;
 
   /**
    * Constructs a MAXSwerveModule and configures the driving and turning motor, encoder, and PID
@@ -141,7 +142,7 @@ public class MAXSwerveModule {
   /**
    * Sets the desired state for the module.
    *
-   * @param desiredState Desired state with speed and angle with respect to the world coordinates.
+   * @param desiredState Desired state with speed and angle with respect to the chassis.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
 
@@ -165,6 +166,14 @@ public class MAXSwerveModule {
         SwerveModuleState.optimize(
             correctedDesiredState, new Rotation2d(m_turningEncoder.getPosition()));
 
+    if (SwerveUtils.AngleDifference(
+            correctedDesiredState.angle.getRadians(), optimizedDesiredState.angle.getRadians())
+        > .1) {
+      m_reversedAngle = true;
+    } else {
+      m_reversedAngle = false;
+    }
+
     // Command driving and turning SPARKS MAX towards their respective setpoints.
     m_drivingPIDController.setReference(
         optimizedDesiredState.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
@@ -182,7 +191,7 @@ public class MAXSwerveModule {
    */
   public double getAngle() {
     double angle = m_turningEncoder.getPosition() - m_chassisAngularOffset;
-    if (m_drivingEncoder.getVelocity() < 0.) {
+    if (m_reversedAngle) {
       angle = angle - Math.PI;
     }
     return SwerveUtils.WrapAngle(angle);
@@ -208,5 +217,6 @@ public class MAXSwerveModule {
     Logger.recordOutput(prefix + "/Speed", getSpeed());
     Logger.recordOutput(prefix + "/DesiredAngleDegrees", Units.radiansToDegrees(m_desiredAngle));
     Logger.recordOutput(prefix + "/DesiredSpeed", m_desiredSpeed);
+    Logger.recordOutput(prefix + "/ReversedAngle", m_reversedAngle);
   }
 }
