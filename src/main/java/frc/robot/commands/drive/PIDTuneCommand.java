@@ -9,19 +9,18 @@ import frc.utils.SwerveUtils;
 
 public class PIDTuneCommand extends Command {
   private static final double NOT_SET_TIME = 0.0;
+
   private static final double SETTLE_TIME = 1.0;
+  private static final double THRESHOLD = 0.1;
+  private static double TARGET_ROTATION = Math.PI / 2;
+  private static int ITERATIONS = 4;
 
   private DriveSubsystem drive;
   private double targetAngle;
   private double secondsSinceTargetSet;
   private double timeWhenTargetReached;
-  private State state;
-
-  private enum State {
-    INITIALIZE,
-    STEP,
-    DONE,
-  };
+  private double totalTimeToReach;
+  private int state;
 
   public PIDTuneCommand(DriveSubsystem drive) {
     this.drive = drive;
@@ -29,8 +28,9 @@ public class PIDTuneCommand extends Command {
   }
 
   public void initialize() {
-    state = State.INITIALIZE;
-    setTargetRotation(Math.PI);
+    state = 0;
+    totalTimeToReach = 0.0;
+    setTargetRotation(0.0);
   }
 
   private void setTargetRotation(double radians) {
@@ -45,24 +45,19 @@ public class PIDTuneCommand extends Command {
   }
 
   public void execute() {
-    SwerveModuleState[] targetSwerveStates = new SwerveModuleState[4];
-    for (int i = 0; i < 4; i++) {
-      targetSwerveStates[i] = new SwerveModuleState(0.0, new Rotation2d(targetAngle));
-    }
-    drive.setModuleStates(targetSwerveStates);
-
     // Motors may never reach desired state so abort after 3s
     if (CurrentTime.seconds() - secondsSinceTargetSet > 3.0) {
-      System.out.println("[PID Tune] Aborting command due to timeout");
-      state = State.DONE;
+      System.err.println("[PID Tune] Aborting command due to 3s timeout");
+      state = ITERATIONS;
+      return;
     }
     // How many of the modules are within the threshold
     int reachedModules = 0;
     for (int i = 0; i < 4; i++) {
-      double moduleAngle = SwerveUtils.WrapAngle(drive.modules[i].getState().angle.getRadians());
-      double angleDifference = SwerveUtils.AngleDifference(moduleAngle, targetAngle);
       drive.modules[i].setDesiredState(new SwerveModuleState(0.0, new Rotation2d(targetAngle)));
-      if (Math.abs(angleDifference) < 0.1) {
+      double moduleAngle = SwerveUtils.WrapAngle(drive.modules[i].getAngle());
+      double angleDifference = SwerveUtils.AngleDifference(moduleAngle, targetAngle);
+      if (Math.abs(angleDifference) < THRESHOLD) {
         reachedModules += 1;
       }
     }
@@ -75,27 +70,20 @@ public class PIDTuneCommand extends Command {
     } else {
       timeWhenTargetReached = NOT_SET_TIME;
     }
-    // Zeros the angle then times
-    switch (state) {
-      case INITIALIZE:
-        if (isSettled()) {
-          setTargetRotation(Math.PI / 2);
-          state = State.STEP;
-        }
-      case STEP:
-        if (isSettled()) {
-          state = State.DONE;
-
-          System.out.println(
-              "[PID Tune] seconds to settle: "
-                  + (CurrentTime.seconds() - secondsSinceTargetSet - SETTLE_TIME));
-        }
-      default:
-        break;
+    if (isSettled()) {
+      if (state != 0) {
+        totalTimeToReach += CurrentTime.seconds() - secondsSinceTargetSet - SETTLE_TIME;
+      }
+      state += 1;
+      if (isFinished()) {
+        System.out.println("[PID Tune] Average time: " + totalTimeToReach / ITERATIONS);
+      } else {
+        setTargetRotation(TARGET_ROTATION * state);
+      }
     }
   }
 
   public boolean isFinished() {
-    return state.equals(State.DONE);
+    return (state == ITERATIONS);
   }
 }
