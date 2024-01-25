@@ -22,6 +22,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.drive.DriveWithJoystick;
 import frc.robot.commands.drive.PIDTuneCommand;
+import frc.robot.commands.drive.ResetGyroOffsets;
 import frc.robot.commands.drive.XPositionLock;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import java.util.List;
@@ -52,10 +53,13 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
+    // TODO: Use reasonable controls
     new JoystickButton(m_driverController, Button.kLeftBumper.value)
         .whileTrue(new XPositionLock(m_robotDrive));
     new JoystickButton(m_driverController, Button.kRightBumper.value)
         .onTrue(new PIDTuneCommand(m_robotDrive));
+    new JoystickButton(m_driverController, Button.kA.value)
+        .onTrue(new ResetGyroOffsets(m_robotDrive));
   }
 
   // NOTE: // SwerveDrivePoseEstimator

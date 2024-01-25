@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems.drive;
 
-import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -26,7 +25,7 @@ public class DriveSubsystem extends SubsystemBase {
   public SwerveModuleState[] m_desiredStates = new SwerveModuleState[4];
 
   // The gyro sensor
-  private final Pigeon2 m_imu = new Pigeon2(DriveConstants.kPigeonCanId);
+  public final Pigeon m_imu = new Pigeon();
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
   private double m_currentTranslationDir = 0.0;
