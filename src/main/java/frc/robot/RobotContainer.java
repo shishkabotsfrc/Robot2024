@@ -25,6 +25,7 @@ import frc.robot.commands.drive.PIDTuneCommand;
 import frc.robot.commands.drive.ResetGyroOffsets;
 import frc.robot.commands.drive.XPositionLock;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.vision.Limelight;
 import java.util.List;
 
 /*
@@ -37,6 +38,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
+  private final Limelight m_limelight = new Limelight();
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
