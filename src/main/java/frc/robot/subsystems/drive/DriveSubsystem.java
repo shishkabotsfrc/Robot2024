@@ -274,7 +274,6 @@ public class DriveSubsystem extends SubsystemBase {
     Logger.recordOutput(prefix + "/Input/Direction", m_inputTranslationDir);
     Logger.recordOutput(prefix + "/Input/Magnitude", m_inputTranslationMag);
     Logger.recordOutput(prefix + "/Pose2d", m_odometry.getPoseMeters());
-    Logger.recordOutput(prefix + "/IMU/HeadingDeg", m_imu.getAngle());
 
     Logger.recordOutput(prefix + "/DesiredSwerve", m_desiredStates);
     SwerveModuleState actual[] = new SwerveModuleState[4];
@@ -288,5 +287,6 @@ public class DriveSubsystem extends SubsystemBase {
     modules[ModuleId.FR.index()].logState(prefix + "/Modules/FR");
     modules[ModuleId.RL.index()].logState(prefix + "/Modules/RL");
     modules[ModuleId.RR.index()].logState(prefix + "/Modules/RR");
+    m_imu.logState(prefix + "/Pigeon");
   }
 }
