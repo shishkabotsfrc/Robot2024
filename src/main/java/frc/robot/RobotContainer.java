@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.drive.AlignShotCommand;
 import frc.robot.commands.drive.DriveWithJoystick;
 import frc.robot.commands.drive.PIDTuneCommand;
 import frc.robot.commands.drive.ResetGyroOffsets;
@@ -38,7 +39,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
-  private final Limelight m_limelight = new Limelight();
+  private final Limelight m_limelight = new Limelight("limelight");
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
@@ -62,6 +63,8 @@ public class RobotContainer {
         .onTrue(new PIDTuneCommand(m_robotDrive));
     new JoystickButton(m_driverController, Button.kA.value)
         .onTrue(new ResetGyroOffsets(m_robotDrive));
+    new JoystickButton(m_driverController, Button.kB.value)
+        .onTrue(new AlignShotCommand(m_robotDrive, m_limelight));
   }
 
   // NOTE: // SwerveDrivePoseEstimator
