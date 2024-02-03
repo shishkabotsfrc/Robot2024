@@ -15,7 +15,7 @@ public class Limelight extends SubsystemBase {
   public PeriodicIO mIO = new PeriodicIO();
 
   public class PeriodicIO {
-    boolean validTarget;
+    public boolean validTarget;
     public double tx, ty;
     double area;
     double latency;
@@ -36,13 +36,11 @@ public class Limelight extends SubsystemBase {
     netTable.addListener("json", EnumSet.of(Kind.kValueAll), new Listener());
   }
 
-  /** Calls `updatePosition()` aysnchronously when networktable changed * */
+  /** Calls `periodic()` aysnchronously when networktable changed * */
   private class Listener implements TableEventListener {
     @Override
     public void accept(NetworkTable table, String key, NetworkTableEvent event) {
-      if (key.equals("json")) {
-        updatePosition();
-      }
+      updatePosition();
     }
   }
 

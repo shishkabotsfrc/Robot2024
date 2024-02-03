@@ -63,7 +63,7 @@ public class RobotContainer {
         .onTrue(new PIDTuneCommand(m_robotDrive));
     new JoystickButton(m_driverController, Button.kA.value)
         .onTrue(new ResetGyroOffsets(m_robotDrive));
-    new JoystickButton(m_driverController, Button.kB.value)
+    new JoystickButton(m_driverController, Button.kY.value)
         .onTrue(new AlignShotCommand(m_robotDrive, m_limelight));
   }
 

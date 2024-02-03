@@ -11,17 +11,16 @@ public class AlignShotCommand extends Command {
   public AlignShotCommand(DriveSubsystem drive, Limelight limelight) {
     this.drive = drive;
     this.vision = limelight;
-    addRequirements(drive);
+    addRequirements(drive, limelight);
   }
 
   @Override
   public void execute() {
-    if (this.vision.mIO.ty == 0.0) {
+    if (!this.vision.mIO.validTarget) {
       this.drive.drive(0, 0, 0, false, false);
       return;
     }
-    ;
-    this.drive.drive(this.vision.mIO.ty - 20, -this.vision.mIO.tx, 0, false, false);
+    this.drive.drive(this.vision.mIO.ty * 5, -this.vision.mIO.tx * 5, 0, false, false);
   }
 
   @Override
