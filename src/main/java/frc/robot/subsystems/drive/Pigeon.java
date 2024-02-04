@@ -11,8 +11,17 @@ public class Pigeon extends SubsystemBase {
   private Pigeon2 m_imu = new Pigeon2(DriveConstants.kPigeonCanId);
   private Rotation3d rotOffset = new Rotation3d();
 
+  public Pigeon() {
+    m_imu.setYaw(0.);
+  }
+
   @Override
-  public void periodic() {}
+  public void periodic() {
+    Logger.recordOutput(getName() + "/Angle", getAngle());
+    Logger.recordOutput(getName() + "/AccelX", getAccelerationX());
+    Logger.recordOutput(getName() + "/AccelY", getAccelerationY());
+    Logger.recordOutput(getName() + "/AccelZ", getAccelerationZ());
+  }
 
   @Override
   public void simulationPeriodic() {}
@@ -38,7 +47,9 @@ public class Pigeon extends SubsystemBase {
    */
   public Rotation3d rotation() {
     return new Rotation3d(
-        m_imu.getRoll().getValue(), m_imu.getPitch().getValue(), m_imu.getYaw().getValue());
+        Units.degreesToRadians(m_imu.getRoll().refresh().getValueAsDouble()),
+        Units.degreesToRadians(m_imu.getPitch().refresh().getValueAsDouble()),
+        Units.degreesToRadians(m_imu.getYaw().refresh().getValueAsDouble()));
   }
 
   /**
@@ -51,12 +62,12 @@ public class Pigeon extends SubsystemBase {
   }
 
   /**
-   * Returns the heading of the robot.
+   * Returns the yaw of the robot.
    *
-   * @return the robot's heading in degrees, from -180 to 180
+   * @return the robot's yaw in degrees, from -180 to 180
    */
   public double getAngle() {
-    return rotation().getZ();
+    return m_imu.getYaw().getValueAsDouble();
   }
 
   /** x acceleration */
@@ -72,19 +83,5 @@ public class Pigeon extends SubsystemBase {
   /** z acceleration */
   public double getAccelerationZ() {
     return m_imu.getAccelerationZ().getValueAsDouble();
-  }
-
-  /**
-   * Logs the state of the system and its children.
-   *
-   * @param prefix The name of the module to log.
-   */
-  void logState(String prefix) {
-    Logger.recordOutput(prefix + "/Angle", getAngle());
-    Logger.recordOutput(prefix + "/AngleDegrees", Units.radiansToDegrees(getAngle()));
-    Logger.recordOutput(prefix + "/AccelX", getAccelerationX());
-    Logger.recordOutput(prefix + "/AccelY", getAccelerationY());
-    Logger.recordOutput(prefix + "/AccelZ", getAccelerationZ());
-    Logger.recordOutput(prefix + "/Rotation3d", rotation());
   }
 }

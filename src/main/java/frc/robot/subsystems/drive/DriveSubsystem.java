@@ -299,6 +299,5 @@ public class DriveSubsystem extends SubsystemBase {
     modules[ModuleId.FR.index()].logState(prefix + "/Modules/FR");
     modules[ModuleId.RL.index()].logState(prefix + "/Modules/RL");
     modules[ModuleId.RR.index()].logState(prefix + "/Modules/RR");
-    m_imu.logState(prefix + "/Pigeon");
   }
 }
