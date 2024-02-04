@@ -13,6 +13,6 @@ public class XPositionLock extends Command {
 
   @Override
   public void execute() {
-    drive.setX();
+    drive.setXWheels();
   }
 }
