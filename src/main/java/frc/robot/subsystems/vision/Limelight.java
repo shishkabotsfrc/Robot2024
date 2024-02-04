@@ -1,5 +1,9 @@
 package frc.robot.subsystems.vision;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTable.TableEventListener;
@@ -8,11 +12,21 @@ import edu.wpi.first.networktables.NetworkTableEvent.Kind;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.EnumSet;
+import org.littletonrobotics.junction.Logger;
 
 public class Limelight extends SubsystemBase {
+
+  // Constants to be moved out later
+
+  // Location of the tag.
+  Translation3d tagLocation = new Translation3d(2, 3, 0.9);
+  // Translation from the center of the robot to the camera (robot coordinates).
+  Translation3d cameraOffset = new Translation3d(-0.23, 0.0, 0.67);
+
   private static NetworkTable netTable;
   public DetectedTarget target = new DetectedTarget();
   public PeriodicIO mIO = new PeriodicIO();
+  private Pose2d pose;
 
   public class PeriodicIO {
     public boolean validTarget;
@@ -37,13 +51,14 @@ public class Limelight extends SubsystemBase {
   public Limelight(String name) {
     netTable = NetworkTableInstance.getDefault().getTable(name);
     netTable.addListener("json", EnumSet.of(Kind.kValueAll), new Listener());
+    pose = null;
   }
 
   /** Calls `updatePosition()` aysnchronously when limelight finishes by publishing "json" * */
   private class Listener implements TableEventListener {
     @Override
     public void accept(NetworkTable table, String key, NetworkTableEvent event) {
-      updatePosition();
+      updateData();
     }
   }
 
@@ -51,7 +66,7 @@ public class Limelight extends SubsystemBase {
    * When limelight sent data over networkTable, update target information Docs:
    * https://docs.limelightvision.io/docs/docs-limelight/apis/complete-networktables-api
    */
-  public void updatePosition() {
+  public void updateData() {
     mIO.validTarget = netTable.getEntry("tv").getInteger(0) == 1;
     mIO.tx = Units.degreesToRadians(netTable.getEntry("tx").getDouble(0.0));
     mIO.ty = Units.degreesToRadians(netTable.getEntry("ty").getDouble(0.0));
@@ -63,7 +78,49 @@ public class Limelight extends SubsystemBase {
     mIO.pipeline = netTable.getEntry("pipeline").getInteger(-1);
     mIO.sreamMode = netTable.getEntry("stream").getInteger(-1);
     mIO.snapshot = netTable.getEntry("snapshot").getInteger(-1);
-    target.update(mIO);
+    // target.update(mIO);
+    Logger.recordOutput("Vision/Valid", mIO.validTarget);
+    Logger.recordOutput("Vision/tx", mIO.tx);
+    Logger.recordOutput("Vision/ty", mIO.ty);
+  }
+
+  public Pose2d getPose(Rotation2d rotation) {
+    if (!mIO.validTarget) {
+      return null;
+    }
+
+    // The tag is at the same level as the camera
+    if (mIO.ty < 0.1 && mIO.ty > -0.1) {
+      return null;
+    }
+
+    double yaw = rotation.getRadians();
+    Logger.recordOutput("Vision/YawRads", yaw);
+    double heightDiff = tagLocation.getZ() - cameraOffset.getZ();
+    Logger.recordOutput("Vision/CameraHeight", heightDiff);
+    double distance_2d = heightDiff / Math.tan(mIO.ty);
+    Logger.recordOutput("Vision/distance2d", distance_2d);
+    double beta = yaw - mIO.tx;
+    Logger.recordOutput("Vision/beta", beta);
+    double x = Math.cos(beta) * distance_2d;
+    double y = Math.sin(beta) * distance_2d;
+    Logger.recordOutput("Vision/x", x);
+    Logger.recordOutput("Vision/y", y);
+    // Translation from the tag to the camera
+    Translation2d tagToCamera = new Translation2d(-x, -y);
+
+    Pose2d cameraPose =
+        new Pose2d(tagLocation.toTranslation2d().plus(tagToCamera), new Rotation2d(yaw));
+    Logger.recordOutput("Vision/Pose2dCamera", cameraPose);
+    // TODO translate the camera pose to the robot pose
+
+    Translation2d offset = cameraOffset.toTranslation2d().rotateBy(rotation);
+    Logger.recordOutput("Vision/offset", offset);
+
+    pose = new Pose2d(cameraPose.getTranslation().minus(offset), new Rotation2d(yaw));
+    Logger.recordOutput("Vision/Pose2d", pose);
+
+    return pose;
   }
 
   /** Change the led mode on the limelight * */

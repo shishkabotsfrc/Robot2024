@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.subsystems.vision.Limelight;
 import frc.utils.CurrentTime;
 import frc.utils.SwerveUtils;
 import java.util.function.Consumer;
@@ -38,9 +39,12 @@ public class DriveSubsystem extends SubsystemBase {
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
   private double m_prevTime = CurrentTime.seconds();
 
+  private Limelight m_limelight = null;
+
   SwerveDriveOdometry m_odometry = null;
 
-  public DriveSubsystem() {
+  public DriveSubsystem(Limelight limelight) {
+    m_limelight = limelight;
     modules[ModuleId.FL.index()] =
         new MAXSwerveModule(
             DriveConstants.kFrontLeftDrivingCanId,
@@ -274,6 +278,14 @@ public class DriveSubsystem extends SubsystemBase {
     Logger.recordOutput(prefix + "/Input/Direction", m_inputTranslationDir);
     Logger.recordOutput(prefix + "/Input/Magnitude", m_inputTranslationMag);
     Logger.recordOutput(prefix + "/Pose2d", m_odometry.getPoseMeters());
+    Logger.recordOutput(prefix + "/Heading", getHeading());
+
+    Pose2d limelightPose = m_limelight.getPose(m_odometry.getPoseMeters().getRotation());
+
+    Logger.recordOutput(prefix + "/Pose2dValid", limelightPose != null);
+    if (limelightPose != null) {
+      Logger.recordOutput(prefix + "/Pose2dLimelight", limelightPose);
+    }
 
     Logger.recordOutput(prefix + "/DesiredSwerve", m_desiredStates);
     SwerveModuleState actual[] = new SwerveModuleState[4];
