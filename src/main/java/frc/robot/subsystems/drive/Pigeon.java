@@ -34,7 +34,7 @@ public class Pigeon extends SubsystemBase {
   /**
    * Set the yaw
    *
-   * @param the yaw to set the IMU to.
+   * @param r the yaw to set the IMU to.
    */
   public void setYaw(double r) {
     m_imu.setYaw(r);
@@ -43,7 +43,7 @@ public class Pigeon extends SubsystemBase {
   /**
    * Return the 3 angles
    *
-   * @returns three rotation angles
+   * @return three rotation angles as a Rotation3d class
    */
   public Rotation3d rotation() {
     return new Rotation3d(
@@ -55,7 +55,7 @@ public class Pigeon extends SubsystemBase {
   /**
    * Return the 3 angle rotation corrected by the offsets
    *
-   * @returns three rotation angles (corrected)
+   * @return three rotation angles (corrected)
    */
   public Rotation3d rotationCorrected() {
     return rotation().minus(rotOffset);
