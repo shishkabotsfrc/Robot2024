@@ -1,5 +1,6 @@
 package frc.robot.subsystems.vision;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTable.TableEventListener;
 import edu.wpi.first.networktables.NetworkTableEvent;
@@ -10,8 +11,7 @@ import java.util.EnumSet;
 
 public class Limelight extends SubsystemBase {
   private static NetworkTable netTable;
-  private DetectedTarget target = new DetectedTarget();
-
+  public DetectedTarget target = new DetectedTarget();
   public PeriodicIO mIO = new PeriodicIO();
 
   public class PeriodicIO {
@@ -19,9 +19,12 @@ public class Limelight extends SubsystemBase {
     public double tx, ty;
     double area;
     double latency;
-    long inputLed;
     long targetID;
-    int inputCamMode;
+    long ledMode;
+    long camMode;
+    long pipeline;
+    long sreamMode;
+    long snapshot;
   }
 
   public enum LedMode {
@@ -36,7 +39,7 @@ public class Limelight extends SubsystemBase {
     netTable.addListener("json", EnumSet.of(Kind.kValueAll), new Listener());
   }
 
-  /** Calls `periodic()` aysnchronously when networktable changed * */
+  /** Calls `updatePosition()` aysnchronously when limelight finishes by publishing "json" * */
   private class Listener implements TableEventListener {
     @Override
     public void accept(NetworkTable table, String key, NetworkTableEvent event) {
@@ -50,12 +53,58 @@ public class Limelight extends SubsystemBase {
    */
   public void updatePosition() {
     mIO.validTarget = netTable.getEntry("tv").getInteger(0) == 1;
-    mIO.tx = netTable.getEntry("tx").getDouble(0.0);
-    mIO.ty = netTable.getEntry("ty").getDouble(0.0);
+    mIO.tx = Units.degreesToRadians(netTable.getEntry("tx").getDouble(0.0));
+    mIO.ty = Units.degreesToRadians(netTable.getEntry("ty").getDouble(0.0));
     mIO.area = netTable.getEntry("ta").getDouble(0.0);
     mIO.latency = netTable.getEntry("tl").getDouble(0.0) + netTable.getEntry("cl").getDouble(0.0);
     mIO.targetID = netTable.getEntry("tid").getInteger(-1);
-    mIO.inputLed = netTable.getEntry("ledMode").getInteger(0);
+    mIO.ledMode = netTable.getEntry("ledMode").getInteger(-1);
+    mIO.camMode = netTable.getEntry("camMode").getInteger(-1);
+    mIO.pipeline = netTable.getEntry("pipeline").getInteger(-1);
+    mIO.sreamMode = netTable.getEntry("stream").getInteger(-1);
+    mIO.snapshot = netTable.getEntry("snapshot").getInteger(-1);
     target.update(mIO);
+  }
+
+  /** Change the led mode on the limelight * */
+  public void setLed(LedMode mode) {
+    if (mode.ordinal() != mIO.ledMode) {
+      netTable.getEntry("ledMode").setInteger(mode.ordinal());
+    }
+  }
+
+  /**
+   * Changes the camera operating mode. 0 for vision processing. 1 for driver camera (Increases
+   * exposure, disables vision processing)
+   */
+  public void setCamMode(long mode) {
+    if (mode < 0 || mode > 1) System.err.println(mode + " is not a valid camera mode");
+    if (mode != mIO.camMode) {
+      netTable.getEntry("camMode").setInteger(mode);
+    }
+  }
+
+  /** Changes the pipeline of the camera (0-9) */
+  public void setPipeline(long mode) {
+    if (mode < 0 || mode > 9) System.err.println(mode + " is not a valid pipeline");
+    if (mode != mIO.pipeline) {
+      netTable.getEntry("pipeline").setInteger(mode);
+    }
+  }
+
+  /** Changes the stream of the camera (0-2) */
+  public void setStream(long mode) {
+    if (mode < 0 || mode > 2) System.err.println(mode + " is not a valid camera stream");
+    if (mode != mIO.sreamMode) {
+      netTable.getEntry("stream").setInteger(mode);
+    }
+  }
+
+  /** Changes the snapshot mode (0-1) */
+  public void setSnapshot(long mode) {
+    if (mode < 0 || mode > 1) System.err.println(mode + " is not a valid snapshot mode");
+    if (mode != mIO.snapshot) {
+      netTable.getEntry("snapshot").setInteger(mode);
+    }
   }
 }
