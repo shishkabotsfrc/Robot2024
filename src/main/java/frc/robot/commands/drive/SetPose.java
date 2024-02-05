@@ -27,10 +27,9 @@ public class SetPose extends Command {
     m_driveSubsystem.resetOdometry(m_pose);
   }
 
-
   @Override
   public boolean isFinished() {
-    System.out.println("SET_POSE: execute");
+    System.out.println("SET_POSE: isFinished");
     return true;
   }
 }
