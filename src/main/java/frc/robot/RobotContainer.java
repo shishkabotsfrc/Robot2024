@@ -25,6 +25,7 @@ import frc.robot.commands.drive.DriveWithJoystick;
 import frc.robot.commands.drive.DrivetoPose;
 import frc.robot.commands.drive.PIDTuneCommand;
 import frc.robot.commands.drive.ResetGyroOffsets;
+import frc.robot.commands.drive.SetPose;
 import frc.robot.commands.drive.XPositionLock;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.vision.Limelight;
@@ -67,6 +68,8 @@ public class RobotContainer {
         .onTrue(new ResetGyroOffsets(m_robotDrive));
     new JoystickButton(m_driverController, Button.kY.value)
         .onTrue(new AlignShotCommand(m_robotDrive, m_limelight));
+    new JoystickButton(m_driverController, Button.kX.value)
+        .onTrue(new SetPose(m_robotDrive, new Pose2d(0, 0, new Rotation2d(0, 0))));
     new JoystickButton(m_driverController, Button.kX.value)
         .onTrue(
             new DrivetoPose(
