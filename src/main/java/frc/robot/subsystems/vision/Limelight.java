@@ -11,6 +11,7 @@ import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableEvent.Kind;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.utils.CurrentTime;
 import java.util.EnumSet;
 import org.littletonrobotics.junction.Logger;
 
@@ -39,6 +40,8 @@ public class Limelight extends SubsystemBase {
     long pipeline;
     long sreamMode;
     long snapshot;
+
+    public double millisTimeRecorded;
   }
 
   public enum LedMode {
@@ -78,6 +81,7 @@ public class Limelight extends SubsystemBase {
     mIO.pipeline = netTable.getEntry("pipeline").getInteger(-1);
     mIO.sreamMode = netTable.getEntry("stream").getInteger(-1);
     mIO.snapshot = netTable.getEntry("snapshot").getInteger(-1);
+    mIO.millisTimeRecorded = CurrentTime.millis();
     // target.update(mIO);
     Logger.recordOutput("Vision/Valid", mIO.validTarget);
     Logger.recordOutput("Vision/tx", mIO.tx);
