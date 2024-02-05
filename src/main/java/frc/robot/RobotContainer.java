@@ -22,6 +22,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.drive.AlignShotCommand;
 import frc.robot.commands.drive.DriveWithJoystick;
+import frc.robot.commands.drive.DrivetoPose;
 import frc.robot.commands.drive.PIDTuneCommand;
 import frc.robot.commands.drive.ResetGyroOffsets;
 import frc.robot.commands.drive.XPositionLock;
@@ -66,6 +67,16 @@ public class RobotContainer {
         .onTrue(new ResetGyroOffsets(m_robotDrive));
     new JoystickButton(m_driverController, Button.kY.value)
         .onTrue(new AlignShotCommand(m_robotDrive, m_limelight));
+    new JoystickButton(m_driverController, Button.kX.value)
+        .onTrue(
+            new DrivetoPose(
+                m_robotDrive,
+                m_limelight,
+                m_robotDrive.getPose().getX() + 0,
+                m_robotDrive.getPose().getY() + 2));
+
+    /*  new JoystickButton(m_driverController, Button.kY.value)
+    .onTrue(new DrivetoPose(m_robotDrive, 10, 10));*/
   }
 
   // NOTE: // SwerveDrivePoseEstimator
