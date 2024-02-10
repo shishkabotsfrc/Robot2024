@@ -13,20 +13,18 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
-import frc.robot.subsystems.vision.Limelight;
 import java.util.List;
-import org.littletonrobotics.junction.Logger;
 
 public class DrivetoPose extends Command {
   private final DriveSubsystem drive;
-  private final Limelight vision;
+  // private final Limelight vision;
   private Trajectory toPose;
   private ProfiledPIDController thetaController;
   double x, y, errorX, errorY;
 
-  public DrivetoPose(DriveSubsystem drive, Limelight vision, double x, double y) {
+  public DrivetoPose(DriveSubsystem drive, double x, double y) {
     this.drive = drive;
-    this.vision = vision;
+    // this.vision = vision;
     this.x = x;
     this.y = y;
     this.errorX = 0;
@@ -34,14 +32,16 @@ public class DrivetoPose extends Command {
     addRequirements(drive);
   }
 
-  public void initalize() {
+  @Override
+  public void initialize() {
+    System.out.println("DRIVE: initialize");
     TrajectoryConfig config =
         new TrajectoryConfig(
                 AutoConstants.kMaxSpeedMetersPerSecond,
                 AutoConstants.kMaxAccelerationMetersPerSecondSquared)
             .setKinematics(DriveConstants.kDriveKinematics);
 
-    if (vision.getPose(new Rotation2d(0)) != null) {
+    /*if (vision.getPose(new Rotation2d(0)) != null) {
       errorX += drive.getPose().getX() - vision.getPose(new Rotation2d(0)).getX();
       errorY += drive.getPose().getY() - vision.getPose(new Rotation2d(0)).getY();
     }
@@ -52,7 +52,7 @@ public class DrivetoPose extends Command {
     if (errorX >= 0.25 || errorY >= 0.25) {
 
       System.out.println("error");
-    }
+    }*/
 
     Pose2d robotPose = drive.getPose();
     Pose2d targetPose = new Pose2d(x, y, new Rotation2d(0));
@@ -77,10 +77,6 @@ public class DrivetoPose extends Command {
         new ProfiledPIDController(
             AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
-  }
-
-  public void execute() {
-
     SwerveControllerCommand swerveControllerCommand =
         new SwerveControllerCommand(
             toPose,
@@ -97,6 +93,16 @@ public class DrivetoPose extends Command {
     // Reset odometry to the starting pose of the trajectory.
     drive.resetOdometry(toPose.getInitialPose());
     swerveControllerCommand.andThen(() -> drive.drive(0, 0, 0, false, false));
-    System.out.println("done");
+  }
+
+  @Override
+  public void execute() {
+    System.out.println("Drive: Executed");
+  }
+
+  @Override
+  public boolean isFinished() {
+    System.out.println("Drive: isFinished");
+    return true;
   }
 }

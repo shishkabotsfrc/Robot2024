@@ -68,18 +68,18 @@ public class RobotContainer {
         .onTrue(new ResetGyroOffsets(m_robotDrive));
     new JoystickButton(m_driverController, Button.kY.value)
         .onTrue(new AlignShotCommand(m_robotDrive, m_limelight));
+    new JoystickButton(m_driverController, Button.kB.value)
+        .onTrue(new DrivetoPose(m_robotDrive, 10, 10));
     new JoystickButton(m_driverController, Button.kX.value)
         .onTrue(new SetPose(m_robotDrive, new Pose2d(0, 0, new Rotation2d(0, 0))));
-    new JoystickButton(m_driverController, Button.kX.value)
-        .onTrue(
-            new DrivetoPose(
-                m_robotDrive,
-                m_limelight,
-                m_robotDrive.getPose().getX() + 0,
-                m_robotDrive.getPose().getY() + 2));
+    /*new JoystickButton(m_driverController, Button.kX.value)
+    .onTrue(
+        new DrivetoPose(
+            m_robotDrive,
+            // m_limelight,
+            m_robotDrive.getPose().getX() + 0,
+            m_robotDrive.getPose().getY() + 2));*/
 
-    /*  new JoystickButton(m_driverController, Button.kY.value)
-    .onTrue(new DrivetoPose(m_robotDrive, 10, 10));*/
   }
 
   // NOTE: // SwerveDrivePoseEstimator
