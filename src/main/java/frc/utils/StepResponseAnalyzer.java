@@ -56,6 +56,7 @@ public class StepResponseAnalyzer {
     if (m_valueBuffer.size() == BUFFER_LENGTH && (value > 2 * m_target || value < m_start)) {
       m_unstable = true;
     }
+
     // Update the sliding buffer for the settling value and time
     m_valueBuffer.addLast(value);
     m_timeBuffer.addLast(time);
@@ -74,7 +75,7 @@ public class StepResponseAnalyzer {
       min = Math.min(min, x);
       max = Math.max(max, x);
     }
-    if ((max - min) < m_delta) {
+    if ((max - min) < m_delta && !m_settled) {
       m_settled = true;
       m_settlingTime = m_timeBuffer.getFirst();
       m_finalValue = m_valueBuffer.getFirst();
