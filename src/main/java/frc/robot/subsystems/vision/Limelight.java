@@ -61,7 +61,9 @@ public class Limelight extends SubsystemBase {
   private class Listener implements TableEventListener {
     @Override
     public void accept(NetworkTable table, String key, NetworkTableEvent event) {
-      updateData();
+      if (key.equals("json")) {
+        updateData();
+      }
     }
   }
 
@@ -69,7 +71,7 @@ public class Limelight extends SubsystemBase {
    * When limelight sent data over networkTable, update target information Docs:
    * https://docs.limelightvision.io/docs/docs-limelight/apis/complete-networktables-api
    */
-  public void updateData() {
+  synchronized public void updateData() {
     mIO.validTarget = netTable.getEntry("tv").getInteger(0) == 1;
     mIO.tx = Units.degreesToRadians(netTable.getEntry("tx").getDouble(0.0));
     mIO.ty = Units.degreesToRadians(netTable.getEntry("ty").getDouble(0.0));
@@ -88,7 +90,7 @@ public class Limelight extends SubsystemBase {
     Logger.recordOutput("Vision/ty", mIO.ty);
   }
 
-  public Pose2d getPose(Rotation2d rotation) {
+  synchronized public Pose2d getPose(Rotation2d rotation) {
     if (!mIO.validTarget) {
       return null;
     }
