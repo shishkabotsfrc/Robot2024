@@ -1,5 +1,6 @@
 package frc.robot.subsystems.vision;
 
+import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -11,6 +12,7 @@ import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableEvent.Kind;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.field.Field;
 import frc.utils.CurrentTime;
 import java.util.EnumSet;
 import org.littletonrobotics.junction.Logger;
@@ -18,9 +20,6 @@ import org.littletonrobotics.junction.Logger;
 public class Limelight extends SubsystemBase {
 
   // Constants to be moved out later
-
-  // Location of the tag.
-  Translation3d tagLocation = new Translation3d(2, 3, 0.9);
   // Translation from the center of the robot to the camera (robot coordinates).
   Translation3d cameraOffset = new Translation3d(-0.23, 0.0, 0.67);
 
@@ -71,7 +70,7 @@ public class Limelight extends SubsystemBase {
    * When limelight sent data over networkTable, update target information Docs:
    * https://docs.limelightvision.io/docs/docs-limelight/apis/complete-networktables-api
    */
-  synchronized public void updateData() {
+  public synchronized void updateData() {
     mIO.validTarget = netTable.getEntry("tv").getInteger(0) == 1;
     mIO.tx = Units.degreesToRadians(netTable.getEntry("tx").getDouble(0.0));
     mIO.ty = Units.degreesToRadians(netTable.getEntry("ty").getDouble(0.0));
@@ -90,40 +89,50 @@ public class Limelight extends SubsystemBase {
     Logger.recordOutput("Vision/ty", mIO.ty);
   }
 
-  synchronized public Pose2d getPose(Rotation2d rotation) {
+  /** If the current vision state is able to give a good pose * */
+  public boolean isValid() {
     if (!mIO.validTarget) {
-      return null;
+      return false;
     }
-
-    // The tag is at the same level as the camera
     if (mIO.ty < 0.1 && mIO.ty > -0.1) {
-      return null;
+      System.err.println("Tag is level to camera: " + mIO.targetID);
+      return false;
     }
+    if (mIO.targetID == -1) {
+      return false;
+    }
+    AprilTag tag = Field.kAprilTagMap.get((int) mIO.targetID);
+    if (tag == null) {
+      System.err.println("Uknown tag: " + mIO.targetID);
+      return false;
+    }
+    if (tag.ID != mIO.targetID) {
+      System.err.println("Tag does not match: " + mIO.targetID);
+      return false;
+    }
+    return true;
+  }
 
+  public synchronized Pose2d getPose(Rotation2d rotation) {
+    if (!isValid()) return null;
+    AprilTag tag = Field.kAprilTagMap.get((int) mIO.targetID);
     double yaw = rotation.getRadians();
-    Logger.recordOutput("Vision/YawRads", yaw);
-    double heightDiff = tagLocation.getZ() - cameraOffset.getZ();
-    Logger.recordOutput("Vision/CameraHeight", heightDiff);
+    double heightDiff = tag.pose.getZ() - cameraOffset.getZ();
     double distance_2d = heightDiff / Math.tan(mIO.ty);
-    Logger.recordOutput("Vision/distance2d", distance_2d);
     double beta = yaw - mIO.tx;
-    Logger.recordOutput("Vision/beta", beta);
     double x = Math.cos(beta) * distance_2d;
     double y = Math.sin(beta) * distance_2d;
-    Logger.recordOutput("Vision/x", x);
-    Logger.recordOutput("Vision/y", y);
     // Translation from the tag to the camera
     Translation2d tagToCamera = new Translation2d(-x, -y);
 
     Pose2d cameraPose =
-        new Pose2d(tagLocation.toTranslation2d().plus(tagToCamera), new Rotation2d(yaw));
-    Logger.recordOutput("Vision/Pose2dCamera", cameraPose);
+        new Pose2d(tag.pose.toPose2d().getTranslation().plus(tagToCamera), new Rotation2d(yaw));
     // TODO translate the camera pose to the robot pose
 
     Translation2d offset = cameraOffset.toTranslation2d().rotateBy(rotation);
-    Logger.recordOutput("Vision/offset", offset);
-
     pose = new Pose2d(cameraPose.getTranslation().minus(offset), new Rotation2d(yaw));
+
+    Logger.recordOutput("Vision/Pose2dCamera", cameraPose);
     Logger.recordOutput("Vision/Pose2d", pose);
 
     return pose;
