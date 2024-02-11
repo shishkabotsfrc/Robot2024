@@ -22,7 +22,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.drive.AlignShotCommand;
 import frc.robot.commands.drive.DriveWithJoystick;
-import frc.robot.commands.drive.DrivetoPose;
+import frc.robot.commands.drive.DrivetoSwerve;
 import frc.robot.commands.drive.PIDTuneCommand;
 import frc.robot.commands.drive.ResetGyroOffsets;
 import frc.robot.commands.drive.SetPose;
@@ -69,17 +69,19 @@ public class RobotContainer {
     new JoystickButton(m_driverController, Button.kY.value)
         .onTrue(new AlignShotCommand(m_robotDrive, m_limelight));
     new JoystickButton(m_driverController, Button.kB.value)
-        .onTrue(new DrivetoPose(m_robotDrive, 10, 10));
+        .onTrue(new DrivetoSwerve(m_robotDrive, new Pose2d(0.5, 0.5, new Rotation2d(0.0))));
+
+    new JoystickButton(m_driverController, Button.kStart.value)
+        .onTrue(new DrivetoSwerve(m_robotDrive, new Pose2d(0.5, 0, new Rotation2d(0.0))));
+    new JoystickButton(m_driverController, Button.kBack.value)
+        .onTrue(new DrivetoSwerve(m_robotDrive, new Pose2d(0, 0.5, new Rotation2d(0.0))));
+
+    /*   new JoystickButton(m_driverController, Button.kB.value)
+    .onTrue(new DrivetoSwerve(m_robotDrive, new Pose2d(m_robotDrive.getPose().getX() + 0,
+        m_robotDrive.getPose().getY() + 2,new Rotation2d(0.0))));*/
+
     new JoystickButton(m_driverController, Button.kX.value)
         .onTrue(new SetPose(m_robotDrive, new Pose2d(0, 0, new Rotation2d(0, 0))));
-    /*new JoystickButton(m_driverController, Button.kX.value)
-    .onTrue(
-        new DrivetoPose(
-            m_robotDrive,
-            // m_limelight,
-            m_robotDrive.getPose().getX() + 0,
-            m_robotDrive.getPose().getY() + 2));*/
-
   }
 
   // NOTE: // SwerveDrivePoseEstimator
@@ -130,6 +132,10 @@ public class RobotContainer {
             // Position controllers
             new PIDController(AutoConstants.kPXController, 0, 0),
             new PIDController(AutoConstants.kPYController, 0, 0),
+            // new ProfiledPIDController(AutoConstants.kPXController, 0, 0,
+            // AutoConstants.DEFAULT_XY_CONSTRAINTS),
+            // new ProfiledPIDController(AutoConstants.kPYController, 0, 0,
+            // AutoConstants.DEFAULT_XY_CONSTRAINTS),
             thetaController,
             m_robotDrive::setModuleStates,
             m_robotDrive);
