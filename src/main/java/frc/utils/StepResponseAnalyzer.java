@@ -37,8 +37,8 @@ public class StepResponseAnalyzer {
     m_delta = delta;
     m_unstable = false;
     m_settled = false;
-    m_settlingTime = -1.;
-    m_finalValue = -1.;
+    m_settlingTime = Double.NaN;
+    m_finalValue = Double.NaN;
     m_maxValue = start;
   }
 
@@ -96,7 +96,7 @@ public class StepResponseAnalyzer {
 
   public double overshoot() {
     if (!m_settled) {
-      return -1.;
+      return Double.NaN;
     }
     if (m_maxValue <= m_finalValue + m_delta) {
       return 0;
