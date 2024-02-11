@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -119,9 +120,13 @@ public final class Constants {
   }
 
   public static final class LimelightConstants {
-    public static final double kCameraHeight = 5; // TODO: Not final
+    // Translation from the center of the robot to the camera (robot coordinates).
+    public static final Translation3d kCameraToRobot =
+        new Translation3d(-0.23, 0.0, 0.67); // TODO: Not final
     public static final double kResolutionWidth = 1280;
     public static final double kResolutionHeight = 960;
+    // Limelight publish to `updateData()` delay
+    public static final double delayMillis = 10; // TODO: Make more accurate
   }
 
   public static final class OIConstants {
