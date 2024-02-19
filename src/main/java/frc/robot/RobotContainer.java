@@ -69,7 +69,7 @@ public class RobotContainer {
     new JoystickButton(m_driverController, Button.kY.value)
         .onTrue(new AlignShotCommand(m_robotDrive, m_limelight));
     new JoystickButton(m_driverController, Button.kB.value)
-        .onTrue(new DrivetoSwerve(m_robotDrive, new Pose2d(0.5, 0.5, new Rotation2d(0.0))));
+        .onTrue(new DrivetoSwerve(m_robotDrive, new Pose2d(5, 5, new Rotation2d(0.0))));
 
     new JoystickButton(m_driverController, Button.kStart.value)
         .onTrue(new DrivetoSwerve(m_robotDrive, new Pose2d(0.5, 0, new Rotation2d(0.0))));

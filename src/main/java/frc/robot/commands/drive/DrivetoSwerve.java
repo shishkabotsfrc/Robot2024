@@ -11,7 +11,6 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 
 /** Sample command to illustrate the sample use. */
 public class DrivetoSwerve extends Command {
-  int counter = 0;
   private final ProfiledPIDController xController;
   private final ProfiledPIDController yController;
   private final ProfiledPIDController thetaController;
@@ -47,6 +46,9 @@ public class DrivetoSwerve extends Command {
     xController.setTolerance(TRANSLATION_TOLERANCE);
     yController.setTolerance(TRANSLATION_TOLERANCE);
     thetaController.setTolerance(THETA_TOLERANCE);
+    xController.setGoal(targetPose.getX());
+    yController.setGoal(targetPose.getY());
+    thetaController.setGoal(targetPose.getRotation().getRadians());
   }
 
   @Override
@@ -71,22 +73,18 @@ public class DrivetoSwerve extends Command {
 
     if (xController.atGoal()) {
       xSpeed = 0;
-      // System.out.println("x: here");
+      System.out.println("x: here at" + currPose.getX());
     }
 
     if (yController.atGoal()) {
       ySpeed = 0;
-      // System.out.println("y: here");
+      System.out.println("y: here at" + currPose.getY());
     }
     if (thetaController.atGoal()) {
       omegaSpeed = 0;
-      // System.out.println("rot: here");
     }
     drive.drive(-xSpeed, -ySpeed, omegaSpeed, true, true);
-    if (counter % 100 == 0) {
-      System.out.println(drive.getPose().getX() + ", " + drive.getPose().getY());
-    }
-    counter++;
+    
   }
 
   @Override
