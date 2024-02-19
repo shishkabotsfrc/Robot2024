@@ -15,7 +15,7 @@ public class AprilTagInfo {
   public enum MarkerType {
     Chain,
     SpeakerCenter,
-    SpeakerLeft,
+    SpeakerOffCenter,
     RingSourceLeft,
     RingSourceRight,
     Amplifier
