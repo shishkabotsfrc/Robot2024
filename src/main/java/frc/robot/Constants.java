@@ -153,4 +153,21 @@ public final class Constants {
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
   }
+
+  public static final class Intake {
+    public static final int kIntakeMotorId = 0;
+    public static final int kPivotMotorId = 0;
+    public static final int k_pivotEncoderId = 0;
+    public static final int k_intakeLimitSwitchId = 0;
+
+    public static final int k_pivotAngleGround = 0;
+    public static final int k_pivotAngleSource = 0;
+    public static final int k_pivotAngleAmp = 0;
+    public static final int k_pivotAngleStow = 0;
+
+    public static final int k_intakeSpeed = 0;
+    public static final int k_ejectSpeed = 0;
+    public static final int k_feedShooterSpeed = 0;
+    public static final int k_pivotEncoderOffset = 0;
+  }
 }
