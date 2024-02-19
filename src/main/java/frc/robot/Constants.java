@@ -154,6 +154,12 @@ public final class Constants {
     public static final double kFreeSpeedRpm = 5676;
   }
 
+  public static final class ShooterConstants {
+    public static final int leftCanId = 10;
+    public static final int rightCanId = 11;
+  }
+
+
   public static final class Intake {
     public static final int kIntakeMotorId = 0;
     public static final int kPivotMotorId = 0;
