@@ -94,7 +94,7 @@ public class Limelight extends SubsystemBase {
       System.err.println("Tag is level to camera: " + mIO.targetID);
       return false;
     }
-    Pose3d tag = Field.getTag((int) mIO.targetID);
+    Pose3d tag = Field.getTag((int) mIO.targetID).pose();
     if (tag == null) return false;
 
     if (getTimeSinceUpdate() > 1000) {
@@ -105,7 +105,7 @@ public class Limelight extends SubsystemBase {
 
   public synchronized Pose2d getPose(Rotation2d rotation) {
     if (!isValid()) return null;
-    Pose3d tag = Field.getTag((int) mIO.targetID);
+    Pose3d tag = Field.getTag((int) mIO.targetID).pose();
     double yaw = rotation.getRadians();
     double heightDiff = tag.getZ() - LimelightConstants.kCameraToRobot.getZ();
     double distance_2d = heightDiff / Math.tan(mIO.ty);

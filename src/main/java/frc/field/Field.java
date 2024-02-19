@@ -2,6 +2,7 @@ package frc.field;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.field.AprilTagInfo.MarkerType;
 import java.util.ArrayList;
@@ -32,27 +33,36 @@ public class Field {
   }
 
   /** Returns an AprilTag position based on the given id, will report errors if tag is invalid */
-  public static Pose3d getTag(int id) {
+  public static AprilTagInfo getTag(int id) {
     AprilTagInfo tag = kAprilTagMap.get(id);
     if (tag == null) {
       System.err.println(id + " is not found as an apriltag");
       return null;
     }
-    if (tag.id != id) {
-      System.err.println(id + " does not match april tag id: " + tag.id);
+    if (tag.id() != id) {
+      System.err.println(id + " does not match april tag id: " + tag.id());
       return null;
     }
-    return tag.pose();
+    return tag;
   }
 
-  public static ArrayList<AprilTagInfo> getAllByType(Alliance alliance, MarkerType type) {
-    return null;
+  /** Filters all Apriltags which match given criteria */
+  public static ArrayList<AprilTagInfo> getAllTagsByType(Alliance alliance, MarkerType type) {
+    ArrayList<AprilTagInfo> tagList = new ArrayList<>();
+    for (AprilTagInfo tag : kAprilTagMap.values()) {
+      if (tag.alliance().equals(alliance) && tag.type().equals(type)) {
+        tagList.add(tag);
+      }
+    }
+    return tagList;
   }
 
+  /** Adds a tag to the map of all known tags */
   private static void addTag(
       int id, Alliance alliance, MarkerType type, double x, double y, double z, double rot) {
     var pose = new Translation3d(inchToMeter(x), inchToMeter(y), inchToMeter(z));
-    kAprilTagMap.put(id, new AprilTagInfo(id, alliance, type, pose, rot));
+    double rotation = Units.degreesToRadians(rot);
+    kAprilTagMap.put(id, new AprilTagInfo(id, alliance, type, pose, rotation));
   }
 
   private static double inchToMeter(double inch) {
