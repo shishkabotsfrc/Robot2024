@@ -84,7 +84,6 @@ public class DrivetoSwerve extends Command {
       omegaSpeed = 0;
     }
     drive.drive(-xSpeed, -ySpeed, omegaSpeed, true, true);
-    
   }
 
   @Override

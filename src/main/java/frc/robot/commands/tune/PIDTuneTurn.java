@@ -104,7 +104,7 @@ public class PIDTuneTurn extends Command {
       String module = ModuleId.fromInt(i).toString();
       Logger.recordOutput("DebugPidTurn/Values/" + module, m_angleDriver.getAngle(i));
     }
- 
+
     double time = stepTime();
     if (m_state == Phase.STEP) {
       for (int i = 0; i < 4; i++) {
