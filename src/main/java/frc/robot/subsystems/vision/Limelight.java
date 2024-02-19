@@ -1,7 +1,7 @@
 package frc.robot.subsystems.vision;
 
-import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -94,15 +94,9 @@ public class Limelight extends SubsystemBase {
       System.err.println("Tag is level to camera: " + mIO.targetID);
       return false;
     }
-    AprilTag tag = Field.kAprilTagMap.get((int) mIO.targetID);
-    if (tag == null) {
-      System.err.println("Uknown tag: " + mIO.targetID);
-      return false;
-    }
-    if (tag.ID != mIO.targetID) {
-      System.err.println("Tag does not match: " + mIO.targetID);
-      return false;
-    }
+    Pose3d tag = Field.getTag((int) mIO.targetID);
+    if (tag == null) return false;
+
     if (getTimeSinceUpdate() > 1000) {
       return false;
     }
@@ -111,9 +105,9 @@ public class Limelight extends SubsystemBase {
 
   public synchronized Pose2d getPose(Rotation2d rotation) {
     if (!isValid()) return null;
-    AprilTag tag = Field.kAprilTagMap.get((int) mIO.targetID);
+    Pose3d tag = Field.getTag((int) mIO.targetID);
     double yaw = rotation.getRadians();
-    double heightDiff = tag.pose.getZ() - LimelightConstants.kCameraToRobot.getZ();
+    double heightDiff = tag.getZ() - LimelightConstants.kCameraToRobot.getZ();
     double distance_2d = heightDiff / Math.tan(mIO.ty);
     double beta = yaw - mIO.tx;
     double x = Math.cos(beta) * distance_2d;
@@ -121,7 +115,7 @@ public class Limelight extends SubsystemBase {
     Translation2d tagToCamera = new Translation2d(-x, -y);
 
     Pose2d cameraPose =
-        new Pose2d(tag.pose.toPose2d().getTranslation().plus(tagToCamera), new Rotation2d(yaw));
+        new Pose2d(tag.toPose2d().getTranslation().plus(tagToCamera), new Rotation2d(yaw));
 
     Translation2d offset = LimelightConstants.kCameraToRobot.toTranslation2d().rotateBy(rotation);
     pose = new Pose2d(cameraPose.getTranslation().minus(offset), new Rotation2d(yaw));
