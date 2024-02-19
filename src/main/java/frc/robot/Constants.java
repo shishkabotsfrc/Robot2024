@@ -159,6 +159,10 @@ public final class Constants {
     public static final int rightCanId = 11;
   }
 
+  public static final class ClimberConstants {
+    public static final int leftCanId = 15;
+    public static final int rightCanId = 16;
+  }
 
   public static final class Intake {
     public static final int kIntakeMotorId = 0;
