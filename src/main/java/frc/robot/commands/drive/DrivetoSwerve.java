@@ -34,13 +34,16 @@ public class DrivetoSwerve extends Command {
     addRequirements(drive);
 
     xController =
-        new ProfiledPIDController(AutoConstants.kPXController, 0, 0, DEFAULT_XY_CONSTRAINTS);
+        new ProfiledPIDController(
+            AutoConstants.kPXController, AutoConstants.kPIController, 0, DEFAULT_XY_CONSTRAINTS);
 
     yController =
-        new ProfiledPIDController(AutoConstants.kPYController, 0, 0, DEFAULT_XY_CONSTRAINTS);
+        new ProfiledPIDController(
+            AutoConstants.kPYController, AutoConstants.kPIController, 0, DEFAULT_XY_CONSTRAINTS);
 
     thetaController =
         new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0, DEFAULT_OMEGA_CONSTRAINTS);
+
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     xController.setTolerance(TRANSLATION_TOLERANCE);
@@ -61,29 +64,28 @@ public class DrivetoSwerve extends Command {
   }
 
   public boolean atGoal() {
+
     return xController.atGoal() && yController.atGoal() && thetaController.atGoal();
   }
 
   @Override
   public void execute() {
     Pose2d currPose = drive.getPose();
-    double xSpeed = xController.calculate(targetPose.getX());
-    double ySpeed = yController.calculate(targetPose.getY());
-    double omegaSpeed = thetaController.calculate(targetPose.getRotation().getRadians());
+    double xSpeed = xController.calculate(currPose.getX());
+    double ySpeed = yController.calculate(currPose.getY());
+    double omegaSpeed = thetaController.calculate(currPose.getRotation().getRadians());
 
     if (xController.atGoal()) {
       xSpeed = 0;
-      System.out.println("x: here at" + currPose.getX());
     }
 
     if (yController.atGoal()) {
       ySpeed = 0;
-      System.out.println("y: here at" + currPose.getY());
     }
     if (thetaController.atGoal()) {
       omegaSpeed = 0;
     }
-    drive.drive(-xSpeed, -ySpeed, omegaSpeed, true, true);
+    drive.drive(xSpeed, ySpeed, omegaSpeed, true, true);
   }
 
   @Override

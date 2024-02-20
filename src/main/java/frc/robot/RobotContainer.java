@@ -72,13 +72,9 @@ public class RobotContainer {
         .onTrue(new DrivetoSwerve(m_robotDrive, new Pose2d(5, 5, new Rotation2d(0.0))));
 
     new JoystickButton(m_driverController, Button.kStart.value)
-        .onTrue(new DrivetoSwerve(m_robotDrive, new Pose2d(0.5, 0, new Rotation2d(0.0))));
+        .onTrue(new DrivetoSwerve(m_robotDrive, new Pose2d(1.5, 0, new Rotation2d(0.0))));
     new JoystickButton(m_driverController, Button.kBack.value)
         .onTrue(new DrivetoSwerve(m_robotDrive, new Pose2d(0, 0.5, new Rotation2d(0.0))));
-
-    /*   new JoystickButton(m_driverController, Button.kB.value)
-    .onTrue(new DrivetoSwerve(m_robotDrive, new Pose2d(m_robotDrive.getPose().getX() + 0,
-        m_robotDrive.getPose().getY() + 2,new Rotation2d(0.0))));*/
 
     new JoystickButton(m_driverController, Button.kX.value)
         .onTrue(new SetPose(m_robotDrive, new Pose2d(0, 0, new Rotation2d(0, 0))));
@@ -93,6 +89,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     System.out.println("===== AUTO =====");
+
+    //
+
+    // return new DrivetoSwerve(m_robotDrive, new Pose2d(1,0, new Rotation2d(0.0)));
     // Create config for trajectory
     TrajectoryConfig config =
         new TrajectoryConfig(
