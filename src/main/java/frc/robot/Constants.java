@@ -156,13 +156,13 @@ public final class Constants {
   }
 
   public static final class ShooterConstants {
-    public static final int leftCanId = 10;
-    public static final int rightCanId = 11;
+    public static final int leftCanId = 11;
+    public static final int rightCanId = 12;
   }
 
   public static final class ClimberConstants {
-    public static final int leftCanId = 15;
-    public static final int rightCanId = 16;
+    public static final int leftCanId = 9;
+    public static final int rightCanId = 10;
   }
 
   public static final class Intake {
