@@ -1,5 +1,6 @@
 package frc.field;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -7,6 +8,7 @@ import frc.field.AprilTagInfo.MarkerType;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/** Represents the playing field, everything notable is marked by apriltags */
 public class Field {
   public static final HashMap<Integer, AprilTagInfo> kAprilTagMap = new HashMap<>();
 
@@ -53,7 +55,24 @@ public class Field {
         tagList.add(tag);
       }
     }
+    if (tagList.size() == 0) {
+      System.err.println("There were no tags detected that are " + alliance + type);
+    }
     return tagList;
+  }
+
+  /** Returns the best matching Apriltag by the filters */
+  public static AprilTagInfo getClosestTagByType(Pose2d robot, Alliance alliance, MarkerType type) {
+    AprilTagInfo bestTag = null;
+    double bestDistance = 1e6;
+    for (AprilTagInfo tag : getAllTagsByType(alliance, type)) {
+      double distance = tag.pose().toPose2d().getTranslation().getDistance(robot.getTranslation());
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        bestTag = tag;
+      }
+    }
+    return bestTag;
   }
 
   /** Adds a tag to the map of all known tags */
