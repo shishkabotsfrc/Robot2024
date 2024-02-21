@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.field.AprilTagInfo.MarkerType;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 /** Represents the playing field, everything notable is marked by apriltags */
 public class Field {
@@ -48,10 +49,10 @@ public class Field {
   }
 
   /** Filters all Apriltags which match given criteria */
-  public static ArrayList<AprilTagInfo> getAllTagsByType(Alliance alliance, MarkerType type) {
+  public static ArrayList<AprilTagInfo> getAllTagsByType(Alliance alliance, Set<MarkerType> type) {
     ArrayList<AprilTagInfo> tagList = new ArrayList<>();
     for (AprilTagInfo tag : kAprilTagMap.values()) {
-      if (tag.alliance().equals(alliance) && tag.type().equals(type)) {
+      if (tag.alliance().equals(alliance) && type.contains(tag.type())) {
         tagList.add(tag);
       }
     }
@@ -62,7 +63,8 @@ public class Field {
   }
 
   /** Returns the best matching Apriltag by the filters */
-  public static AprilTagInfo getClosestTagByType(Pose2d robot, Alliance alliance, MarkerType type) {
+  public static AprilTagInfo getClosestTagByType(
+      Pose2d robot, Alliance alliance, Set<MarkerType> type) {
     AprilTagInfo bestTag = null;
     double bestDistance = 1e6;
     for (AprilTagInfo tag : getAllTagsByType(alliance, type)) {
