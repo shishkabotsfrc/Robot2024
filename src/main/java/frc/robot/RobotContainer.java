@@ -19,6 +19,8 @@ import frc.robot.commands.drive.ResetGyroOffsets;
 import frc.robot.commands.drive.SetPose;
 import frc.robot.commands.drive.XPositionLock;
 import frc.robot.commands.rings.AlignShotCommand;
+import frc.robot.commands.rings.FeedIntake;
+import frc.robot.commands.rings.ShootAmp;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -58,22 +60,25 @@ public class RobotContainer {
     // TODO: Use reasonable controls
     new JoystickButton(m_driverController, Button.kLeftBumper.value)
         .whileTrue(new XPositionLock(m_robotDrive));
+
     new JoystickButton(m_driverController, Button.kRightBumper.value)
         .onTrue(new PIDTuneCommand(m_robotDrive));
-    new JoystickButton(m_driverController, Button.kA.value)
-        .onTrue(new ResetGyroOffsets(m_robotDrive));
-    new JoystickButton(m_driverController, Button.kY.value)
-        .onTrue(new AlignShotCommand(m_robotDrive, m_shooter, m_intake));
-    new JoystickButton(m_driverController, Button.kB.value)
-        .onTrue(new DrivetoSwerve(m_robotDrive, new Pose2d(5, 5, new Rotation2d(0.0))));
-
-    new JoystickButton(m_driverController, Button.kStart.value)
-        .onTrue(new DrivetoSwerve(m_robotDrive, new Pose2d(1.5, 0, new Rotation2d(0.0))));
-    new JoystickButton(m_driverController, Button.kBack.value)
-        .onTrue(new DrivetoSwerve(m_robotDrive, new Pose2d(0, 0.5, new Rotation2d(0.0))));
 
     new JoystickButton(m_driverController, Button.kX.value)
         .onTrue(new SetPose(m_robotDrive, new Pose2d(0, 0, new Rotation2d(0, 0))));
+
+    new JoystickButton(m_driverController, Button.kA.value)
+        .onTrue(new ResetGyroOffsets(m_robotDrive));
+
+    new JoystickButton(m_driverController, Button.kY.value)
+        .onTrue(new AlignShotCommand(m_robotDrive, m_shooter, m_intake));
+
+    new JoystickButton(m_driverController, Button.kB.value).onTrue(new FeedIntake(m_intake));
+
+    new JoystickButton(m_driverController, Button.kBack.value).onTrue(new ShootAmp(m_intake));
+
+    new JoystickButton(m_driverController, Button.kStart.value)
+        .onTrue(new DrivetoSwerve(m_robotDrive, new Pose2d(1.5, 0, new Rotation2d(0.0))));
   }
 
   // NOTE: // SwerveDrivePoseEstimator
