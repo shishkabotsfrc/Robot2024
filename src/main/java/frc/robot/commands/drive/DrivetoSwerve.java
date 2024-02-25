@@ -74,11 +74,9 @@ public class DrivetoSwerve extends Command {
     double xSpeed = xController.calculate(currPose.getX());
     double ySpeed = yController.calculate(currPose.getY());
     double omegaSpeed = thetaController.calculate(currPose.getRotation().getRadians());
-
     if (xController.atGoal()) {
       xSpeed = 0;
     }
-
     if (yController.atGoal()) {
       ySpeed = 0;
     }

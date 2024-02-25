@@ -44,6 +44,10 @@ public class Shooter extends SubsystemBase {
     mMotorRPM = rpm;
   }
 
+  public void stop() {
+    mMotorRPM = 0.0;
+  }
+
   public void periodic() {
     double limitedSpeed = mSpeedLimiter.calculate(mMotorRPM);
     mLeftMotorPID.setReference(limitedSpeed, ControlType.kVelocity);

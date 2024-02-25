@@ -14,7 +14,7 @@ import frc.robot.subsystems.vision.Limelight;
 import org.littletonrobotics.junction.Logger;
 
 // See for an example of how other teams do this:
-// src/main/java/frc/robot/subsystems/PoseEstimatorSubsystem.java
+// https://github.com/STMARobotics/frc-7028-2023/blob/5916bb426b97f10e17d9dfd5ec6c3b6fda49a7ce/src/main/java/frc/robot/subsystems/PoseEstimatorSubsystem.java
 
 public class PoseEstimator extends SubsystemBase {
   private SwerveDrivePoseEstimator m_swerveEstimator;

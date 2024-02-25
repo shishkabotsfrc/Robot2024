@@ -38,7 +38,7 @@ public class Intake extends SubsystemBase {
   private CANSparkMax mIntakeMotor;
   private CANSparkMax mPivotMotor;
 
-  private Intake() {
+  public Intake() {
     // super("Intake");
 
     mIntakeMotor = new CANSparkMax(Constants.Intake.kIntakeMotorId, MotorType.kBrushless);
@@ -97,6 +97,8 @@ public class Intake extends SubsystemBase {
     // Intake control
     m_periodicIO.intake_speed = intakeStateToSpeed(m_periodicIO.intake_state);
     Logger.recordOutput("State", m_periodicIO.intake_state.toString());
+    writePeriodicOutputs();
+    outputTelemetry();
   }
 
   // @Override
