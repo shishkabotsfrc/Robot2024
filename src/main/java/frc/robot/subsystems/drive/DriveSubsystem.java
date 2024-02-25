@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.subsystems.PoseEstimator;
 import frc.robot.subsystems.vision.Limelight;
 import frc.utils.CurrentTime;
 import frc.utils.SwerveUtils;
@@ -39,9 +40,10 @@ public class DriveSubsystem extends SubsystemBase {
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
   private double m_prevTime = CurrentTime.seconds();
 
-  private Limelight m_limelight = null;
+  public Limelight m_limelight = null;
 
   SwerveDriveOdometry m_odometry = null;
+  PoseEstimator m_estimator;
 
   public DriveSubsystem(Limelight limelight) {
     m_limelight = limelight;
@@ -83,6 +85,7 @@ public class DriveSubsystem extends SubsystemBase {
               modules[ModuleId.RL.index()].getPosition(),
               modules[ModuleId.RR.index()].getPosition()
             });
+    m_estimator = new PoseEstimator(this);
   }
 
   public void modulesExecute(Consumer<MAXSwerveModule> closure) {
@@ -105,6 +108,15 @@ public class DriveSubsystem extends SubsystemBase {
           modules[ModuleId.RR.index()].getPosition()
         });
     logState(getName());
+  }
+
+  public SwerveModulePosition[] getModuleStates() {
+    return new SwerveModulePosition[] {
+      modules[ModuleId.FL.index()].getPosition(),
+      modules[ModuleId.FR.index()].getPosition(),
+      modules[ModuleId.RL.index()].getPosition(),
+      modules[ModuleId.RR.index()].getPosition()
+    };
   }
 
   @Override

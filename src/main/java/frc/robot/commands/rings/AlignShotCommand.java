@@ -24,7 +24,7 @@ public class AlignShotCommand extends SequentialCommandGroup {
             Set.of(MarkerType.Amplifier, MarkerType.Amplifier));
     Pose2d closestTagPose = closestTag.pose().toPose2d();
     // TODO: Does this move offset forward from perspective of apriltag?
-    
+
     Pose2d m_targetPose = closestTagPose.plus(OFFSET);
     addCommands(new DrivetoSwerve(drive, m_targetPose), new ShootCommand(shooter));
   }
