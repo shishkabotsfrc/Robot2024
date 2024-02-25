@@ -1,19 +1,24 @@
 package frc.field;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.field.AprilTagInfo.MarkerType;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
+import java.util.List;
 
 /** Represents the playing field, everything notable is marked by apriltags */
 public class Field {
   public static final HashMap<Integer, AprilTagInfo> kAprilTagMap = new HashMap<>();
+  private static final HashMap<MarkerType, ArrayList<Transform2d>> kObjectives =
+      new HashMap<>();
 
   static {
+    // Location of all apriltags and thus objectives
     // See page 4 for additional documentation:
     // https://firstfrc.blob.core.windows.net/frc2024/FieldAssets/2024LayoutMarkingDiagram.pdf
     addTag(1, Alliance.Blue, MarkerType.RingSourceLeft, 593.68, 9.68, 53.38, 120);
@@ -34,6 +39,18 @@ public class Field {
     addTag(16, Alliance.Blue, MarkerType.Chain, 182.73, 146.19, 52.00, 240);
   }
 
+  static {
+    // Location of all scoring locations
+    addTarget(MarkerType.Amplifier, 0.0, 0.0, 0.0);
+
+    for (MarkerType marker : MarkerType.values()) {
+      if (!kObjectives.containsKey(marker)) {
+        // TODO: Silenced for now
+        // System.err.println(marker + " has not yet been registered");
+      }
+    }
+  }
+
   /** Returns an AprilTag position based on the given id, will report errors if tag is invalid */
   public static AprilTagInfo getTag(int id) {
     AprilTagInfo tag = kAprilTagMap.get(id);
@@ -48,11 +65,20 @@ public class Field {
     return tag;
   }
 
+  public static ArrayList<Transform2d> getTargetTranslations(MarkerType marker) {
+    ArrayList<Transform2d> targets = kObjectives.get(marker);
+    if (targets == null) {
+      System.err.println(marker + " has no associated translations with it");
+      return new ArrayList<Transform2d>();
+    }
+    return targets;
+  }
+
   /** Filters all Apriltags which match given criteria */
-  public static ArrayList<AprilTagInfo> getAllTagsByType(Alliance alliance, Set<MarkerType> type) {
+  public static ArrayList<AprilTagInfo> getAllTagsByType(Alliance alliance, MarkerType type) {
     ArrayList<AprilTagInfo> tagList = new ArrayList<>();
     for (AprilTagInfo tag : kAprilTagMap.values()) {
-      if (tag.alliance().equals(alliance) && type.contains(tag.type())) {
+      if (tag.alliance().equals(alliance) && type.equals(tag.type())) {
         tagList.add(tag);
       }
     }
@@ -62,19 +88,38 @@ public class Field {
     return tagList;
   }
 
-  /** Returns the best matching Apriltag by the filters */
-  public static AprilTagInfo getClosestTagByType(
-      Pose2d robot, Alliance alliance, Set<MarkerType> type) {
-    AprilTagInfo bestTag = null;
-    double bestDistance = 1e6;
-    for (AprilTagInfo tag : getAllTagsByType(alliance, type)) {
-      double distance = tag.pose().toPose2d().getTranslation().getDistance(robot.getTranslation());
-      if (distance < bestDistance) {
-        bestDistance = distance;
-        bestTag = tag;
+  /** Returns the best matching objective by the filters. Place to drive to do task */
+  public static Pose2d getClosestObjectivePoseByType(
+      Pose2d robot, Alliance alliance, List<MarkerType> markerTypes) {
+    double bestDistance = 1e7;
+    Pose2d bestPose = null;
+    for (MarkerType marker : markerTypes) {
+      for (AprilTagInfo tag : getAllTagsByType(alliance, marker)) {
+        for (Transform2d translate : getTargetTranslations(marker)) {
+          // TODO: Does this move offset forward from perspective of game piece?
+          Pose2d pose = tag.pose().toPose2d().plus(translate);
+          double distance = pose.getTranslation().getDistance(robot.getTranslation());
+          if (distance < bestDistance) {
+            bestDistance = distance;
+            bestPose = pose;
+          }
+        }
       }
     }
-    return bestTag;
+    if (bestPose == null) {
+      System.err.println(markerTypes + " " + alliance + " returned null pose");
+    }
+    return bestPose;
+  }
+
+  /** Adds a position for the robot to travel to before completing an objective */
+  private static void addTarget(MarkerType type, double x, double y, double rot) {
+    // Init the arraylist so doesnt write to null
+    if (!kObjectives.containsKey(type)) {
+      kObjectives.put(type, new ArrayList<>());
+    }
+    Transform2d transform = new Transform2d(x, y, new Rotation2d(rot));
+    kObjectives.get(type).add(transform);
   }
 
   /** Adds a tag to the map of all known tags */
