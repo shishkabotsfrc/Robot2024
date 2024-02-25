@@ -5,11 +5,12 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeState;
 import frc.robot.subsystems.Intake.PivotTarget;
 
-public class FeedIntake extends Command {
+public class ShootAmp extends Command {
+
   private Intake m_intake;
   private int counter = 0;
 
-  public FeedIntake(Intake intake) {
+  public ShootAmp(Intake intake) {
     // TODO:choose one later after testing
     m_intake = Intake.getInstance();
     m_intake = intake;
@@ -17,13 +18,14 @@ public class FeedIntake extends Command {
 
   @Override
   public void initialize() {
-    m_intake.setState(IntakeState.INTAKE);
-    m_intake.setPivotTarget(PivotTarget.GROUND);
-    m_intake.goToGround();
+    m_intake.setState(IntakeState.EJECT);
+    m_intake.setPivotTarget(PivotTarget.AMP);
+    m_intake.goToAmp();
   }
 
+  @Override
   public void execute() {
-    if (m_intake.getIntakeState() == IntakeState.INTAKE) {
+    if (m_intake.getIntakeState() == IntakeState.EJECT) {
       m_intake.periodic();
       counter++;
     }
@@ -32,8 +34,8 @@ public class FeedIntake extends Command {
   @Override
   public boolean isFinished() {
     if (counter > 100) {
-      m_intake.setState(IntakeState.PULSE);
-      m_intake.setPivotTarget(PivotTarget.STOW);
+      m_intake.setState(IntakeState.NONE);
+      m_intake.setPivotTarget(PivotTarget.NONE);
       return true;
     } else {
       return false;
