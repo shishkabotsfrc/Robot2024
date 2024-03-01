@@ -14,12 +14,11 @@ import java.util.List;
 /** Drives to the nearest almplifier or speaker and shoots */
 public class AlignShotCommand extends SequentialCommandGroup {
 
-  public AlignShotCommand(DriveSubsystem drive, Shooter shooter, Intake intake) {
+  public AlignShotCommand(
+      DriveSubsystem drive, Shooter shooter, Intake intake, List<MarkerType> types) {
     Pose2d m_targetPose =
         Field.getClosestObjectivePoseByType(
-            drive.getPose(),
-            DriverStation.getAlliance().get(),
-            List.of(MarkerType.Amplifier, MarkerType.SpeakerCenter));
+            drive.getPose(), DriverStation.getAlliance().get(), types);
     addCommands(new DrivetoSwerve(drive, m_targetPose), new ShootCommand(shooter, intake));
   }
 }

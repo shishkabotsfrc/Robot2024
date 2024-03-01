@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.field.AprilTagInfo.MarkerType;
 import java.util.ArrayList;
@@ -14,8 +15,7 @@ import java.util.List;
 /** Represents the playing field, everything notable is marked by apriltags */
 public class Field {
   public static final HashMap<Integer, AprilTagInfo> kAprilTagMap = new HashMap<>();
-  private static final HashMap<MarkerType, ArrayList<Transform2d>> kObjectives =
-      new HashMap<>();
+  private static final HashMap<MarkerType, ArrayList<Transform2d>> kObjectives = new HashMap<>();
 
   static {
     // Location of all apriltags and thus objectives
@@ -78,7 +78,7 @@ public class Field {
   public static ArrayList<AprilTagInfo> getAllTagsByType(Alliance alliance, MarkerType type) {
     ArrayList<AprilTagInfo> tagList = new ArrayList<>();
     for (AprilTagInfo tag : kAprilTagMap.values()) {
-      if (tag.alliance().equals(alliance) && type.equals(tag.type())) {
+      if (DriverStation.getAlliance().get() == alliance && type.equals(tag.type())) {
         tagList.add(tag);
       }
     }

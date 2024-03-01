@@ -20,7 +20,6 @@ import org.littletonrobotics.junction.Logger;
 
 public class Limelight extends SubsystemBase {
   private static NetworkTable netTable;
-  public DetectedTarget target = new DetectedTarget();
   public PeriodicIO mIO = new PeriodicIO();
   private Pose2d pose;
 
