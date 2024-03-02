@@ -166,10 +166,10 @@ public final class Constants {
   }
 
   public static final class Intake {
-    public static final int kIntakeMotorId = 0;
-    public static final int kPivotMotorId = 0;
-    public static final int k_pivotEncoderId = 0;
-    public static final int k_intakeLimitSwitchId = 0;
+    public static final int kIntakeMotorId = 123;
+    public static final int kPivotMotorId = 1234;
+    public static final int k_pivotEncoderId = 12345;
+    ;
 
     public static final int k_pivotAngleGround = 0;
     public static final int k_pivotAngleSource = 0;

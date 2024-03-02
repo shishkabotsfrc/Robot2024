@@ -4,7 +4,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
-import org.littletonrobotics.junction.Logger;
 
 public class Climber extends SubsystemBase {
   private TalonFX mLeftMotor;
@@ -27,10 +26,10 @@ public class Climber extends SubsystemBase {
   }
 
   public void periodic() {
-    Logger.recordOutput("Climber/LeftVel", mLeftMotor.getVelocity());
-    Logger.recordOutput("Climber/RightVel", mRightMotor.getVelocity());
+    // Logger.recordOutput("Climber/LeftVel", mLeftMotor.getVelocity());
+    // Logger.recordOutput("Climber/RightVel", mRightMotor.getVelocity());
 
-    Logger.recordOutput("Climber/LeftPos", mLeftMotor.getPosition());
-    Logger.recordOutput("Climber/RightPos", mRightMotor.getPosition());
+    // Logger.recordOutput("Climber/LeftPos", mLeftMotor.getPosition());
+    // Logger.recordOutput("Climber/RightPos", mRightMotor.getPosition());
   }
 }

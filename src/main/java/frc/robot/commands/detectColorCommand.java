@@ -1,4 +1,5 @@
 package frc.robot.commands;
+
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
@@ -12,18 +13,14 @@ import org.littletonrobotics.junction.Logger;
  * This is a simple example to show how the REV Color Sensor V3 can be used to detect pre-configured
  * colors.
  */
+public class detectColorCommand extends Command {
 
-public class detectColorCommand extends Command{
-    
-
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
-
+  /*----------------------------------------------------------------------------*/
+  /* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
+  /* Open Source Software - may be modified and shared by FRC teams. The code   */
+  /* must be accompanied by the FIRST BSD license file in the root directory of */
+  /* the project.                                                               */
+  /*----------------------------------------------------------------------------*/
 
   /** Change the I2C port below to match the connection of your color sensor */
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
@@ -53,7 +50,7 @@ public class detectColorCommand extends Command{
   private String colorString = null;
   private double prevTime;
 
-@Override
+  @Override
   public void initialize() {
     m_colorMatcher.addColorMatch(kBlueTarget);
 
@@ -71,7 +68,8 @@ public class detectColorCommand extends Command{
   private double timeElapsed(double prevTime) {
     return (CurrentTime.millis() - prevTime);
   }
-@Override
+
+  @Override
   public void execute() {
     /**
      * The method GetColor() returns a normalized color value from the sensor and can be useful if
@@ -82,32 +80,31 @@ public class detectColorCommand extends Command{
      * surroundings will bleed into the measurements and make it difficult to accurately determine
      * its color.
      */
+    Color detectedColor = m_colorSensor.getColor();
 
-      Color detectedColor = m_colorSensor.getColor();
+    /** Run the color match algorithm on our detected color */
+    ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedColor);
+    System.out.println(detectedColor.red + " " + detectedColor.green + " " + detectedColor.blue);
+    if (match.color == kBlueTarget) {
+      colorString = "Blue";
+      // System.out.println("Blue Found!" + match.confidence);
+      prevTime = CurrentTime.millis();
 
-      /** Run the color match algorithm on our detected color */
-      ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedColor);
+    } else if (match.color == kOrangeTarget) {
+      colorString = "Orange";
+      // System.out.println("Orange found!" + match.confidence);
+      prevTime = CurrentTime.millis();
 
-      if (match.color == kBlueTarget) {
-        colorString = "Blue";
-        System.out.println("Blue Found!");
-        prevTime = CurrentTime.millis();
-
-      } else if (match.color == kOrangeTarget) {
-        colorString = "Orange";
-        System.out.println("Orange found!");
-        prevTime = CurrentTime.millis();
-
-      } else {
-        colorString = "Unknown";
-      }
-
-      /** Open Smart Dashboard or Shuffleboard to see the color detected by the sensor. */
-      Logger.recordOutput("Red", detectedColor.red);
-      Logger.recordOutput("Green", detectedColor.green);
-      Logger.recordOutput("Blue", detectedColor.blue);
-      Logger.recordOutput("Confidence", match.confidence);
-      Logger.recordOutput("Detected Color", colorString);
-     
+    } else {
+      colorString = "Unknown";
+      System.out.println("unknown");
     }
+
+    /** Open Smart Dashboard or Shuffleboard to see the color detected by the sensor. */
+    Logger.recordOutput("Red", detectedColor.red);
+    Logger.recordOutput("Green", detectedColor.green);
+    Logger.recordOutput("Blue", detectedColor.blue);
+    Logger.recordOutput("Confidence", match.confidence);
+    Logger.recordOutput("Detected Color", colorString);
   }
+}
