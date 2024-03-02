@@ -23,17 +23,16 @@ public class FeedIntake extends Command {
   }
 
   public void execute() {
-    if (m_intake.getIntakeState() == IntakeState.INTAKE) {
-      m_intake.periodic();
-      counter++;
-    }
+
+    m_intake.periodic();
+    counter++;
   }
 
   @Override
   public boolean isFinished() {
-    if (counter > 100) {
-      m_intake.setState(IntakeState.PULSE);
-      m_intake.setPivotTarget(PivotTarget.STOW);
+    if (counter > 200
+        && (m_intake.getIntakeState() == IntakeState.INTAKE
+            || m_intake.getPivotTarget() == PivotTarget.GROUND)) {
       return true;
     } else {
       return false;

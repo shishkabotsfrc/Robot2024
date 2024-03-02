@@ -4,11 +4,11 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.vision.detectColor;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
@@ -21,8 +21,8 @@ public class Intake extends SubsystemBase {
 
   private final DutyCycleEncoder m_pivotEncoder =
       new DutyCycleEncoder(Constants.Intake.k_pivotEncoderId);
-  private final DigitalInput m_IntakeLimitSwitch =
-      new DigitalInput(Constants.Intake.k_intakeLimitSwitchId);
+  // private final DigitalInput m_IntakeLimitSwitch =
+  //  new DigitalInput(Constants.Intake.k_intakeLimitSwitchId);
 
   /*-------------------------------- Private instance variables ---------------------------------*/
   private static Intake mInstance;
@@ -193,7 +193,8 @@ public class Intake extends SubsystemBase {
   public boolean getIntakeHasNote() {
     // NOTE: this is intentionally inverted, because the limit switch is normally
     // closed
-    return !m_IntakeLimitSwitch.get();
+    detectColor detColor = new detectColor();
+    return detColor.gotNote();
   }
 
   // Pivot helper functions
@@ -262,5 +263,9 @@ public class Intake extends SubsystemBase {
 
   private boolean isPivotAtTarget() {
     return Math.abs(getPivotAngleDegrees() - pivotTargetToAngle(m_periodicIO.pivot_target)) < 5;
+  }
+
+  public PivotTarget getPivotTarget() {
+    return m_periodicIO.pivot_target;
   }
 }

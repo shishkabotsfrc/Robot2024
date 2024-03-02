@@ -7,8 +7,8 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -16,11 +16,10 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.field.AprilTagInfo.MarkerType;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.Climb;
+import frc.robot.commands.detectColorCommand;
 import frc.robot.commands.drive.DriveWithJoystick;
 import frc.robot.commands.drive.DrivetoSwerve;
-import frc.robot.commands.drive.PIDTuneCommand;
-import frc.robot.commands.drive.ResetGyroOffsets;
-import frc.robot.commands.drive.SetPose;
 import frc.robot.commands.drive.XPositionLock;
 import frc.robot.commands.rings.AlignShotCommand;
 import frc.robot.commands.rings.FeedIntake;
@@ -48,37 +47,46 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     // TODO: Use reasonable controls
-    new JoystickButton(m_driverController, Button.kLeftBumper.value)
+    new JoystickButton(m_driverController, Button.kA.value)
         .whileTrue(new XPositionLock(m_robotDrive));
 
+    //  new JoystickButton(m_driverController, Button.kRightBumper.value)
+    //    .onTrue(new PIDTuneCommand(m_robotDrive));
+
+    // new JoystickButton(m_driverController, Button.kX.value)
+    //  .onTrue(new SetPose(m_robotDrive, new Pose2d(0, 0, new Rotation2d(0, 0))));
+
+    // new JoystickButton(m_driverController, Button.kA.value)
+    //  .onTrue(new ResetGyroOffsets(m_robotDrive));
+
     new JoystickButton(m_driverController, Button.kRightBumper.value)
-        .onTrue(new PIDTuneCommand(m_robotDrive));
-
-    new JoystickButton(m_driverController, Button.kX.value)
-        .onTrue(new SetPose(m_robotDrive, new Pose2d(0, 0, new Rotation2d(0, 0))));
-
-    new JoystickButton(m_driverController, Button.kA.value)
-        .onTrue(new ResetGyroOffsets(m_robotDrive));
-
-    new JoystickButton(m_driverController, Button.kY.value)
         .onTrue(
             new AlignShotCommand(m_robotDrive, m_shooter, m_intake, List.of(MarkerType.Amplifier)));
 
-    new JoystickButton(m_driverController, Button.kB.value).onTrue(new FeedIntake(m_intake));
+    new JoystickButton(m_driverController, Button.kLeftBumper.value)
+        .onTrue(new FeedIntake(m_intake));
 
-    new JoystickButton(m_driverController, Button.kBack.value).onTrue(new ShootAmp(m_intake));
+    new JoystickButton(m_driverController, Button.kX.value).onTrue(new ShootAmp(m_intake));
 
-    new JoystickButton(m_driverController, Button.kStart.value)
-        .onTrue(new DrivetoSwerve(m_robotDrive, new Pose2d(1.5, 0, new Rotation2d(0.0))));
+    // new JoystickButton(m_driverController, Button.kStart.value)
+    //   .onTrue(new DrivetoSwerve(m_robotDrive, new Pose2d(1.5, 0, new Rotation2d(0.0))));
+     new JoystickButton(m_driverController, Button.kA.value).whileTrue(new detectColorCommand());
+    new JoystickButton(m_driverController, Button.kY.value).whileTrue(new Climb(m_robotClimber));
   }
+
   // TODO: Manually change these values after talking with the alliance
   // TODO: This was written by someone who does not know how to play the game
   public Command getAutonomousCommand() {
     // Wait our turn
     Command wait = new WaitCommand(2);
-    AlignShotCommand shoot = new AlignShotCommand(m_robotDrive, m_shooter, m_intake, List.of(MarkerType.SpeakerCenter, MarkerType.SpeakerOffCenter));
+    AlignShotCommand shoot =
+        new AlignShotCommand(
+            m_robotDrive,
+            m_shooter,
+            m_intake,
+            List.of(MarkerType.SpeakerCenter, MarkerType.SpeakerOffCenter));
     double blueSign = DriverStation.getAlliance().get() == Alliance.Blue ? 1 : -1;
-    double sideStrafe = - 2;
+    double sideStrafe = -2;
     // Instead of moving straight to the position, we move to the side
     // We dont want to run into our teammates
     DrivetoSwerve driveToSide =
