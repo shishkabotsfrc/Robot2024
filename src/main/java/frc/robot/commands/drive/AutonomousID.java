@@ -62,14 +62,14 @@ public class AutonomousID extends Command {
 
   public SequentialCommandGroup get2(int position) {
     int xMoveRight, yMoveRight, xMoveMiddle, yMoveMiddle, xMoveLeft, yMoveLeft;
-
+//TODO: make array of nextPositionX&Y to pass in
     // if(position == 2) {
     xMoveRight = 0;
     yMoveRight = 0;
-    xMoveMiddle = 0;
-    yMoveMiddle = 0;
-    xMoveLeft = 0;
-    yMoveLeft = 0;
+//    xMoveMiddle = 0;
+//    yMoveMiddle = 0;
+//    xMoveLeft = 0;
+//    yMoveLeft = 0;
     // }
     AlignShotCommand shootPre =
         new AlignShotCommand(
@@ -77,15 +77,14 @@ public class AutonomousID extends Command {
             m_shooter,
             m_intake,
             List.of(MarkerType.SpeakerCenter, MarkerType.SpeakerOffCenter));
-    // TODO: make driveBack/driveLeft not run if already covered in driveRight, or just combine
-    // everything into autoshootseq
-    AutoShootSeq driveRight =
+   AutoShootSeq driveRight =
         new AutoShootSeq(xMoveRight, yMoveRight, m_robotDrive, m_intake, m_shooter, 1);
-    AutoShootSeq driveBack =
+    checkIntake check = new checkIntake(m_robotDrive, m_intake, m_shooter, xMoveRight, yMoveRight,1);
+   /* AutoShootSeq driveBack =
         new AutoShootSeq(xMoveMiddle, yMoveMiddle, m_robotDrive, m_intake, m_shooter, 2);
     AutoShootSeq driveLeft =
-        new AutoShootSeq(xMoveLeft, yMoveLeft, m_robotDrive, m_intake, m_shooter, 3);
+        new AutoShootSeq(xMoveLeft, yMoveLeft, m_robotDrive, m_intake, m_shooter, 3);*/
 
-    return new SequentialCommandGroup(shootPre, driveRight, driveBack, driveLeft);
+    return new SequentialCommandGroup(shootPre, driveRight, check);
   }
 }

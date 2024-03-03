@@ -26,14 +26,10 @@ public class AutoShootSeq extends SequentialCommandGroup {
     iter = _iter; // THIS IS NECESSARY, DONT TOUCH
     double startPosX = m_robotDrive.getPose().getX();
     double startPosY = m_robotDrive.getPose().getY();
-    addCommands(
-        new DrivetoSwerve(m_robotDrive, new Pose2d(moveX, moveY, new Rotation2d(0.0))),
-        new FeedIntake(m_intake),
-        new DrivetoSwerve(m_robotDrive, new Pose2d(startPosX, startPosY, new Rotation2d(0.0))));
 
-    if (iter == 1) {
-      // TODO: fix values
+    addCommands(new DrivetoSwerve(m_robotDrive, new Pose2d(moveX, moveY, new Rotation2d(0.0))), new FeedIntake(m_intake));
 
+    /*if (iter == 1) {
       addCommands(
           new checkIntake(m_robotDrive, m_intake, m_shooter, startPosX, startPosY),
           new checkIntake(m_robotDrive, m_intake, m_shooter, startPosX, startPosY));
@@ -76,5 +72,5 @@ public class AutoShootSeq extends SequentialCommandGroup {
                           List.of(MarkerType.SpeakerCenter, MarkerType.SpeakerOffCenter))))
           .onFalse(null);
     }
-  }
+  */}
 }
