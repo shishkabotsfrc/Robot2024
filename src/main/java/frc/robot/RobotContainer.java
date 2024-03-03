@@ -77,6 +77,11 @@ public class RobotContainer {
   // TODO: Manually change these values after talking with the alliance
   // TODO: This was written by someone who does not know how to play the game
   public Command getAutonomousCommand() {
-    return new AutoID(1, m_robotDrive, m_intake, m_shooter);
+    AutoID auto = new AutoID(m_robotDrive, m_intake, m_shooter);
+    // 1 is just wait, shoot, move (no input)
+    // 2 is go through line of 3 and shoot while doing so, moving back and forth is needed (input:
+    // pos)
+    // 3 is shoot, intake, shoot (input: pos)
+    return auto.get1();
   }
 }
