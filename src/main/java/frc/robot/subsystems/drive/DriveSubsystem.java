@@ -128,7 +128,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return The pose.
    */
   public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
+    return m_estimator.getPose();
   }
 
   /**
@@ -274,10 +274,10 @@ public class DriveSubsystem extends SubsystemBase {
   /**
    * Returns the heading of the robot.
    *
-   * @return the robot's heading in degrees, from -180 to 180
+   * @return the robot's heading in raidans, from -pi/2 to pi/2
    */
   public double getHeading() {
-    return Rotation2d.fromDegrees(m_imu.getAngle()).getDegrees();
+    return Rotation2d.fromDegrees(m_imu.getAngle()).getRadians();
   }
 
   /**
@@ -289,7 +289,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     Logger.recordOutput(prefix + "/Input/Direction", m_inputTranslationDir);
     Logger.recordOutput(prefix + "/Input/Magnitude", m_inputTranslationMag);
-    Logger.recordOutput(prefix + "/Pose2d", m_odometry.getPoseMeters());
+    Logger.recordOutput(prefix + "/Pose2d(Odometry)", m_odometry.getPoseMeters());
+    Logger.recordOutput(prefix + "/Pose2d(Estimator)", m_estimator.getPose());
     Logger.recordOutput(prefix + "/Heading", getHeading());
 
     Pose2d limelightPose = m_limelight.getPose(m_odometry.getPoseMeters().getRotation());

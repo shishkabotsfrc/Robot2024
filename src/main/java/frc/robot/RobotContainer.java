@@ -7,21 +7,29 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.field.AprilTagInfo.MarkerType;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.detectColorCommand;
+import frc.robot.commands.drive.AutonomousID;
 import frc.robot.commands.drive.DriveWithJoystick;
 import frc.robot.commands.drive.XPositionLock;
+import frc.robot.commands.rings.AlignShotCommand;
+import frc.robot.commands.rings.FeedIntake;
+import frc.robot.commands.rings.ShootAmp;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.vision.Limelight;
+import java.util.List;
 
 public class RobotContainer {
   private final Limelight m_limelight = new Limelight("limelight");
   private final DriveSubsystem m_robotDrive = new DriveSubsystem(m_limelight);
-  /*private final Climber m_robotClimber = new Climber();
+  private final Climber m_robotClimber = new Climber();
   private final Shooter m_shooter = new Shooter();
-  private Intake m_intake = new Intake();*/
+  private Intake m_intake = new Intake();
 
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
@@ -44,14 +52,14 @@ public class RobotContainer {
     // new JoystickButton(m_driverController, Button.kA.value)
     //  .onTrue(new ResetGyroOffsets(m_robotDrive));
 
-    /*new JoystickButton(m_driverController, Button.kRightBumper.value)
+    new JoystickButton(m_driverController, Button.kRightBumper.value)
         .onTrue(
             new AlignShotCommand(m_robotDrive, m_shooter, m_intake, List.of(MarkerType.Amplifier)));
 
     new JoystickButton(m_driverController, Button.kLeftBumper.value)
         .onTrue(new FeedIntake(m_intake));
 
-    new JoystickButton(m_driverController, Button.kX.value).onTrue(new ShootAmp(m_intake));*/
+    new JoystickButton(m_driverController, Button.kX.value).onTrue(new ShootAmp(m_intake));
 
     // new JoystickButton(m_driverController, Button.kStart.value)
     //   .onTrue(new DrivetoSwerve(m_robotDrive, new Pose2d(1.5, 0, new Rotation2d(0.0))));
@@ -62,37 +70,6 @@ public class RobotContainer {
   // TODO: Manually change these values after talking with the alliance
   // TODO: This was written by someone who does not know how to play the game
   public Command getAutonomousCommand() {
-    // Wait our turn
-    /* Command wait = new WaitCommand(2);
-      AlignShotCommand shoot =
-          new AlignShotCommand(
-              m_robotDrive,
-              m_shooter,
-              m_intake,
-              List.of(MarkerType.SpeakerCenter, MarkerType.SpeakerOffCenter));
-      double blueSign = DriverStation.getAlliance().get() == Alliance.Blue ? 1 : -1;
-      double sideStrafe = -2;
-      // Instead of moving straight to the position, we move to the side
-      // We dont want to run into our teammates
-      DrivetoSwerve driveToSide =
-          new DrivetoSwerve(
-              m_robotDrive,
-              new Pose2d(
-                  m_robotDrive.getPose().getX() + sideStrafe,
-                  m_robotDrive.getPose().getY(),
-                  new Rotation2d()));
-      // Leave the danger zone
-      // TODO: Check if this will move back or it will slam into the wall
-      DrivetoSwerve driveToBack =
-          new DrivetoSwerve(
-              m_robotDrive,
-              new Pose2d(
-                  m_robotDrive.getPose().getX() + sideStrafe,
-                  m_robotDrive.getPose().getY() + blueSign * 3,
-                  new Rotation2d()));
-      SequentialCommandGroup seq = new SequentialCommandGroup(wait, shoot, driveToSide, driveToBack);
-      return seq;
-    }*/
-    return new SequentialCommandGroup();
+    return new AutonomousID(1, m_robotDrive, m_intake, m_shooter);
   }
 }

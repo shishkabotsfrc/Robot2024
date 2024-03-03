@@ -41,19 +41,6 @@ public class DrivetoPose extends Command {
                 AutoConstants.kMaxAccelerationMetersPerSecondSquared)
             .setKinematics(DriveConstants.kDriveKinematics);
 
-    /*if (vision.getPose(new Rotation2d(0)) != null) {
-      errorX += drive.getPose().getX() - vision.getPose(new Rotation2d(0)).getX();
-      errorY += drive.getPose().getY() - vision.getPose(new Rotation2d(0)).getY();
-    }
-
-    Logger.recordOutput("Odometry/VisionErrorX", errorX);
-    Logger.recordOutput("Odometry/VisionErrorY", errorY);
-
-    if (errorX >= 0.25 || errorY >= 0.25) {
-
-      System.out.println("error");
-    }*/
-
     Pose2d robotPose = drive.getPose();
     Pose2d targetPose = new Pose2d(x, y, new Rotation2d(0));
 

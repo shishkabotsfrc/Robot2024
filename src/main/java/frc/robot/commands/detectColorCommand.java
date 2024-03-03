@@ -46,7 +46,8 @@ public class detectColorCommand extends Command {
    */
   private final Color kBlueTarget = new Color(0.143, 0.427, 0.429);
 
-  private final Color kOrangeTarget = new Color(0.361, 0.524, 0.113);
+  private final Color kOrangeTarget =
+      new Color(140.6965942 / 255, 92.6517334 / 255, 21.74459839 / 255);
   private String colorString = null;
   private double prevTime;
 
