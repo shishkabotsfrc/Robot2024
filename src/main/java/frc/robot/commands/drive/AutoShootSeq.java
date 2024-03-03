@@ -32,10 +32,11 @@ public class AutoShootSeq extends SequentialCommandGroup {
         new DrivetoSwerve(m_robotDrive, new Pose2d(startPosX, startPosY, new Rotation2d(0.0))));
 
     if (iter == 1) {
+      // TODO: fix values
 
-      checkIntake check = new checkIntake(m_robotDrive, m_intake, m_shooter, startPosX, startPosY);
-
-      checkIntake check2 = new checkIntake(m_robotDrive, m_intake, m_shooter, startPosX, startPosY);
+      addCommands(
+          new checkIntake(m_robotDrive, m_intake, m_shooter, startPosX, startPosY),
+          new checkIntake(m_robotDrive, m_intake, m_shooter, startPosX, startPosY));
       new Trigger(() -> m_intake.getIntakeHasNote())
           .onTrue(
               new DrivetoSwerve(m_robotDrive, new Pose2d(startPosX, startPosY, new Rotation2d(0.0)))
@@ -49,7 +50,7 @@ public class AutoShootSeq extends SequentialCommandGroup {
     }
 
     if (iter == 2) {
-      checkIntake check3 = new checkIntake(m_robotDrive, m_intake, m_shooter, startPosX, startPosY);
+      addCommands(new checkIntake(m_robotDrive, m_intake, m_shooter, startPosX, startPosY));
 
       new Trigger(() -> m_intake.getIntakeHasNote())
           .onTrue(

@@ -2,6 +2,7 @@ package frc.robot.commands.drive;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.field.AprilTagInfo.MarkerType;
 import frc.robot.commands.rings.AlignShotCommand;
@@ -11,7 +12,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import java.util.List;
 
-public class checkIntake {
+public class checkIntake extends SequentialCommandGroup {
 
   public checkIntake(
       DriveSubsystem m_robotDrive,

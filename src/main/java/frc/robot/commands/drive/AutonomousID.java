@@ -25,6 +25,7 @@ public class AutonomousID extends Command {
     this.m_robotDrive = drive;
     this.m_intake = intake;
     this.m_shooter = shooter;
+    // TODO: change get1 --> into constructor that has if statements? find better solution
   }
 
   public SequentialCommandGroup get1(int position) {
@@ -76,6 +77,8 @@ public class AutonomousID extends Command {
             m_shooter,
             m_intake,
             List.of(MarkerType.SpeakerCenter, MarkerType.SpeakerOffCenter));
+    // TODO: make driveBack/driveLeft not run if already covered in driveRight, or just combine
+    // everything into autoshootseq
     AutoShootSeq driveRight =
         new AutoShootSeq(xMoveRight, yMoveRight, m_robotDrive, m_intake, m_shooter, 1);
     AutoShootSeq driveBack =
