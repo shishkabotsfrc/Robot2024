@@ -1,4 +1,4 @@
-package frc.robot.commands.drive;
+package frc.robot.commands.autonomous;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -8,19 +8,20 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.field.AprilTagInfo.MarkerType;
+import frc.robot.commands.drive.DrivetoSwerve;
 import frc.robot.commands.rings.AlignShotCommand;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import java.util.List;
 
-public class AutonomousID extends Command {
+public class AutoID extends Command {
   private int ID;
   private DriveSubsystem m_robotDrive;
   private Intake m_intake;
   private Shooter m_shooter;
 
-  public AutonomousID(int ID, DriveSubsystem drive, Intake intake, Shooter shooter) {
+  public AutoID(int ID, DriveSubsystem drive, Intake intake, Shooter shooter) {
     this.ID = ID;
     this.m_robotDrive = drive;
     this.m_intake = intake;
@@ -61,29 +62,23 @@ public class AutonomousID extends Command {
   }
 
   public SequentialCommandGroup get2(int position) {
-    int xMoveRight, yMoveRight, xMoveMiddle, yMoveMiddle, xMoveLeft, yMoveLeft;
-//TODO: make array of nextPositionX&Y to pass in
-    // if(position == 2) {
-    xMoveRight = 0;
-    yMoveRight = 0;
-//    xMoveMiddle = 0;
-//    yMoveMiddle = 0;
-//    xMoveLeft = 0;
-//    yMoveLeft = 0;
-    // }
+    double[][] nextPos = new double[2][3];
     AlignShotCommand shootPre =
         new AlignShotCommand(
             m_robotDrive,
             m_shooter,
             m_intake,
             List.of(MarkerType.SpeakerCenter, MarkerType.SpeakerOffCenter));
-   AutoShootSeq driveRight =
-        new AutoShootSeq(xMoveRight, yMoveRight, m_robotDrive, m_intake, m_shooter, 1);
-    checkIntake check = new checkIntake(m_robotDrive, m_intake, m_shooter, xMoveRight, yMoveRight,1);
-   /* AutoShootSeq driveBack =
-        new AutoShootSeq(xMoveMiddle, yMoveMiddle, m_robotDrive, m_intake, m_shooter, 2);
-    AutoShootSeq driveLeft =
-        new AutoShootSeq(xMoveLeft, yMoveLeft, m_robotDrive, m_intake, m_shooter, 3);*/
+    autoStartLine driveRight = new autoStartLine(m_robotDrive, m_intake, m_shooter, 1, nextPos);
+    autoLine check =
+        new autoLine(
+            m_robotDrive,
+            m_intake,
+            m_shooter,
+            m_robotDrive.getPose().getX(),
+            m_robotDrive.getPose().getY(),
+            1,
+            nextPos);
 
     return new SequentialCommandGroup(shootPre, driveRight, check);
   }
