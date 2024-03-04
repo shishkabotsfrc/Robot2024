@@ -1,28 +1,30 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+import com.revrobotics.SparkMaxPIDController;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.ModuleConstants;
 import frc.robot.subsystems.vision.detectColor;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
-  private static final double k_pivotMotorP = 0.12;
-  private static final double k_pivotMotorI = 0.0;
-  private static final double k_pivotMotorD = 0.001;
-
-  private final PIDController m_pivotPID =
-      new PIDController(k_pivotMotorP, k_pivotMotorI, k_pivotMotorD);
-
-  private final DutyCycleEncoder m_pivotEncoder =
-      new DutyCycleEncoder(Constants.Intake.k_pivotEncoderId);
-  // private final DigitalInput m_IntakeLimitSwitch =
-  //  new DigitalInput(Constants.Intake.k_intakeLimitSwitchId);
+  // TODO: move to Constants.java
+  // private static final double k_pivotMotorP = 0.12;
+  // private static final double k_pivotMotorI = 0.0;
+  // private static final double k_pivotMotorD = 0.001;
+  private static final double kPivotGearRatio = 60.;
+  private static final double kPivotEncoderPositionFactor = 360.0; // degrees, Should this be radians?
+   private static final double kPivotEncoderVelocityFactor =        360. / 60.0; // degrees per second
 
   /*-------------------------------- Private instance variables ---------------------------------*/
   private static Intake mInstance;
@@ -35,20 +37,70 @@ public class Intake extends SubsystemBase {
     return mInstance;
   }
 
-  private CANSparkMax mIntakeMotor;
+
+  private CANSparkMax mIntakeMotor;  
+    private RelativeEncoder mIntakeEncoder;
+private SparkMaxPIDController mIntakePIDController;
+
   private CANSparkMax mPivotMotor;
+  private AbsoluteEncoder mPivotEncoder;
+  private SparkMaxPIDController mPivotPIDController;
 
   public Intake() {
     // super("Intake");
 
+    // Intake motor (same as the driving motor from max swerve)
     mIntakeMotor = new CANSparkMax(Constants.Intake.kIntakeMotorId, MotorType.kBrushless);
     mIntakeMotor.restoreFactoryDefaults();
     mIntakeMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    mIntakeMotor.setSmartCurrentLimit(10);
 
+    mIntakeEncoder = mIntakeMotor.getEncoder();
+    mIntakePIDController = mIntakeMotor.getPIDController();
+    mIntakePIDController.setFeedbackDevice(mIntakeEncoder);
+
+    // TODO: Move to Constants.java
+    mIntakePIDController.setP(1.);
+    mIntakePIDController.setI(0);
+    mIntakePIDController.setD(0);
+    mIntakePIDController.setFF(0);
+    mIntakePIDController.setOutputRange(-1., 1.);
+
+    // TODO: Figure out the constants
+    mIntakeEncoder.setPositionConversionFactor(1.);
+    mIntakeEncoder.setVelocityConversionFactor(1.);
+
+    mIntakeMotor.burnFlash();
+
+    // Intake motor (same as the turning motor from max swerve)
     mPivotMotor = new CANSparkMax(Constants.Intake.kPivotMotorId, MotorType.kBrushless);
     mPivotMotor.restoreFactoryDefaults();
     mPivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
     mPivotMotor.setSmartCurrentLimit(10);
+
+    mPivotEncoder = mPivotMotor.getAbsoluteEncoder(Type.kDutyCycle);
+    mPivotPIDController = mPivotMotor.getPIDController();
+    mPivotPIDController.setFeedbackDevice(mPivotEncoder);
+
+        mPivotPIDController.setP(1.);
+    mPivotPIDController.setI(0);
+    mPivotPIDController.setD(0);
+    mPivotPIDController.setFF(0);
+        mPivotPIDController.setOutputRange(-1., 1.);
+
+
+    // Do we need this
+    mPivotPIDController.setPositionPIDWrappingEnabled(true);  // This may not be needed
+    mPivotPIDController.setPositionPIDWrappingMinInput(0.);
+  mPivotPIDController.setPositionPIDWrappingMaxInput(kPivotEncoderPositionFactor);
+
+    mPivotEncoder.setPositionConversionFactor(
+kPivotEncoderPositionFactor
+  );
+    mPivotEncoder.setVelocityConversionFactor(
+kPivotEncoderVelocityFactor);
+
+    mPivotMotor.burnFlash();
 
     m_periodicIO = new PeriodicIO();
   }
@@ -86,16 +138,16 @@ public class Intake extends SubsystemBase {
     checkAutoTasks();
 
     // Pivot control
-    double pivot_angle = pivotTargetToAngle(m_periodicIO.pivot_target);
-    m_periodicIO.intake_pivot_voltage = m_pivotPID.calculate(getPivotAngleDegrees(), pivot_angle);
+    // double pivot_angle = pivotTargetToAngle(m_periodicIO.pivot_target);
+    // m_periodicIO.intake_pivot_voltage = m_pivotPID.calculate(getPivotAngleDegrees(), pivot_angle);
 
     // If the pivot is at exactly 0.0, it's probably not connected, so disable it
-    if (m_pivotEncoder.get() == 0.0) {
-      m_periodicIO.intake_pivot_voltage = 0.0;
-    }
+    // if (m_pivotEncoder.get() == 0.0) {
+    //   m_periodicIO.intake_pivot_voltage = 0.0;
+    // }
 
     // Intake control
-    m_periodicIO.intake_speed = intakeStateToSpeed(m_periodicIO.intake_state);
+    // m_periodicIO.intake_speed = intakeStateToSpeed(m_periodicIO.intake_state);
     Logger.recordOutput("State", m_periodicIO.intake_state.toString());
     writePeriodicOutputs();
     outputTelemetry();
@@ -117,9 +169,9 @@ public class Intake extends SubsystemBase {
   // @Override
   public void outputTelemetry() {
     Logger.recordOutput("Pivot/Speed", intakeStateToSpeed(m_periodicIO.intake_state));
-    Logger.recordOutput("Pivot/Abs Enc (get)", m_pivotEncoder.get());
-    Logger.recordOutput(
-        "Pivot/Abs Enc (getAbsolutePosition)", m_pivotEncoder.getAbsolutePosition());
+    Logger.recordOutput("Pivot/Abs Enc (get)", mPivotEncoder.getPosition());
+    // Logger.recordOutput(
+    //     "Pivot/Abs Enc (getAbsolutePosition)", m_pivotEncoder.getAbsolutePosition());
     Logger.recordOutput("Pivot/Abs Enc (getPivotAngleDegrees)", getPivotAngleDegrees());
     Logger.recordOutput("Pivot/Setpoint", pivotTargetToAngle(m_periodicIO.pivot_target));
 
@@ -177,7 +229,7 @@ public class Intake extends SubsystemBase {
 
   public double getPivotAngleDegrees() {
     double value =
-        m_pivotEncoder.getAbsolutePosition() - Constants.Intake.k_pivotEncoderOffset + 0.5;
+        mPivotEncoder.getPosition() - Constants.Intake.k_pivotEncoderOffset + 0.5;
 
     return Units.rotationsToDegrees(modRotations(value));
   }
