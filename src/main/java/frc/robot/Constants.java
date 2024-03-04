@@ -171,14 +171,16 @@ public final class Constants {
     public static final int k_pivotEncoderId = 12345;
     ;
 
-    public static final int k_pivotAngleGround = 0;
-    public static final int k_pivotAngleSource = 0;
-    public static final int k_pivotAngleAmp = 0;
-    public static final int k_pivotAngleStow = 0;
+    public static final double k_pivotAngleGround = 60;
+    public static final double k_pivotAngleSource = 190;
+    public static final double k_pivotAngleAmp = k_pivotAngleSource;
+    public static final double k_pivotAngleStow = 275;
 
-    public static final int k_intakeSpeed = 0;
-    public static final int k_ejectSpeed = 0;
-    public static final int k_feedShooterSpeed = 0;
-    public static final int k_pivotEncoderOffset = 0;
+    // Intake speeds
+    public static final double k_intakeSpeed = 0.7;
+    public static final double k_ejectSpeed = -0.45;
+    public static final double k_feedShooterSpeed = -0.5;
+
+    public static final double k_pivotEncoderOffset = 0.166842;
   }
 }
