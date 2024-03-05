@@ -166,8 +166,8 @@ public final class Constants {
     }*/
 
   public static final class Intake {
-    public static final int kIntakeMotorId = 21;
-    public static final int kPivotMotorId = 22;
+    public static final int kIntakeMotorId = 12;
+    public static final int kPivotMotorId = 11;
     // public static final int k_pivotEncoderId = 22;
     ;
 
