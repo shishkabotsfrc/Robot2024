@@ -156,19 +156,19 @@ public final class Constants {
   }
 
   public static final class ShooterConstants {
-    public static final int leftCanId = 11;
-    public static final int rightCanId = 12;
-  }
-
-  public static final class ClimberConstants {
     public static final int leftCanId = 9;
     public static final int rightCanId = 10;
-  }
+  } /*
+
+    public static final class ClimberConstants {
+      public static final int leftCanId = 111111;
+      public static final int rightCanId = 11231231;
+    }*/
 
   public static final class Intake {
-    public static final int kIntakeMotorId = 11;
-    public static final int kPivotMotorId = 12;
-    public static final int k_pivotEncoderId = 12;
+    public static final int kIntakeMotorId = 21;
+    public static final int kPivotMotorId = 22;
+    // public static final int k_pivotEncoderId = 22;
     ;
 
     public static final double k_pivotAngleGround = 60;

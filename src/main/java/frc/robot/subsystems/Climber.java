@@ -3,16 +3,17 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ClimberConstants;
+
+// import frc.robot.Constants.ClimberConstants;
 
 public class Climber extends SubsystemBase {
   private TalonFX mLeftMotor;
   private TalonFX mRightMotor;
 
-  public Climber() {
+  /*public Climber() {
     mLeftMotor = new TalonFX(ClimberConstants.leftCanId);
     mRightMotor = new TalonFX(ClimberConstants.rightCanId);
-  }
+  }*/
 
   public void setBrakeMode(boolean brake) {
     NeutralModeValue mode = brake ? NeutralModeValue.Brake : NeutralModeValue.Coast;
