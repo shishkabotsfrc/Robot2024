@@ -55,7 +55,7 @@ public class RobotContainer {
     // feed intake
 
     new JoystickButton(m_driverController, Button.kLeftBumper.value)
-        .whileTrue(new FeedIntake(m_intake));
+        .onTrue(new FeedIntake(m_intake));
 
     // // shoot the amp
     // new JoystickButton(m_driverController, Button.kA.value).onTrue(new ShootAmp(m_intake));

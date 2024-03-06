@@ -2,6 +2,7 @@ package frc.robot.commands.rings;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Intake.IntakeState;
 
 public class FeedIntake extends Command {
   private Intake m_intake;
@@ -15,7 +16,7 @@ public class FeedIntake extends Command {
 
   @Override
   public void initialize() {
-    // m_intake.setState(IntakeState.INTAKE);
+    m_intake.setState(IntakeState.INTAKE);
     // m_intake.setPivotTarget(PivotTarget.GROUND);
     // m_intake.goToGround();
   }
