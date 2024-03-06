@@ -15,7 +15,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import java.util.List;
 
-public class AutoID extends Command {
+public class AutoID extends SequentialCommandGroup {
 
   private DriveSubsystem m_robotDrive;
   private Intake m_intake;
@@ -28,7 +28,7 @@ public class AutoID extends Command {
 
   // TODO: get measurements
 
-  public AutoID(DriveSubsystem drive, Intake intake, Shooter shooter) {
+  public AutoID(DriveSubsystem drive, Intake intake, Shooter shooter, int ID, int iter) {
     this.m_robotDrive = drive;
     this.m_intake = intake;
     this.m_shooter = shooter;
@@ -41,6 +41,13 @@ public class AutoID extends Command {
       nextPos3Line = nextPosBlue3Line;
     } else {
       nextPos3Line = nextPosRed3Line;
+    }
+    if (ID == 1) {
+      addCommands(get1());
+    } else if (ID == 2) {
+      addCommands(get2(iter));
+    } else {
+      addCommands(get3(iter));
     }
   }
 
