@@ -38,22 +38,22 @@ public class RobotContainer {
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
   public RobotContainer() {
-
-    // A simple auto routine that drives forward a specified distance, and then stops.
-
-    // A complex auto routine that drives forward, drops a hatch, and then drives backward.
-
     // A chooser for autonomous commands
-    m_chooser.setDefaultOption("Auto 1 pos1", new AutoID(m_robotDrive, m_intake, m_shooter, 1, 1));
-    m_chooser.addOption("Auto 1 pos2", new AutoID(m_robotDrive, m_intake, m_shooter, 1, 2));
-    m_chooser.addOption("Auto 1 pos3", new AutoID(m_robotDrive, m_intake, m_shooter, 1, 3));
+    m_chooser.setDefaultOption(
+        "Auto 1 is just wait, shoot, move (no input (Maybe add later))",
+        new AutoID(m_robotDrive, m_intake, m_shooter, 1, 1));
 
-    m_chooser.addOption("Auto 2 pos1", new AutoID(m_robotDrive, m_intake, m_shooter, 2, 1));
-    m_chooser.addOption("Auto 2 pos2", new AutoID(m_robotDrive, m_intake, m_shooter, 2, 2));
-    m_chooser.addOption("Auto 2 pos3", new AutoID(m_robotDrive, m_intake, m_shooter, 2, 3));
-    m_chooser.addOption("Auto 3 pos1", new AutoID(m_robotDrive, m_intake, m_shooter, 3, 1));
-    m_chooser.addOption("Auto 3 pos2", new AutoID(m_robotDrive, m_intake, m_shooter, 3, 2));
-    m_chooser.addOption("Auto 3 pos3", new AutoID(m_robotDrive, m_intake, m_shooter, 3, 3));
+    m_chooser.addOption(
+        "POS 1 Auto 2 is go through line of 3 and shoot while doing so, moving back and forth if needed",
+        new AutoID(m_robotDrive, m_intake, m_shooter, 2, 1));
+    m_chooser.addOption("POS 2 Auto 2", new AutoID(m_robotDrive, m_intake, m_shooter, 2, 2));
+    m_chooser.addOption("POS 3 Auto 3", new AutoID(m_robotDrive, m_intake, m_shooter, 2, 3));
+
+    m_chooser.addOption(
+        "POS 1 Auto 3 is shoot, intake, shoot ",
+        new AutoID(m_robotDrive, m_intake, m_shooter, 3, 1));
+    m_chooser.addOption("POS 2 Auto 3", new AutoID(m_robotDrive, m_intake, m_shooter, 3, 2));
+    m_chooser.addOption("POS 3 Auto 3", new AutoID(m_robotDrive, m_intake, m_shooter, 3, 3));
 
     SmartDashboard.putData(m_chooser);
 

@@ -122,8 +122,16 @@ public class AutoID extends SequentialCommandGroup {
             m_robotDrive.getPose().getY(),
             iter,
             nextPos3Line);
-
-    return new SequentialCommandGroup(shootPre, driveRight, check);
+    double a;
+    if (DriverStation.getAlliance().get() == Alliance.Blue) {
+      a = inchToMeter(413.44);
+    } else {
+      a = inchToMeter(239.29);
+    }
+    DrivetoSwerve getOut =
+        new DrivetoSwerve(
+            m_robotDrive, new Pose2d(a, m_robotDrive.getPose().getY(), new Rotation2d(0.0)));
+    return new SequentialCommandGroup(shootPre, driveRight, check, getOut);
   }
 
   public SequentialCommandGroup get3(int pos) {
@@ -145,8 +153,15 @@ public class AutoID extends SequentialCommandGroup {
             m_shooter,
             m_intake,
             List.of(MarkerType.SpeakerCenter, MarkerType.SpeakerOffCenter));
-    double a = 0;
-    DrivetoSwerve getOut = new DrivetoSwerve(m_robotDrive, new Pose2d(a, a, new Rotation2d(0.0)));
+    double a;
+    if (DriverStation.getAlliance().get() == Alliance.Blue) {
+      a = inchToMeter(413.44);
+    } else {
+      a = inchToMeter(239.29);
+    }
+    DrivetoSwerve getOut =
+        new DrivetoSwerve(
+            m_robotDrive, new Pose2d(a, m_robotDrive.getPose().getY(), new Rotation2d(0.0)));
     return new SequentialCommandGroup(shootPre, getTheRing, driveForward, shootFinal, getOut);
   }
 }
