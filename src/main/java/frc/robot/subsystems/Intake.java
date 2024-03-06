@@ -1,16 +1,17 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.AbsoluteEncoder;
+// import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+// import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.vision.detectColor;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
@@ -41,7 +42,7 @@ public class Intake extends SubsystemBase {
   private SparkMaxPIDController mIntakePIDController;
 
   private CANSparkMax mPivotMotor;
-  private AbsoluteEncoder mPivotEncoder;
+  private RelativeEncoder mPivotEncoder;
   private SparkMaxPIDController mPivotPIDController;
 
   public Intake() {
@@ -75,7 +76,7 @@ public class Intake extends SubsystemBase {
     mPivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
     mPivotMotor.setSmartCurrentLimit(10);
 
-    mPivotEncoder = mPivotMotor.getAbsoluteEncoder(Type.kDutyCycle);
+    mPivotEncoder = mPivotMotor.getEncoder();
     mPivotPIDController = mPivotMotor.getPIDController();
     mPivotPIDController.setFeedbackDevice(mPivotEncoder);
 
@@ -126,13 +127,15 @@ public class Intake extends SubsystemBase {
 
   /*-------------------------------- Generic Subsystem Functions --------------------------------*/
 
-  // @Override
+  @Override
   public void periodic() {
-    // checkAutoTasks();
+    //  checkAutoTasks();
 
     // Pivot control
     double pivot_angle = pivotTargetToAngle(m_periodicIO.pivot_target);
-    m_periodicIO.intake_pivot_voltage = m_pivotPID.calculate(getPivotAngleDegrees(), pivot_angle);
+    // m_periodicIO.intake_pivot_voltage = m_pivotPID.calculate(getPivotAngleDegrees(),
+    // pivot_angle);
+    m_periodicIO.intake_pivot_voltage = m_pivotPID.calculate(getPivotAngleDegrees(), 60);
 
     // If the pivot is at exactly 0.0, it's probably not connected, so disable it
     // if (m_pivotEncoder.get() == 0.0) {
@@ -234,12 +237,14 @@ public class Intake extends SubsystemBase {
     return input;
   }
 
-  // public boolean getIntakeHasNote() {
-  //   // NOTE: this is intentionally inverted, because the limit switch is normally
-  //   // closed
-  //   detectColor detColor = new detectColor();
-  //   return detColor.gotNote();
-  // }
+  public boolean getIntakeHasNote() {
+    // NOTE: this is intentionally inverted, because the limit switch is normally
+    // closed
+    detectColor detColor = new detectColor();
+    pulse();
+
+    return detColor.gotNote();
+  }
 
   // // Pivot helper functions
   public void goToGround() {
@@ -294,23 +299,23 @@ public class Intake extends SubsystemBase {
 
   // /*---------------------------------- Custom Private Functions
   // ---------------------------------*/
-  // private void checkAutoTasks() {
-  //   // If the intake is set to GROUND, and the intake has a note, and the pivot is
-  //   // close to it's target
-  //   // Stop the intake and go to the SOURCE position
-  //   if (m_periodicIO.pivot_target == PivotTarget.GROUND
-  //       && getIntakeHasNote()
-  //       && isPivotAtTarget()) {
-  //     m_periodicIO.pivot_target = PivotTarget.STOW;
-  //     m_periodicIO.intake_state = IntakeState.NONE;
-  //   }
-  // }
+  private void checkAutoTasks() {
+    // If the intake is set to GROUND, and the intake has a note, and the pivot is
+    // close to it's target
+    // Stop the intake and go to the SOURCE position
+    if (m_periodicIO.pivot_target == PivotTarget.GROUND
+        && getIntakeHasNote()
+        && isPivotAtTarget()) {
+      m_periodicIO.pivot_target = PivotTarget.STOW;
+      m_periodicIO.intake_state = IntakeState.PULSE;
+    }
+  }
 
-  // private boolean isPivotAtTarget() {
-  //   return Math.abs(getPivotAngleDegrees() - pivotTargetToAngle(m_periodicIO.pivot_target)) < 5;
-  // }
+  private boolean isPivotAtTarget() {
+    return Math.abs(getPivotAngleDegrees() - pivotTargetToAngle(m_periodicIO.pivot_target)) < 5;
+  }
 
-  // public PivotTarget getPivotTarget() {
-  //   return m_periodicIO.pivot_target;
-  // }
+  public PivotTarget getPivotTarget() {
+    return m_periodicIO.pivot_target;
+  }
 }

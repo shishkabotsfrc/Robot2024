@@ -16,14 +16,11 @@ public class FeedIntake extends Command {
 
   @Override
   public void initialize() {
-    m_intake.setState(IntakeState.INTAKE);
-    // m_intake.setPivotTarget(PivotTarget.GROUND);
-    // m_intake.goToGround();
+    m_intake.goToGround();
   }
 
   public void execute() {
-    // m_intake.periodic();
-    // counter++;
+    counter++;
   }
 
   @Override
@@ -35,6 +32,9 @@ public class FeedIntake extends Command {
     } else {
       return false;
     }*/
+    if (counter > 100) {
+      m_intake.setState(IntakeState.PULSE);
+    }
     return false;
   }
 }

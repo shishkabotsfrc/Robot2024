@@ -21,7 +21,7 @@ public class Shooter extends SubsystemBase {
   private SparkMaxPIDController mRightMotorPID;
 
   private double mMotorRPM = 0;
-  private SlewRateLimiter mSpeedLimiter = new SlewRateLimiter(1000);
+  private SlewRateLimiter mSpeedLimiter = new SlewRateLimiter(100);
 
   public Shooter() {
     mLeftMotorSparkMax = new CANSparkMax(ShooterConstants.leftCanId, MotorType.kBrushless);
@@ -31,16 +31,20 @@ public class Shooter extends SubsystemBase {
     mRightMotorSparkMax.restoreFactoryDefaults();
 
     mLeftMotorPID = mLeftMotorSparkMax.getPIDController();
+    mLeftMotorPID.setP(0.2);
+    mLeftMotorPID.setP(0.2);
+
     mRightMotorPID = mRightMotorSparkMax.getPIDController();
 
     mRightMotorEncoder = mRightMotorSparkMax.getEncoder();
     mLeftMotorEncoder = mLeftMotorSparkMax.getEncoder();
 
     mRightMotorSparkMax.setInverted(true);
-    mLeftMotorSparkMax.setInverted(true);
+    mLeftMotorSparkMax.setInverted(false);
   }
 
   public void setSpeed(double rpm) {
+    System.out.println("set" + rpm);
     mMotorRPM = rpm;
   }
 
