@@ -177,7 +177,7 @@ public final class Constants {
     public static final double k_pivotAngleStow = 275;
 
     // Intake speeds
-    public static final double k_intakeSpeed = 0.7;
+    public static final double k_intakeSpeed = -0.6;
     public static final double k_ejectSpeed = -0.45;
     public static final double k_feedShooterSpeed = -0.5;
 
