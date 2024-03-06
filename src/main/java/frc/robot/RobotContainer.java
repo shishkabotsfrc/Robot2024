@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.drive.DriveWithJoystick;
 import frc.robot.commands.drive.XPositionLock;
+import frc.robot.commands.rings.FeedIntake;
+import frc.robot.commands.rings.ShootCommand;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.vision.Limelight;
@@ -20,7 +23,7 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem(m_limelight);
   // private final Climber m_robotClimber = new Climber();
   private final Shooter m_shooter = new Shooter();
-  // private Intake m_intake = new Intake();
+  private Intake m_intake = new Intake();
 
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
@@ -38,11 +41,10 @@ public class RobotContainer {
     // new JoystickButton(m_driverController, Button.kX.value)
     //  .onTrue(new SetPose(m_robotDrive, new Pose2d(0, 0, new Rotation2d(0, 0))));
 
-    // new JoystickButton(m_driverController, Button.kA.value)
-    //  .onTrue(new ResetGyroOffsets(m_robotDrive));
+    new JoystickButton(m_driverController, Button.kX.value).whileTrue(new ShootCommand(m_shooter));
 
     // stops the robot
-    new JoystickButton(m_driverController, Button.kX.value)
+    new JoystickButton(m_driverController, Button.kA.value)
         .whileTrue(new XPositionLock(m_robotDrive));
 
     // shoots the ring
@@ -51,8 +53,9 @@ public class RobotContainer {
                 new AlignShotCommand(m_robotDrive, m_shooter, m_intake, List.of(MarkerType.Amplifier)));
     */
     // feed intake
-    // new JoystickButton(m_driverController, Button.kLeftBumper.value)
-    //     .whileTrue(new FeedIntake(m_intake));
+
+    new JoystickButton(m_driverController, Button.kLeftBumper.value)
+        .whileTrue(new FeedIntake(m_intake));
 
     // // shoot the amp
     // new JoystickButton(m_driverController, Button.kA.value).onTrue(new ShootAmp(m_intake));

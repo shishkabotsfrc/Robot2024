@@ -50,15 +50,15 @@ public class Intake extends SubsystemBase {
     mIntakeMotor.setSmartCurrentLimit(10);
 
     mIntakeEncoder = mIntakeMotor.getEncoder();
-    //   // mIntakePIDController = mIntakeMotor.getPIDController();
-    //   // mIntakePIDController.setFeedbackDevice(mIntakeEncoder);
+    mIntakePIDController = mIntakeMotor.getPIDController();
+    mIntakePIDController.setFeedbackDevice(mIntakeEncoder);
 
-    //   // // TODO: Move to Constants.java
-    //   // mIntakePIDController.setP(1.);
-    //   // mIntakePIDController.setI(0);
-    //   // mIntakePIDController.setD(0);
-    //   // mIntakePIDController.setFF(0);
-    //   // mIntakePIDController.setOutputRange(-1., 1.);
+    // TODO: Move to Constants.java
+    mIntakePIDController.setP(1.);
+    mIntakePIDController.setI(0);
+    mIntakePIDController.setD(0);
+    mIntakePIDController.setFF(0);
+    mIntakePIDController.setOutputRange(-1., 1.);
 
     //   // TODO: Figure out the constants
     mIntakeEncoder.setPositionConversionFactor(1.);
@@ -98,11 +98,11 @@ public class Intake extends SubsystemBase {
   private static class PeriodicIO {
     // Input: Desired state
     PivotTarget pivot_target = PivotTarget.STOW;
-    IntakeState intake_state = IntakeState.NONE;
+    IntakeState intake_state = IntakeState.INTAKE;
 
     // Output: Motor set values
     double intake_pivot_voltage = 0.0;
-    double intake_speed = 0.0;
+    double intake_speed = -0.6;
   }
 
   public enum PivotTarget {
@@ -154,7 +154,7 @@ public class Intake extends SubsystemBase {
   // @Override
   public void stop() {
     // m_periodicIO.intake_pivot_voltage = 0.0;
-    // m_periodicIO.intake_speed = 0.0;
+    m_periodicIO.intake_speed = 0.0;
   }
 
   // @Override
@@ -208,7 +208,7 @@ public class Intake extends SubsystemBase {
         return Constants.Intake.k_feedShooterSpeed;
       default:
         // "Safe" default
-        return 0; // -0.6;
+        return -0.6; // -0.6;
     }
   }
 
