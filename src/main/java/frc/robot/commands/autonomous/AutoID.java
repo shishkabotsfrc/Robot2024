@@ -20,12 +20,49 @@ public class AutoID extends Command {
   private DriveSubsystem m_robotDrive;
   private Intake m_intake;
   private Shooter m_shooter;
-  private double[][] nextPos = new double[2][3];
+  private double[][] nextPosRed3Line = new double[2][3];
+  private double[][] nextPosBlue3Line = new double[2][3];
+  private double[][] nextPos3Line = new double[2][3];
+  private int ringOffset;
+  private int intakeOffset;
+
+  // TODO: get measurements
 
   public AutoID(DriveSubsystem drive, Intake intake, Shooter shooter) {
     this.m_robotDrive = drive;
     this.m_intake = intake;
     this.m_shooter = shooter;
+    ringOffset = 7;
+    intakeOffset = ringOffset + 27;
+    nextPosRed3Line = fillRedArray(nextPosRed3Line);
+    nextPosBlue3Line = fillBlueArray(nextPosBlue3Line);
+
+    if (DriverStation.getAlliance().get() == Alliance.Blue) {
+      nextPos3Line = nextPosBlue3Line;
+    } else {
+      nextPos3Line = nextPosRed3Line;
+    }
+  }
+
+  private static double inchToMeter(double inch) {
+    return inch * 0.0254;
+  }
+
+  private double[][] fillRedArray(double[][] arr) {
+    for (int i = 0; i < arr[0].length; i++) {
+      arr[0][i] = inchToMeter(538.73 + intakeOffset);
+      arr[1][i] = inchToMeter(161.5 + (57 * i));
+    }
+    return arr;
+  }
+
+  private double[][] fillBlueArray(double[][] arr) {
+    for (int i = 0; i < arr[0].length; i++) {
+      arr[0][i] = inchToMeter(114 + intakeOffset);
+
+      arr[1][i] = inchToMeter(161.5 + (57 * i));
+    }
+    return arr;
   }
 
   public SequentialCommandGroup get1() {
@@ -68,7 +105,7 @@ public class AutoID extends Command {
             m_intake,
             List.of(MarkerType.SpeakerCenter, MarkerType.SpeakerOffCenter));
     autoStartLine driveRight =
-        new autoStartLine(m_robotDrive, m_intake, m_shooter, iter - 1, nextPos);
+        new autoStartLine(m_robotDrive, m_intake, m_shooter, iter - 1, nextPos3Line);
     autoLine check =
         new autoLine(
             m_robotDrive,
@@ -77,7 +114,7 @@ public class AutoID extends Command {
             m_robotDrive.getPose().getX(),
             m_robotDrive.getPose().getY(),
             iter,
-            nextPos);
+            nextPos3Line);
 
     return new SequentialCommandGroup(shootPre, driveRight, check);
   }
@@ -91,7 +128,8 @@ public class AutoID extends Command {
             m_shooter,
             m_intake,
             List.of(MarkerType.SpeakerCenter, MarkerType.SpeakerOffCenter));
-    autoStartLine getTheRing = new autoStartLine(m_robotDrive, m_intake, m_shooter, pos, nextPos);
+    autoStartLine getTheRing =
+        new autoStartLine(m_robotDrive, m_intake, m_shooter, pos, nextPos3Line);
     DrivetoSwerve driveForward =
         new DrivetoSwerve(m_robotDrive, new Pose2d(startPosX, startPosY, new Rotation2d(0.0)));
     AlignShotCommand shootFinal =
@@ -100,6 +138,8 @@ public class AutoID extends Command {
             m_shooter,
             m_intake,
             List.of(MarkerType.SpeakerCenter, MarkerType.SpeakerOffCenter));
-    return new SequentialCommandGroup(shootPre, getTheRing, driveForward, shootFinal);
+    double a = 0;
+    DrivetoSwerve getOut = new DrivetoSwerve(m_robotDrive, new Pose2d(a, a, new Rotation2d(0.0)));
+    return new SequentialCommandGroup(shootPre, getTheRing, driveForward, shootFinal, getOut);
   }
 }
