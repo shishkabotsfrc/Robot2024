@@ -24,6 +24,6 @@ public class autoStartLine extends SequentialCommandGroup {
     addCommands(
         new DrivetoSwerve(
             m_robotDrive, new Pose2d(nextPos[0][iter], nextPos[1][iter], new Rotation2d(0.0))),
-        new FeedIntake(m_intake));
+        new FeedIntake(m_intake, m_shooter));
   }
 }

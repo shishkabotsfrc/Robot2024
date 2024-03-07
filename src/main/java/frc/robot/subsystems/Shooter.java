@@ -21,7 +21,8 @@ public class Shooter extends SubsystemBase {
   private SparkMaxPIDController mRightMotorPID;
 
   private double mMotorRPM = 0;
-  private SlewRateLimiter mSpeedLimiter = new SlewRateLimiter(500);
+  private SlewRateLimiter mSpeedLimiter = new SlewRateLimiter(3000);
+  public double limitedSpeed;
 
   public Shooter() {
     mLeftMotorSparkMax = new CANSparkMax(ShooterConstants.leftCanId, MotorType.kBrushless);
@@ -62,7 +63,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void periodic() {
-    double limitedSpeed = mSpeedLimiter.calculate(mMotorRPM);
+    limitedSpeed = mSpeedLimiter.calculate(mMotorRPM);
 
     // if (Math.abs(limitedSpeed - mMotorRPM) > 600) {
     //   limitedSpeed = 0;

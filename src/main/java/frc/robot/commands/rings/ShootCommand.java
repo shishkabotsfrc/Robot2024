@@ -26,11 +26,14 @@ public class ShootCommand extends Command {
   public void initialize() {
     // m_intake.feedShooter();
     // m_intake.setState(IntakeState.FEED_SHOOTER);
-    m_shooter.setSpeed(5700);
+    m_shooter.setSpeed(5700 * 0.3);
   }
 
   @Override
   public void execute() {
+    // if (m_shooter.limitedSpeed > 5000) {
+    //   m_intake.setState(IntakeState.FEED_SHOOTER);
+    // }
     // Only press if fully loaded?
     // if (m_intake.getIntakeState().equals(IntakeState.FEED_SHOOTER)) {
     // counter++;
