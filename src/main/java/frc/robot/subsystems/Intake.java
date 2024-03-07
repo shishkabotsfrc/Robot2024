@@ -23,6 +23,8 @@ public class Intake extends SubsystemBase {
   private static final double kPivotEncoderPositionFactor =
       360.0; // degrees, Should this be radians?
   private static final double kPivotEncoderVelocityFactor = 360. / 60.0; // degrees per second
+  private static final detectColor mcolorDetector = new detectColor();
+
   private final PIDController m_pivotPID =
       new PIDController(k_pivotMotorP, k_pivotMotorI, k_pivotMotorD);
   // /*-------------------------------- Private instance variables
@@ -80,11 +82,11 @@ public class Intake extends SubsystemBase {
     mPivotPIDController = mPivotMotor.getPIDController();
     mPivotPIDController.setFeedbackDevice(mPivotEncoder);
 
-    mPivotPIDController.setP(1.);
+    mPivotPIDController.setP(0.12);
     mPivotPIDController.setI(0);
-    mPivotPIDController.setD(0);
-    mPivotPIDController.setFF(0);
-    mPivotPIDController.setOutputRange(-1., 1.);
+    mPivotPIDController.setD(0.001);
+    // mPivotPIDController.setFF(0);
+    // mPivotPIDController.setOutputRange(-1., 1.);
 
     // Do we need this
     mPivotPIDController.setPositionPIDWrappingEnabled(true); // This may not be needed
@@ -240,10 +242,12 @@ public class Intake extends SubsystemBase {
   public boolean getIntakeHasNote() {
     // NOTE: this is intentionally inverted, because the limit switch is normally
     // closed
-    detectColor detColor = new detectColor();
-    pulse();
+    if (mcolorDetector.gotNote()) {
+      pulse();
+      return true;
+    }
 
-    return detColor.gotNote();
+    return false;
   }
 
   // // Pivot helper functions
