@@ -32,16 +32,16 @@ public class AutoID extends SequentialCommandGroup {
     this.m_robotDrive = drive;
     this.m_intake = intake;
     this.m_shooter = shooter;
-    ringOffset = 7;
+    ringOffset = 14;
     intakeOffset = ringOffset + 27;
     nextPosRed3Line = fillRedArray(nextPosRed3Line);
     nextPosBlue3Line = fillBlueArray(nextPosBlue3Line);
 
-    if (DriverStation.getAlliance().get() == Alliance.Blue) {
-      nextPos3Line = nextPosBlue3Line;
-    } else {
-      nextPos3Line = nextPosRed3Line;
-    }
+    // if (DriverStation.getAlliance().get() == Alliance.Blue) {
+    nextPos3Line = nextPosBlue3Line;
+    // } else {
+    //  nextPos3Line = nextPosRed3Line;
+    // }
     if (ID == 1) {
       addCommands(get1());
     } else if (ID == 2) {
@@ -81,7 +81,8 @@ public class AutoID extends SequentialCommandGroup {
             m_shooter,
             m_intake,
             List.of(MarkerType.SpeakerCenter, MarkerType.SpeakerOffCenter));
-    double blueSign = DriverStation.getAlliance().get() == Alliance.Blue ? 1 : -1;
+    // double blueSign = DriverStation.getAlliance().get() == Alliance.Blue ? 1 : -1;
+    double blueSign = 0;
     double sideStrafe = -2;
     // Instead of moving straight to the position, we move to the side
     // We dont want to run into our teammates
@@ -123,11 +124,11 @@ public class AutoID extends SequentialCommandGroup {
             iter,
             nextPos3Line);
     double a;
-    if (DriverStation.getAlliance().get() == Alliance.Blue) {
-      a = inchToMeter(413.44);
-    } else {
-      a = inchToMeter(239.29);
-    }
+    // if (DriverStation.getAlliance().get() == Alliance.Blue) {
+    //   a = inchToMeter(413.44);
+    // } else {
+    a = inchToMeter(239.29);
+    //   }
     DrivetoSwerve getOut =
         new DrivetoSwerve(
             m_robotDrive, new Pose2d(a, m_robotDrive.getPose().getY(), new Rotation2d(0.0)));

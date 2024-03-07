@@ -82,9 +82,9 @@ public class Intake extends SubsystemBase {
     mPivotPIDController = mPivotMotor.getPIDController();
     mPivotPIDController.setFeedbackDevice(mPivotEncoder);
 
-    mPivotPIDController.setP(0.12);
+    mPivotPIDController.setP(0.01);
     mPivotPIDController.setI(0);
-    mPivotPIDController.setD(0.001);
+    mPivotPIDController.setD(0);
     // mPivotPIDController.setFF(0);
     // mPivotPIDController.setOutputRange(-1., 1.);
 
