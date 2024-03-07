@@ -25,6 +25,7 @@ public class ShootCommand extends Command {
   @Override
   public void initialize() {
     // m_intake.feedShooter();
+    // m_intake.setState(IntakeState.FEED_SHOOTER);
     m_shooter.setSpeed(5700);
   }
 

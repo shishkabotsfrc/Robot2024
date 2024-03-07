@@ -63,6 +63,14 @@ public class Shooter extends SubsystemBase {
 
   public void periodic() {
     double limitedSpeed = mSpeedLimiter.calculate(mMotorRPM);
+
+    // if (Math.abs(limitedSpeed - mMotorRPM) > 600) {
+    //   limitedSpeed = 0;
+    //   if (limitedSpeed < 1000) {
+    //     mSpeedLimiter = new SlewRateLimiter(500);
+    //   }
+    // }
+
     mLeftMotorPID.setReference(limitedSpeed, ControlType.kVelocity);
     mRightMotorPID.setReference(limitedSpeed, ControlType.kVelocity);
 

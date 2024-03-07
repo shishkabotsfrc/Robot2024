@@ -14,7 +14,9 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.drive.DriveWithJoystick;
 import frc.robot.commands.drive.DrivetoSwerve;
 import frc.robot.commands.drive.XPositionLock;
+import frc.robot.commands.rings.FeedIntake;
 import frc.robot.commands.rings.ShootCommand;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.vision.Limelight;
@@ -24,7 +26,7 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem(m_limelight);
   // private final Climber m_robotClimber = new Climber();
   private final Shooter m_shooter = new Shooter();
-  // private Intake m_intake = new Intake();
+  private Intake m_intake = new Intake();
 
   // SendableChooser<SequentialCommandGroup> m_chooser = new SendableChooser<>();
 
@@ -64,11 +66,14 @@ public class RobotContainer {
     // new JoystickButton(m_driverController, Button.kX.value)
     //  .onTrue(new SetPose(m_robotDrive, new Pose2d(0, 0, new Rotation2d(0, 0))));
 
-    new JoystickButton(m_driverController, Button.kA.value).whileTrue(new ShootCommand(m_shooter));
+    new JoystickButton(m_driverController, Button.kA.value)
+        .whileTrue(new ShootCommand(m_shooter, m_intake));
 
     // stops the robot
     new JoystickButton(m_driverController, Button.kX.value)
         .whileTrue(new XPositionLock(m_robotDrive));
+    // stops the robot
+    new JoystickButton(m_driverController, Button.kB.value).whileTrue(new FeedIntake(m_intake));
 
     // // shoots the ring
     // new JoystickButton(m_driverController, Button.kRightBumper.value)

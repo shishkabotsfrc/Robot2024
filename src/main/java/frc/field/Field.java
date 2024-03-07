@@ -123,6 +123,7 @@ public class Field {
     Transform2d transform = new Transform2d(x, y, new Rotation2d(rot));
     kObjectives.get(type).add(transform);
   }
+
   /** Adds a tag to the map of all known tags */
   private static void addTag(
       int id, Alliance alliance, MarkerType type, double x, double y, double z, double rot) {

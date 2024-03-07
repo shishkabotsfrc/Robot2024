@@ -159,7 +159,10 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void drive(
       double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
-
+    // if (Math.abs(xSpeed) < 0.1 && Math.abs(ySpeed) < 0.1 && Math.abs(rot) < 0.1) {
+    //   modulesExecute(mod -> mod.setDesiredState(new DesiredState););
+    //   return;
+    // }
     double xSpeedCommanded;
     double ySpeedCommanded;
 
