@@ -31,10 +31,13 @@ public class Shooter extends SubsystemBase {
     mRightMotorSparkMax.restoreFactoryDefaults();
 
     mLeftMotorPID = mLeftMotorSparkMax.getPIDController();
-    mLeftMotorPID.setP(0.2);
-    mLeftMotorPID.setP(0.2);
-
     mRightMotorPID = mRightMotorSparkMax.getPIDController();
+
+    mLeftMotorPID.setP(0.2);
+    mRightMotorPID.setP(0.2);
+
+    mLeftMotorPID.setFF(0.0002);
+    mLeftMotorPID.setFF(0.0002);
 
     mRightMotorEncoder = mRightMotorSparkMax.getEncoder();
     mLeftMotorEncoder = mLeftMotorSparkMax.getEncoder();
@@ -44,7 +47,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setSpeed(double rpm) {
-    System.out.println("set" + rpm);
+    System.out.println("[Shooter] target rpm = " + rpm);
     mMotorRPM = rpm;
   }
 
@@ -58,6 +61,7 @@ public class Shooter extends SubsystemBase {
     mRightMotorPID.setReference(limitedSpeed, ControlType.kVelocity);
 
     Logger.recordOutput("Shooter/targetRPM", mMotorRPM);
+    Logger.recordOutput("Shooter/limitedRPM", limitedSpeed);
     Logger.recordOutput("Shooter/LeftVel", mLeftMotorEncoder.getVelocity());
     Logger.recordOutput("Shooter/RightVel", mRightMotorEncoder.getVelocity());
   }

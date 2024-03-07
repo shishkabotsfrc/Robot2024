@@ -26,7 +26,7 @@ public class ShootCommand extends Command {
   public void execute() {
     // Only press if fully loaded?
     // if (m_intake.getIntakeState().equals(IntakeState.FEED_SHOOTER)) {
-    m_shooter.setSpeed(5700/3);
+    m_shooter.setSpeed(5700 / 3);
     counter++;
     // }
   }

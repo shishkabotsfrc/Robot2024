@@ -22,7 +22,7 @@ public class Intake2 extends SubsystemBase {
   private static final double kPivotEncoderPositionFactor =
       360.0; // degrees, Should this be radians?
   private static final double kPivotEncoderVelocityFactor = 360. / 60.0; // degrees per second
-
+  private static final detectColor mcolorDetector = new detectColor();
   /*-------------------------------- Private instance variables ---------------------------------*/
   // private static Intake mInstance;
   private PeriodicIO m_periodicIO;
@@ -235,10 +235,7 @@ public class Intake2 extends SubsystemBase {
   }
 
   public boolean getIntakeHasNote() {
-    // NOTE: this is intentionally inverted, because the limit switch is normally
-    // closed
-    detectColor detColor = new detectColor();
-    return detColor.gotNote();
+    return mcolorDetector.gotNote();
   }
 
   // Pivot helper functions
