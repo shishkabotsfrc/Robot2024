@@ -43,12 +43,12 @@ public class Field {
     // Location of all scoring locations
     addTarget(MarkerType.Amplifier, 0.0, 0.0, 0.0);
 
-    for (MarkerType marker : MarkerType.values()) {
-      if (!kObjectives.containsKey(marker)) {
-        // TODO: Silenced for now
-        // System.err.println(marker + " has not yet been registered");
-      }
-    }
+    // for (MarkerType marker : MarkerType.values()) {
+    //   if (!kObjectives.containsKey(marker)) {
+    //        TODO: Silenced for now
+    //        System.err.println(marker + " has not yet been registered");
+    //   }
+    // }
   }
 
   /** Returns an AprilTag position based on the given id, will report errors if tag is invalid */
@@ -69,7 +69,9 @@ public class Field {
     ArrayList<Transform2d> targets = kObjectives.get(marker);
     if (targets == null) {
       System.err.println(marker + " has no associated translations with it");
-      return new ArrayList<Transform2d>();
+      var ret = new ArrayList<Transform2d>();
+      ret.add(new Transform2d());
+      return ret;
     }
     return targets;
   }
@@ -121,7 +123,6 @@ public class Field {
     Transform2d transform = new Transform2d(x, y, new Rotation2d(rot));
     kObjectives.get(type).add(transform);
   }
-
   /** Adds a tag to the map of all known tags */
   private static void addTag(
       int id, Alliance alliance, MarkerType type, double x, double y, double z, double rot) {
