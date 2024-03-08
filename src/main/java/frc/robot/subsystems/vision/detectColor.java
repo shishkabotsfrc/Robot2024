@@ -22,15 +22,6 @@ public class detectColor extends SubsystemBase {
   public boolean gotNote() {
     Color detectedColor = m_colorSensor.getColor();
     ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedColor);
-    // if (match.color != kOrangeTarget) {
-    //   System.err.println("Color sensor matched: " + match.toString());
-    //   return false;
-    // }
-    // TODO: What numbers
-
-    // if (match.confidence > 0.8) {
-    //   return false;
-    // }
     if (m_colorSensor.getProximity() > 100) {
       return true;
     }

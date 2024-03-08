@@ -204,7 +204,7 @@ public class Intake extends SubsystemBase {
       case EJECT:
         return Constants.Intake.k_ejectSpeed;
       case EJECT2:
-        return Constants.Intake.k_ejectSpeed+0.25;
+        return Constants.Intake.k_ejectSpeed + 0.25;
       case PULSE:
         // Use the timer to pulse the intake on for a 1/16 second,
         // then off for a 15/16 second

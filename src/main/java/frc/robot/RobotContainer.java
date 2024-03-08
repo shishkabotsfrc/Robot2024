@@ -11,13 +11,14 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.detectColorCommand;
 import frc.robot.commands.drive.DriveWithJoystick;
 import frc.robot.commands.drive.DrivetoSwerve;
 import frc.robot.commands.drive.XPositionLock;
 import frc.robot.commands.rings.FeedIntake;
+import frc.robot.commands.rings.PrimeShooter;
 import frc.robot.commands.rings.ShootAmp;
 import frc.robot.commands.rings.ShootCommand;
 import frc.robot.commands.rings.StopShooter;
@@ -95,15 +96,14 @@ public class RobotContainer {
     // shoot the amp
     new JoystickButton(m_helperController, Button.kRightBumper.value)
         .onTrue(new ShootAmp(m_intake));
+        
     new JoystickButton(m_helperController, Button.kRightStick.value).onTrue(new ShootAmp(m_intake));
 
     // extras
-    new JoystickButton(m_driverController, Button.kA.value).onTrue(new ForceEject(m_intake));
-   
-   
     new JoystickButton(m_helperController, Button.kA.value).onTrue(new StopShooter(m_shooter));
-    new JoystickButton(m_helperController, Button.kB.value).onTrue(new ShootCommand(m_shooter, m_intake));
-    new JoystickButton(m_helperController, Button.kY.value).whileTrue(new detectColorCommand());
+    new JoystickButton(m_helperController, Button.kStart.value).onTrue(new PrimeShooter(m_shooter));
+    new JoystickButton(m_helperController, Button.kB.value)
+        .onTrue(new ForceEject(m_intake));
 
     // climb the rope
     // new JoystickButton(m_driverController, Button.kA.value).onTrue(new Climb(m_robotClimber));
@@ -127,7 +127,9 @@ public class RobotContainer {
     // return m_chooser.getSelected();
     SequentialCommandGroup hi =
         new SequentialCommandGroup(
-            new ShootCommand(m_shooter, m_intake),
+            new PrimeShooter(m_shooter),
+            new WaitCommand(2),
+           new ForceEject(m_intake),
             new DrivetoSwerve(
                 m_robotDrive,
                 new Pose2d(
