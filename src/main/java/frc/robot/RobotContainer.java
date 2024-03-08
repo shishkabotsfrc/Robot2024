@@ -77,10 +77,10 @@ public class RobotContainer {
     // // shoots the ring
     // new JoystickButton(m_driverController, Button.kRightBumper.value)
     //     .onTrue(
-    //         new AlignShotCommand(m_robotDrive, m_shooter, m_intake,
-    // List.of(MarkerType.Amplifier)));
+    //         new AlignShotCommand(
+    //             m_robotDrive, m_shooter, m_intake, List.of(MarkerType.SpeakerCenter)));
 
-    // // feed intake
+    // // // feed intake
 
     // new JoystickButton(m_driverController, Button.kLeftBumper.value)
     //     .onTrue(new FeedIntake(m_intake, m_shooter));

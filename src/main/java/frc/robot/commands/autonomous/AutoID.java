@@ -154,15 +154,122 @@ public class AutoID extends SequentialCommandGroup {
             m_shooter,
             m_intake,
             List.of(MarkerType.SpeakerCenter, MarkerType.SpeakerOffCenter));
-    double a;
-    if (DriverStation.getAlliance().get() == Alliance.Blue) {
-      a = inchToMeter(413.44);
-    } else {
-      a = inchToMeter(239.29);
-    }
+
+    double a = inchToMeter(0);
+    double b = inchToMeter(0);
+
     DrivetoSwerve getOut =
         new DrivetoSwerve(
-            m_robotDrive, new Pose2d(a, m_robotDrive.getPose().getY(), new Rotation2d(0.0)));
+            m_robotDrive,
+            new Pose2d(
+                m_robotDrive.getPose().getX(), m_robotDrive.getPose().getY(), new Rotation2d(0.0)));
+
+    if (DriverStation.getAlliance().get() == Alliance.Blue) {
+
+      if (pos == 1) {
+        a = inchToMeter(139.76378);
+        b = inchToMeter(88.1889764);
+        getOut = new DrivetoSwerve(m_robotDrive, new Pose2d(a, b, new Rotation2d(0.0)));
+      } else {
+        a = inchToMeter(19.6850394);
+        getOut =
+            new DrivetoSwerve(
+                m_robotDrive,
+                new Pose2d(
+                    m_robotDrive.getPose().getX() + a,
+                    m_robotDrive.getPose().getY(),
+                    new Rotation2d(0.0)));
+      }
+    } else {
+      a = inchToMeter(239.29);
+      if (pos == 1) {
+        a = inchToMeter(501.181102);
+        b = inchToMeter(88.1889764);
+        getOut = new DrivetoSwerve(m_robotDrive, new Pose2d(a, b, new Rotation2d(0.0)));
+
+      } else {
+        a = inchToMeter(19.6850394);
+        getOut =
+            new DrivetoSwerve(
+                m_robotDrive,
+                new Pose2d(
+                    m_robotDrive.getPose().getX() - a,
+                    m_robotDrive.getPose().getY(),
+                    new Rotation2d(0.0)));
+      }
+      getOut = new DrivetoSwerve(m_robotDrive, new Pose2d(a, a, new Rotation2d(0.0)));
+    }
+
     return new SequentialCommandGroup(shootPre, getTheRing, driveForward, shootFinal, getOut);
   }
+
+  /*public SequentialCommandGroup get4(int pos) {
+      double startPosX = m_robotDrive.getPose().getX();
+      double startPosY = m_robotDrive.getPose().getY();
+      AlignShotCommand shootPre =
+          new AlignShotCommand(
+              m_robotDrive,
+              m_shooter,
+              m_intake,
+              List.of(MarkerType.SpeakerCenter, MarkerType.SpeakerOffCenter));
+      autoStartLine getTheRing =
+          new autoStartLine(m_robotDrive, m_intake, m_shooter, pos, nextPos3Line);
+      DrivetoSwerve driveForward =
+          new DrivetoSwerve(m_robotDrive, new Pose2d(startPosX, startPosY, new Rotation2d(0.0)));
+      AlignShotCommand shootFinal =
+          new AlignShotCommand(
+              m_robotDrive,
+              m_shooter,
+              m_intake,
+              List.of(MarkerType.SpeakerCenter, MarkerType.SpeakerOffCenter));
+
+
+  double xRing, yRing, xWaypoint, yWaypoint;
+  double middle = ??;
+
+  DrivetoSwerve getWaypoint, getMiddle;
+              if(pos==1) {
+                xRing = middle;
+                yRing = ??;
+
+     getMiddle = new DrivetoSwerve(m_robotDrive, new Pose2d(xRing, yRing, new Rotation2d(0.0)));
+              }
+     if(pos==2) {
+      xWaypoint =;
+      yWaypoint = ;
+      xRing = middle;
+      yRing = ??;
+      getWaypoint =new DrivetoSwerve(m_robotDrive, new Pose2d(xWaypoint, yWaypoint, new Rotation2d(0.0)));
+      getMiddle = new DrivetoSwerve(m_robotDrive, new Pose2d(xRing, yRing, new Rotation2d(0.0)));
+
+     }
+
+     if(pos==3) {
+      xWaypoint =;
+      yWaypoint = ;
+      xRing = middle;
+      yRing = ??;
+      getWaypoint =new DrivetoSwerve(m_robotDrive, new Pose2d(xWaypoint, yWaypoint, new Rotation2d(0.0)));
+      getMiddle = new DrivetoSwerve(m_robotDrive, new Pose2d(xRing, yRing, new Rotation2d(0.0)));
+
+     }
+
+
+
+
+
+
+
+      double a;
+      if (DriverStation.getAlliance().get() == Alliance.Blue) {
+        a = inchToMeter(413.44);
+      } else {
+        a = inchToMeter(239.29);
+      }
+      DrivetoSwerve getOut =
+          new DrivetoSwerve(
+              m_robotDrive, new Pose2d(a, m_robotDrive.getPose().getY(), new Rotation2d(0.0)));
+      return new SequentialCommandGroup(shootPre, getTheRing, driveForward, shootFinal, getOut);
+    }*/
+
 }

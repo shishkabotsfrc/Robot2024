@@ -63,8 +63,8 @@ public class Intake extends SubsystemBase {
     mPivotPIDController = mPivotMotor.getPIDController();
     mPivotPIDController.setFeedbackDevice(mPivotEncoder);
 
-    mPivotPIDController.setP(1);
-    mPivotPIDController.setI(0);
+    mPivotPIDController.setP(0.7);
+    mPivotPIDController.setI(0.00003);
     mPivotPIDController.setD(0);
     // mPivotPIDController.setFF(0);
     // mPivotPIDController.setOutputRange(-1., 1.);
@@ -320,6 +320,7 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean isPivotAtTarget(PivotTarget pivotTarget) {
+
     return Math.abs(getPivotAngleDegrees() - pivotTargetToAngle(pivotTarget)) < 5;
   }
 
