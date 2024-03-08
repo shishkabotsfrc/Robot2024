@@ -182,3 +182,7 @@ public class Limelight extends SubsystemBase {
     }
   }
 }
+// +50deg mount
+// height --> 46.5656cm
+// length from center --> 33.19366cm (limelight front to center)
+// width from center --> 1.27cm (left from center

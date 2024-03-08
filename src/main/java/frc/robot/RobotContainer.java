@@ -7,14 +7,23 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.field.AprilTagInfo.MarkerType;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.detectColorCommand;
 import frc.robot.commands.drive.DriveWithJoystick;
 import frc.robot.commands.drive.DrivetoSwerve;
+import frc.robot.commands.drive.XPositionLock;
+import frc.robot.commands.rings.AlignShotCommand;
+import frc.robot.commands.rings.FeedIntake;
+import frc.robot.commands.rings.ShootAmp;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.vision.Limelight;
+import java.util.List;
 
 public class RobotContainer {
   private final Limelight m_limelight = new Limelight("limelight");
@@ -68,25 +77,35 @@ public class RobotContainer {
     // new JoystickButton(m_driverController, Button.kA.value)
     //     .whileTrue(new ShootCommand(m_shooter, m_intake));
 
+    new JoystickButton(m_driverController, Button.kA.value).whileTrue(new detectColorCommand());
+
+    new JoystickButton(m_driverController, Button.kX.value)
+        .whileTrue(new XPositionLock(m_robotDrive));
+
+    // limelight screws too long--replace
+    // join/support both sides middle, like half pool noodle near intake
+    // have a piece next to the orange light for both sides, like the one next to the battery
+    // electronics have to be fixed (wires are messy)
+    //small ethernet cable to replace the blue cable
+    //absolute encoder make secure (near intake) with zip-ties]
+    //check current limits
+
     // stops the robot
-    // new JoystickButton(m_driverController, Button.kX.value)
-    //     .whileTrue(new XPositionLock(m_robotDrive));
-    // stops the robot
-    // new JoystickButton(m_driverController, Button.kB.value).onTrue(new FeedIntake(m_intake));
 
-    // // shoots the ring
-    // new JoystickButton(m_driverController, Button.kRightBumper.value)
-    //     .onTrue(
-    //         new AlignShotCommand(
-    //             m_robotDrive, m_shooter, m_intake, List.of(MarkerType.SpeakerCenter)));
+    // feeds intake the robot
+    new JoystickButton(m_helperController, Button.kLeftStick.value)
+        .onTrue(new FeedIntake(m_intake));
 
-    // // // feed intake
+    // shoots the ring
+    new JoystickButton(m_helperController, Button.kRightStick.value)
+        .onTrue(
+            new AlignShotCommand(
+                m_robotDrive, m_shooter, m_intake, List.of(MarkerType.SpeakerCenter)));
 
-    // new JoystickButton(m_driverController, Button.kLeftBumper.value)
-    //     .onTrue(new FeedIntake(m_intake, m_shooter));
+    // // feed intake
 
-    // // shoot the amp
-    // new JoystickButton(m_driverController, Button.kB.value).onTrue(new ShootAmp(m_intake));
+    // shoot the amp
+    new JoystickButton(m_helperController, Button.kLeftBumper.value).onTrue(new ShootAmp(m_intake));
 
     // climb the rope
     // new JoystickButton(m_driverController, Button.kA.value).onTrue(new Climb(m_robotClimber));
