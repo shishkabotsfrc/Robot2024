@@ -158,12 +158,14 @@ public final class Constants {
   public static final class ShooterConstants {
     public static final int leftCanId = 9;
     public static final int rightCanId = 10;
-  } /*
+  }
 
-    public static final class ClimberConstants {
-      public static final int leftCanId = 111111;
-      public static final int rightCanId = 11231231;
-    }*/
+  public static final class ClimberConstants {
+    public static final int leftCanId = -1;
+    public static final int rightCanId = -1;
+    public static final int kClimbSpeed = 600;
+    public static final int kReleaseSpeed = -600;
+  }
 
   public static final class Intake {
     public static final int kIntakeMotorId = 12;
@@ -171,10 +173,10 @@ public final class Constants {
     // public static final int k_pivotEncoderId = 22;
     ;
 
-    public static final double k_pivotAngleGround = 60 - 60;
-    public static final double k_pivotAngleSource = 190 - 60;
+    public static final double k_pivotAngleGround = 0.059415;
+    public static final double k_pivotAngleSource = 0.3832;
     public static final double k_pivotAngleAmp = k_pivotAngleSource;
-    public static final double k_pivotAngleStow = 275 - 60;
+    public static final double k_pivotAngleStow = 0.583;
 
     // Intake speeds
     public static final double k_intakeSpeed = -0.6;

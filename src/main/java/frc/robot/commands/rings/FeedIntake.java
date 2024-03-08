@@ -2,14 +2,20 @@ package frc.robot.commands.rings;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Intake.IntakeState;
 import frc.robot.subsystems.Intake.PivotTarget;
 import frc.robot.subsystems.Shooter;
 
 public class FeedIntake extends Command {
   private Intake m_intake;
-
   private Shooter m_shooter;
-  private int counter = 0;
+
+  private int gotNote = 0;
+
+  public FeedIntake(Intake intake) {
+    m_intake = intake;
+    addRequirements(m_intake);
+  }
 
   public FeedIntake(Intake intake, Shooter shooter) {
     m_intake = intake;
@@ -19,25 +25,24 @@ public class FeedIntake extends Command {
 
   @Override
   public void initialize() {
-    m_intake.setPivotTarget(PivotTarget.GROUND);
+    m_intake.goToGround();
   }
 
   public void execute() {
-    // counter++;
+
+    if (m_intake.getIntakeHasNote()) {
+      gotNote++;
+      if (gotNote >= 10) {
+        m_intake.goToStow();
+      }
+    }
+    if (m_intake.isPivotAtTarget(PivotTarget.STOW)) {
+      m_intake.setState(IntakeState.PULSE);
+    }
   }
 
   @Override
   public boolean isFinished() {
-    /*if (counter > 200
-        && (m_intake.getIntakeState() == IntakeState.INTAKE
-            || m_intake.getPivotTarget() == PivotTarget.GROUND)) {
-      return true;
-    } else {
-      return false;
-    }*/
-    // if (counter > 100) {
-    //   m_intake.setState(IntakeState.PULSE);
-    // }
     return false;
   }
 }

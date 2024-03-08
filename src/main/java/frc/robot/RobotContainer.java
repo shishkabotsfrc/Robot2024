@@ -72,8 +72,7 @@ public class RobotContainer {
     new JoystickButton(m_driverController, Button.kX.value)
         .whileTrue(new XPositionLock(m_robotDrive));
     // stops the robot
-    new JoystickButton(m_driverController, Button.kB.value)
-        .onTrue(new FeedIntake(m_intake, m_shooter));
+    new JoystickButton(m_driverController, Button.kB.value).onTrue(new FeedIntake(m_intake));
 
     // // shoots the ring
     // new JoystickButton(m_driverController, Button.kRightBumper.value)
@@ -84,13 +83,13 @@ public class RobotContainer {
     // // feed intake
 
     // new JoystickButton(m_driverController, Button.kLeftBumper.value)
-    //     .onTrue(new FeedIntake(m_intake));
+    //     .onTrue(new FeedIntake(m_intake, m_shooter));
 
     // // shoot the amp
     // new JoystickButton(m_driverController, Button.kB.value).onTrue(new ShootAmp(m_intake));
 
     // climb the rope
-    // new JoystickButton(m_driverController, Button.kB.value).onTrue(new Climb(m_robotClimber));
+    // new JoystickButton(m_driverController, Button.kA.value).onTrue(new Climb(m_robotClimber));
 
     // new JoystickButton(m_driverController, Button.kStart.value)
     //   .onTrue(new DrivetoSwerve(m_robotDrive, new Pose2d(1.5, 0, new Rotation2d(0.0))));

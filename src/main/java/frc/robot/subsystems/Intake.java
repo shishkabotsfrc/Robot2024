@@ -22,7 +22,6 @@ public class Intake extends SubsystemBase {
 
   // // private static Intake mInstance;
   private PeriodicIO m_periodicIO;
-
   // // public static Intake getInstance() {
   // //   if (mInstance == null) {
   // //     mInstance = new Intake();
@@ -47,15 +46,6 @@ public class Intake extends SubsystemBase {
     mIntakeMotor.setSmartCurrentLimit(10);
 
     mIntakeEncoder = mIntakeMotor.getEncoder();
-    mIntakePIDController = mIntakeMotor.getPIDController();
-    mIntakePIDController.setFeedbackDevice(mIntakeEncoder);
-
-    // TODO: Move to Constants.java
-    mIntakePIDController.setP(1.);
-    mIntakePIDController.setI(0);
-    mIntakePIDController.setD(0);
-    mIntakePIDController.setFF(0);
-    mIntakePIDController.setOutputRange(-1., 1.);
 
     //   // TODO: Figure out the constants
     // mIntakeEncoder.setPositionConversionFactor(1.);
@@ -125,7 +115,7 @@ public class Intake extends SubsystemBase {
     // checkAutoTasks();
 
     // Pivot control
-    double pivot_angle = pivotTargetToAngle(PivotTarget.AMP);
+    double pivot_angle = pivotTargetToAngle(m_periodicIO.pivot_target);
     // m_periodicIO.intake_pivot_voltage = m_pivotPID.calculate(getPivotAngleDegrees(),
     // pivot_angle);
 
@@ -176,9 +166,9 @@ public class Intake extends SubsystemBase {
     // Logger.recordOutput("Pivot/Setpoint", pivotTargetToAngle(m_periodicIO.pivot_target));
 
     // Logger.recordOutput("Pivot/Power", m_periodicIO.intake_pivot_voltage);
-    // Logger.recordOutput("Pivot/Current", mPivotMotor.getOutputCurrent());
+    Logger.recordOutput("Pivot/Current", mPivotMotor.getOutputCurrent());
 
-    // Logger.recordOutput("Limit Switch", getIntakeHasNote());
+    Logger.recordOutput("Limit Switch", getIntakeHasNote());
   }
 
   // @Override
@@ -187,20 +177,20 @@ public class Intake extends SubsystemBase {
   public double pivotTargetToAngle(PivotTarget target) {
     switch (target) {
       case GROUND:
-        // return Constants.Intake.k_pivotAngleGround;
-        return 0.059415;
+        return Constants.Intake.k_pivotAngleGround;
+        // return 0.059415;
       case SOURCE:
         return Constants.Intake.k_pivotAngleSource;
       case AMP:
-        // return Constants.Intake.k_pivotAngleAmp;
-        return 0.3832;
+        return Constants.Intake.k_pivotAngleAmp;
+        // return 0.3832;
       case STOW:
-        // return Constants.Intake.k_pivotAngleStow;
-        return 0.583;
+        return Constants.Intake.k_pivotAngleStow;
+        // return 0.583;
       default:
         // "Safe" default
         // return 180;
-        return 0;
+        return Constants.Intake.k_pivotAngleStow;
     }
   }
 
@@ -248,12 +238,18 @@ public class Intake extends SubsystemBase {
   public boolean getIntakeHasNote() {
     // NOTE: this is intentionally inverted, because the limit switch is normally
     // closed
-    if (mcolorDetector.gotNote()) {
-      pulse();
-      return true;
-    }
+    // if (mcolorDetector.gotNote()) {
+    //   pulse();
+    //   return true;
+    // }
+    // if (CurrentTime.millis() - prevTime > 100) {
+    // prevTime = 0;
+    //   return true;
+    // }
 
-    return false;
+    // return false;
+
+    return isPivotAtTarget(PivotTarget.GROUND);
   }
 
   // // Pivot helper functions
@@ -274,7 +270,7 @@ public class Intake extends SubsystemBase {
 
   public void goToStow() {
     m_periodicIO.pivot_target = PivotTarget.STOW;
-    m_periodicIO.intake_state = IntakeState.NONE;
+    // m_periodicIO.intake_state = IntakeState.NONE;
   }
 
   // Intake helper functions
@@ -321,6 +317,10 @@ public class Intake extends SubsystemBase {
 
   private boolean isPivotAtTarget() {
     return Math.abs(getPivotAngleDegrees() - pivotTargetToAngle(m_periodicIO.pivot_target)) < 5;
+  }
+
+  public boolean isPivotAtTarget(PivotTarget pivotTarget) {
+    return Math.abs(getPivotAngleDegrees() - pivotTargetToAngle(pivotTarget)) < 5;
   }
 
   public PivotTarget getPivotTarget() {
