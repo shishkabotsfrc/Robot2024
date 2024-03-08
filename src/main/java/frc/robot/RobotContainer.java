@@ -19,6 +19,8 @@ import frc.robot.commands.drive.XPositionLock;
 import frc.robot.commands.rings.AlignShotCommand;
 import frc.robot.commands.rings.FeedIntake;
 import frc.robot.commands.rings.ShootAmp;
+import frc.robot.commands.rings.ShootCommand;
+import frc.robot.commands.rings.StopShooter;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -77,35 +79,27 @@ public class RobotContainer {
     // new JoystickButton(m_driverController, Button.kA.value)
     //     .whileTrue(new ShootCommand(m_shooter, m_intake));
 
-    new JoystickButton(m_driverController, Button.kA.value).whileTrue(new detectColorCommand());
-
+    // stops the robot
     new JoystickButton(m_driverController, Button.kX.value)
         .whileTrue(new XPositionLock(m_robotDrive));
 
-    // limelight screws too long--replace
-    // join/support both sides middle, like half pool noodle near intake
-    // have a piece next to the orange light for both sides, like the one next to the battery
-    // electronics have to be fixed (wires are messy)
-    //small ethernet cable to replace the blue cable
-    //absolute encoder make secure (near intake) with zip-ties]
-    //check current limits
-
-    // stops the robot
-
-    // feeds intake the robot
+    // feeds intake
     new JoystickButton(m_helperController, Button.kLeftStick.value)
         .onTrue(new FeedIntake(m_intake));
 
-    // shoots the ring
+    // shoots the ring + auto  adjust
     new JoystickButton(m_helperController, Button.kRightStick.value)
         .onTrue(
             new AlignShotCommand(
                 m_robotDrive, m_shooter, m_intake, List.of(MarkerType.SpeakerCenter)));
 
-    // // feed intake
-
     // shoot the amp
     new JoystickButton(m_helperController, Button.kLeftBumper.value).onTrue(new ShootAmp(m_intake));
+
+    // extras
+    new JoystickButton(m_helperController, Button.kA.value).onTrue(new StopShooter(m_shooter));
+    new JoystickButton(m_helperController, Button.kB.value).onTrue(new ShootCommand(m_shooter));
+    new JoystickButton(m_helperController, Button.kY.value).whileTrue(new detectColorCommand());
 
     // climb the rope
     // new JoystickButton(m_driverController, Button.kA.value).onTrue(new Climb(m_robotClimber));

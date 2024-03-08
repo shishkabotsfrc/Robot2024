@@ -7,26 +7,29 @@ import frc.robot.subsystems.Shooter;
 public class ShootCommand extends Command {
   private final Shooter m_shooter;
   private Intake m_intake;
+  private boolean hasIntake;
 
   // private int counter = 0;
 
   public ShootCommand(Shooter shooter, Intake intake) {
     this.m_shooter = shooter;
     this.m_intake = intake;
+    hasIntake = true;
     addRequirements(shooter);
   }
 
   public ShootCommand(Shooter shooter) {
     this.m_shooter = shooter;
-    // this.m_intake = intake;
+    hasIntake = false;
     addRequirements(shooter);
   }
 
   @Override
   public void initialize() {
-    // m_intake.feedShooter();
-    // m_intake.setState(IntakeState.FEED_SHOOTER);
     m_shooter.setSpeed(5700);
+    if (hasIntake) {
+      m_intake.feedShooter();
+    }
   }
 
   @Override

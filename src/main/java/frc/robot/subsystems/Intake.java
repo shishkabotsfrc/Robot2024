@@ -316,12 +316,13 @@ public class Intake extends SubsystemBase {
   }
 
   private boolean isPivotAtTarget() {
-    return Math.abs(getPivotAngleDegrees() - pivotTargetToAngle(m_periodicIO.pivot_target)) < 5;
+    return Math.abs(mPivotEncoder.getPosition() - pivotTargetToAngle(m_periodicIO.pivot_target))
+        < 0.09;
   }
 
   public boolean isPivotAtTarget(PivotTarget pivotTarget) {
 
-    return Math.abs(getPivotAngleDegrees() - pivotTargetToAngle(pivotTarget)) < 5;
+    return Math.abs(mPivotEncoder.getPosition() - pivotTargetToAngle(pivotTarget)) < 0.09;
   }
 
   public PivotTarget getPivotTarget() {
