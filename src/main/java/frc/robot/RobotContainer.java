@@ -30,6 +30,7 @@ public class RobotContainer {
   // SendableChooser<SequentialCommandGroup> m_chooser = new SendableChooser<>();
 
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  XboxController m_helperController = new XboxController(OIConstants.kHelperControllerPort);
 
   public RobotContainer() {
     // A chooser for autonomous commands
@@ -69,10 +70,10 @@ public class RobotContainer {
     //     .whileTrue(new ShootCommand(m_shooter, m_intake));
 
     // stops the robot
-    new JoystickButton(m_driverController, Button.kX.value)
-        .whileTrue(new XPositionLock(m_robotDrive));
+    // new JoystickButton(m_driverController, Button.kX.value)
+    //     .whileTrue(new XPositionLock(m_robotDrive));
     // stops the robot
-    new JoystickButton(m_driverController, Button.kB.value).onTrue(new FeedIntake(m_intake));
+    // new JoystickButton(m_driverController, Button.kB.value).onTrue(new FeedIntake(m_intake));
 
     // // shoots the ring
     // new JoystickButton(m_driverController, Button.kRightBumper.value)
