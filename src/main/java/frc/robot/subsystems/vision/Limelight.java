@@ -69,7 +69,7 @@ public class Limelight extends SubsystemBase {
     Logger.recordOutput("Vision/TimeBetweenUpdates", CurrentTime.millis() - mIO.millisTimeRecorded);
     mIO.validTarget = netTable.getEntry("tv").getInteger(0) == 1;
     mIO.tx = Units.degreesToRadians(netTable.getEntry("tx").getDouble(0.0));
-    mIO.ty = Units.degreesToRadians(netTable.getEntry("ty").getDouble(0.0));
+    mIO.ty = Units.degreesToRadians(netTable.getEntry("ty").getDouble(0.0) + 50);
     mIO.area = netTable.getEntry("ta").getDouble(0.0);
     mIO.latency =
         netTable.getEntry("tl").getDouble(0.0)

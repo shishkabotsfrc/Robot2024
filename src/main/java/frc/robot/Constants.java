@@ -122,7 +122,7 @@ public final class Constants {
   public static final class LimelightConstants {
     // Translation from the center of the robot to the camera (robot coordinates).
     public static final Translation3d kCameraToRobot =
-        new Translation3d(-0.23, 0.0, 0.67); // TODO: Not final
+        new Translation3d(0, 0.3319, 0.465); // TODO: Not final
     public static final double kResolutionWidth = 1280;
     public static final double kResolutionHeight = 960;
     // Limelight publish to `updateData()` delay
