@@ -57,12 +57,13 @@ public class PoseEstimator extends SubsystemBase {
       Pose2d visionMeasurement = m_limelight.getPose(new Rotation2d(m_driveSubsystem.getHeading()));
       double resultTimestamp = m_limelight.mIO.millisTimeRecorded;
       m_swerveEstimator.addVisionMeasurement(visionMeasurement, resultTimestamp);
+      Logger.recordOutput("PoseEstimator/cameraPose", visionMeasurement);
     }
+
     m_swerveEstimator.update(
         new Rotation2d(m_driveSubsystem.getHeading()), m_driveSubsystem.getModuleStates());
 
     Logger.recordOutput("PoseEstimator/getPose", getPose());
-    Logger.recordOutput("PoseEstimator/swervePose", getPose());
-    Logger.recordOutput("PoseEstimator/cameraPose", getPose());
+    Logger.recordOutput("PoseEstimator/swervePose", m_driveSubsystem.m_odometry.getPoseMeters());
   }
 }

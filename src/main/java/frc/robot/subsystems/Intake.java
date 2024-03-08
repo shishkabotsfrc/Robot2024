@@ -43,7 +43,7 @@ public class Intake extends SubsystemBase {
     mIntakeMotor = new CANSparkMax(Constants.Intake.kIntakeMotorId, MotorType.kBrushless);
     mIntakeMotor.restoreFactoryDefaults();
     mIntakeMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
-    mIntakeMotor.setSmartCurrentLimit(10);
+    mIntakeMotor.setSmartCurrentLimit(15);
 
     mIntakeEncoder = mIntakeMotor.getEncoder();
 
@@ -57,7 +57,7 @@ public class Intake extends SubsystemBase {
     mPivotMotor = new CANSparkMax(Constants.Intake.kPivotMotorId, MotorType.kBrushless);
     mPivotMotor.restoreFactoryDefaults();
     mPivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    mPivotMotor.setSmartCurrentLimit(20);
+    mPivotMotor.setSmartCurrentLimit(25);
 
     mPivotEncoder = mPivotMotor.getAbsoluteEncoder(Type.kDutyCycle);
     mPivotPIDController = mPivotMotor.getPIDController();

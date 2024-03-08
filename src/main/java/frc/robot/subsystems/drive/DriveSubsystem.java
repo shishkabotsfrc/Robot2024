@@ -42,7 +42,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public Limelight m_limelight = null;
 
-  SwerveDriveOdometry m_odometry = null;
+  public SwerveDriveOdometry m_odometry = null;
   PoseEstimator m_estimator;
 
   public DriveSubsystem(Limelight limelight) {
@@ -159,10 +159,12 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void drive(
       double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
-    // if (Math.abs(xSpeed) < 0.1 && Math.abs(ySpeed) < 0.1 && Math.abs(rot) < 0.1) {
-    //   modulesExecute(mod -> mod.setDesiredState(new DesiredState););
-    //   return;
-    // }
+    // Preserve wheel direction when stopped, stops robot from snapping at end 
+    if (Math.abs(xSpeed) < 0.01 && Math.abs(ySpeed) < 0.01 && Math.abs(rot) < 0.01) {
+      modulesExecute(
+          mod -> mod.setDesiredState(new SwerveModuleState(0, new Rotation2d(mod.getAngle()))));
+      return;
+    }
     double xSpeedCommanded;
     double ySpeedCommanded;
 
