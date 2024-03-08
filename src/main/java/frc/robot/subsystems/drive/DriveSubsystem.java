@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.drive;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -12,6 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.PoseEstimator;
@@ -86,6 +89,27 @@ public class DriveSubsystem extends SubsystemBase {
               modules[ModuleId.RR.index()].getPosition()
             });
     m_estimator = new PoseEstimator(this);
+
+    AutoBuilder.configureRamsete(
+        this::getPose, // Robot pose supplier
+        this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting
+        // pose)
+        this::getCurrentSpeeds, // Current ChassisSpeeds supplier
+        this::drive, // Method that will drive the robot given ChassisSpeeds
+        new ReplanningConfig(), // Default path replanning config. See the API for the options here
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this // Reference to this subsystem to set requirements
+        );
   }
 
   public void modulesExecute(Consumer<MAXSwerveModule> closure) {
@@ -146,6 +170,23 @@ public class DriveSubsystem extends SubsystemBase {
           modules[ModuleId.RR.index()].getPosition()
         },
         pose);
+  }
+
+  public ChassisSpeeds getCurrentSpeeds() {
+    return DriveConstants.kDriveKinematics.toChassisSpeeds(
+        modules[ModuleId.FL.index()].getState(),
+        modules[ModuleId.FR.index()].getState(),
+        modules[ModuleId.RL.index()].getState(),
+        modules[ModuleId.RR.index()].getState());
+  }
+
+  public void drive(ChassisSpeeds chassisSpeeds) {
+    drive(
+        chassisSpeeds.vxMetersPerSecond,
+        chassisSpeeds.vyMetersPerSecond,
+        chassisSpeeds.omegaRadiansPerSecond,
+        false,
+        false);
   }
 
   /**

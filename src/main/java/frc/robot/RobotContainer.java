@@ -7,14 +7,10 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.drive.DriveWithJoystick;
 import frc.robot.commands.drive.DrivetoSwerve;
-import frc.robot.commands.drive.XPositionLock;
-import frc.robot.commands.rings.FeedIntake;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -26,6 +22,7 @@ public class RobotContainer {
   // private final Climber m_robotClimber = new Climber();
   private final Shooter m_shooter = new Shooter();
   private Intake m_intake = new Intake();
+  //     autoChooser = AutoBuilder.buildAutoChooser();
 
   // SendableChooser<SequentialCommandGroup> m_chooser = new SendableChooser<>();
 
@@ -33,6 +30,8 @@ public class RobotContainer {
   XboxController m_helperController = new XboxController(OIConstants.kHelperControllerPort);
 
   public RobotContainer() {
+    // SmartDashboard.putData("Auto Chooser", autoChooser);
+
     // A chooser for autonomous commands
     // m_chooser.setDefaultOption(
     //     "Auto 1 is just wait, shoot, move (no input (Maybe add later))",
@@ -100,6 +99,8 @@ public class RobotContainer {
   // TODO: Manually change these values after talking with the alliance
   // TODO: This was written by someone who does not know how to play the game
   public Command getAutonomousCommand() {
+    //     return autoChooser.getSelected();
+
     // AutoID auto = new AutoID(m_robotDrive, m_intake, m_shooter);
     // 1 is just wait, shoot, move (no input (Maybe add later))
     // 2 is go through line of 3 and shoot while doing so, moving back and forth is needed (input:
