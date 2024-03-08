@@ -201,11 +201,11 @@ public class DriveSubsystem extends SubsystemBase {
   public void drive(
       double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
     // Preserve wheel direction when stopped, stops robot from snapping at end
-    if (Math.abs(xSpeed) < 0.01 && Math.abs(ySpeed) < 0.01 && Math.abs(rot) < 0.01) {
-      modulesExecute(
-          mod -> mod.setDesiredState(new SwerveModuleState(0, new Rotation2d(mod.getAngle()))));
-      return;
-    }
+    // if (Math.abs(xSpeed) < 0.01 && Math.abs(ySpeed) < 0.01 && Math.abs(rot) < 0.01) {
+    //   modulesExecute(
+    //       mod -> mod.setDesiredState(new SwerveModuleState(0, new Rotation2d(mod.getAngle()))));
+    //   return;
+    // }
     double xSpeedCommanded;
     double ySpeedCommanded;
 

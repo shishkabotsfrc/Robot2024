@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.field.AprilTagInfo.MarkerType;
 import frc.robot.commands.drive.DrivetoSwerve;
+import frc.robot.commands.drive.SetPose;
 import frc.robot.commands.rings.AlignShotCommand;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -73,6 +74,12 @@ public class AutoID extends SequentialCommandGroup {
   }
 
   public SequentialCommandGroup get1() {
+    SetPose set;
+    if (DriverStation.getAlliance().get() == Alliance.Blue) {
+      set = new SetPose(m_robotDrive, new Pose2d(1.72, 5.55, new Rotation2d(0)));
+    } else {
+      set = new SetPose(m_robotDrive, new Pose2d(15.06, 5.55, new Rotation2d(0)));
+    }
     // Wait our turn
     Command wait = new WaitCommand(2);
     AlignShotCommand shoot =
@@ -102,10 +109,16 @@ public class AutoID extends SequentialCommandGroup {
                 m_robotDrive.getPose().getX() + sideStrafe,
                 m_robotDrive.getPose().getY() + blueSign * 3,
                 new Rotation2d()));
-    return new SequentialCommandGroup(wait, shoot, driveToSide, driveToBack);
+    return new SequentialCommandGroup(set, wait, shoot, driveToSide, driveToBack);
   }
 
   public SequentialCommandGroup get2(int iter) {
+    SetPose set;
+    if (DriverStation.getAlliance().get() == Alliance.Blue) {
+      set = new SetPose(m_robotDrive, new Pose2d(1.72, 5.55, new Rotation2d(0)));
+    } else {
+      set = new SetPose(m_robotDrive, new Pose2d(15.06, 5.55, new Rotation2d(0)));
+    }
     AlignShotCommand shootPre =
         new AlignShotCommand(
             m_robotDrive,
@@ -132,10 +145,16 @@ public class AutoID extends SequentialCommandGroup {
     DrivetoSwerve getOut =
         new DrivetoSwerve(
             m_robotDrive, new Pose2d(a, m_robotDrive.getPose().getY(), new Rotation2d(0.0)));
-    return new SequentialCommandGroup(shootPre, driveRight, check, getOut);
+    return new SequentialCommandGroup(set, shootPre, driveRight, check, getOut);
   }
 
   public SequentialCommandGroup get3(int pos) {
+    SetPose set;
+    if (DriverStation.getAlliance().get() == Alliance.Blue) {
+      set = new SetPose(m_robotDrive, new Pose2d(1.72, 5.55, new Rotation2d(0)));
+    } else {
+      set = new SetPose(m_robotDrive, new Pose2d(15.06, 5.55, new Rotation2d(0)));
+    }
     double startPosX = m_robotDrive.getPose().getX();
     double startPosY = m_robotDrive.getPose().getY();
     AlignShotCommand shootPre =
@@ -200,7 +219,7 @@ public class AutoID extends SequentialCommandGroup {
       getOut = new DrivetoSwerve(m_robotDrive, new Pose2d(a, a, new Rotation2d(0.0)));
     }
 
-    return new SequentialCommandGroup(shootPre, getTheRing, driveForward, shootFinal, getOut);
+    return new SequentialCommandGroup(set, shootPre, getTheRing, driveForward, shootFinal, getOut);
   }
 
   /*public SequentialCommandGroup get4(int pos) {

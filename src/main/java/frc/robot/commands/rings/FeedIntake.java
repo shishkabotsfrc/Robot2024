@@ -25,18 +25,20 @@ public class FeedIntake extends Command {
 
   @Override
   public void initialize() {
+    System.out.println("[feedintake] init");
     m_intake.goToGround();
   }
 
   public void execute() {
 
     if (m_intake.getIntakeHasNote()) {
+      System.out.println("hello");
       gotNote++;
       if (gotNote >= 10) {
         m_intake.goToStow();
       }
     }
-    if (m_intake.isPivotAtTarget(PivotTarget.STOW)) {
+    if (m_intake.isPivotAtTarget(PivotTarget.STOW) && gotNote >= 10) {
       m_intake.setState(IntakeState.PULSE);
     }
   }

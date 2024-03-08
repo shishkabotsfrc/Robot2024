@@ -13,7 +13,7 @@ public class detectColor extends SubsystemBase {
   private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
   private final ColorMatch m_colorMatcher = new ColorMatch();
   // See graph in #frc-programming
-  private final Color kOrangeTarget = new Color(0.55, 0.36, 0.08);
+  private final Color kOrangeTarget = new Color(0.569, 0.349, 0.082);
 
   public void initialize() {
     m_colorMatcher.addColorMatch(kOrangeTarget);
@@ -22,20 +22,20 @@ public class detectColor extends SubsystemBase {
   public boolean gotNote() {
     Color detectedColor = m_colorSensor.getColor();
     ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedColor);
-    if (match.color != kOrangeTarget) {
-      System.err.println("Color sesnor matched: " + match.toString());
-      return false;
-    }
-    // TODO: What numbers
-
-    if (match.confidence < 0.8) {
-      return false;
-    }
-    // if (m_colorSensor.getProximity() < 1337) {
+    // if (match.color != kOrangeTarget) {
+    //   System.err.println("Color sensor matched: " + match.toString());
     //   return false;
     // }
+    // TODO: What numbers
 
-    return true;
+    // if (match.confidence > 0.8) {
+    //   return false;
+    // }
+    if (m_colorSensor.getProximity() > 100) {
+      return true;
+    }
+
+    return false;
   }
 
   /** Logs important stuff from sensor */

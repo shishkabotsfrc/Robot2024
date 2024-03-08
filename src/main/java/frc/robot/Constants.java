@@ -175,7 +175,7 @@ public final class Constants {
     ;
 
     public static final double k_pivotAngleGround1 = 0.059415;
-    public static final double k_pivotAngleGround = 0.09415;
+    public static final double k_pivotAngleGround = 0.068;
     public static final double k_pivotAngleSource = 0.3832;
     public static final double k_pivotAngleAmp = k_pivotAngleSource;
     public static final double k_pivotAngleStow = 0.583;

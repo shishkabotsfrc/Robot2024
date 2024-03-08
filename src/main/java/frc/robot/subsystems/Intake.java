@@ -63,8 +63,8 @@ public class Intake extends SubsystemBase {
     mPivotPIDController = mPivotMotor.getPIDController();
     mPivotPIDController.setFeedbackDevice(mPivotEncoder);
 
-    mPivotPIDController.setP(0.7);
-    mPivotPIDController.setI(0.00003);
+    mPivotPIDController.setP(1.4);
+    mPivotPIDController.setI(0.00016);
     mPivotPIDController.setD(0);
     // mPivotPIDController.setFF(0);
     // mPivotPIDController.setOutputRange(-1., 1.);
@@ -104,6 +104,7 @@ public class Intake extends SubsystemBase {
     NONE,
     INTAKE,
     EJECT,
+    EJECT2,
     PULSE,
     FEED_SHOOTER,
   }
@@ -116,6 +117,8 @@ public class Intake extends SubsystemBase {
 
     // Pivot control
     double pivot_angle = pivotTargetToAngle(m_periodicIO.pivot_target);
+    // double pivot_angle = pivotTargetToAngle(PivotTarget.GROUND);
+
     // m_periodicIO.intake_pivot_voltage = m_pivotPID.calculate(getPivotAngleDegrees(),
     // pivot_angle);
 
@@ -200,6 +203,8 @@ public class Intake extends SubsystemBase {
         return Constants.Intake.k_intakeSpeed;
       case EJECT:
         return Constants.Intake.k_ejectSpeed;
+      case EJECT2:
+        return Constants.Intake.k_ejectSpeed+0.25;
       case PULSE:
         // Use the timer to pulse the intake on for a 1/16 second,
         // then off for a 15/16 second
@@ -236,49 +241,51 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean getIntakeHasNote() {
-    // NOTE: this is intentionally inverted, because the limit switch is normally
-    // closed
-    // if (mcolorDetector.gotNote()) {
-    //   pulse();
-    //   return true;
-    // }
-    // if (CurrentTime.millis() - prevTime > 100) {
-    // prevTime = 0;
-    //   return true;
-    // }
 
-    // return false;
+    if (mcolorDetector.gotNote()) {
+      pulse();
+      return true;
+    }
+    return false;
 
-    return isPivotAtTarget(PivotTarget.GROUND);
+    // return isPivotAtTarget(PivotTarget.GROUND);
   }
 
   // // Pivot helper functions
   public void goToGround() {
+    System.out.println("awgertyu");
     m_periodicIO.pivot_target = PivotTarget.GROUND;
     m_periodicIO.intake_state = IntakeState.INTAKE;
   }
 
   public void goToSource() {
+    System.out.println("wigKV;WFE;K");
     m_periodicIO.pivot_target = PivotTarget.SOURCE;
     m_periodicIO.intake_state = IntakeState.NONE;
   }
 
   public void goToAmp() {
+    System.out.println("lhirerglio");
+
     m_periodicIO.pivot_target = PivotTarget.SOURCE;
     m_periodicIO.intake_state = IntakeState.NONE;
   }
 
   public void goToStow() {
+    System.out.println("wfek;wef");
+
     m_periodicIO.pivot_target = PivotTarget.STOW;
     // m_periodicIO.intake_state = IntakeState.NONE;
   }
 
   // Intake helper functions
   public void intake() {
+    System.out.println("in tasdke");
     m_periodicIO.intake_state = IntakeState.INTAKE;
   }
 
   public void eject() {
+    System.out.println("wertjweecfty6");
     m_periodicIO.intake_state = IntakeState.EJECT;
   }
 
@@ -287,6 +294,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void feedShooter() {
+
     m_periodicIO.intake_state = IntakeState.FEED_SHOOTER;
   }
 
@@ -317,7 +325,7 @@ public class Intake extends SubsystemBase {
 
   private boolean isPivotAtTarget() {
     return Math.abs(mPivotEncoder.getPosition() - pivotTargetToAngle(m_periodicIO.pivot_target))
-        < 0.09;
+        < 0.001;
   }
 
   public boolean isPivotAtTarget(PivotTarget pivotTarget) {
