@@ -17,9 +17,6 @@ public class PrimeShooter extends Command {
   }
 
   @Override
-  public void execute() {}
-
-  @Override
   public boolean isFinished() {
     return true;
   }

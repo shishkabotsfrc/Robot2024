@@ -18,24 +18,18 @@ public class ShootAmp extends Command {
 
   @Override
   public void initialize() {
-    m_intake.setState(IntakeState.EJECT);
     m_intake.setPivotTarget(PivotTarget.AMP);
-    m_intake.goToAmp();
   }
 
   @Override
   public void execute() {
-    if (m_intake.getIntakeState() == IntakeState.EJECT) {
-      m_intake.periodic();
-      counter++;
-    }
+    counter++;
   }
 
   @Override
   public boolean isFinished() {
-    if (counter > 200) {
-      m_intake.setState(IntakeState.NONE);
-      m_intake.setPivotTarget(PivotTarget.STOW);
+    if (counter > 150) {
+      m_intake.setState(IntakeState.EJECT);
       return true;
     } else {
       return false;

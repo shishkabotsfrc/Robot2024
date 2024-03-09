@@ -11,7 +11,13 @@ public class ForceEject extends Command {
     m_intake = intake;
   }
 
+  @Override
   public void initialize() {
     m_intake.setState(IntakeState.EJECT);
+  }
+
+  @Override
+  public boolean isFinished() {
+    return true;
   }
 }

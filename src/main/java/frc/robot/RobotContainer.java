@@ -20,7 +20,6 @@ import frc.robot.commands.drive.XPositionLock;
 import frc.robot.commands.rings.FeedIntake;
 import frc.robot.commands.rings.PrimeShooter;
 import frc.robot.commands.rings.ShootAmp;
-import frc.robot.commands.rings.ShootCommand;
 import frc.robot.commands.rings.StopShooter;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -96,14 +95,13 @@ public class RobotContainer {
     // shoot the amp
     new JoystickButton(m_helperController, Button.kRightBumper.value)
         .onTrue(new ShootAmp(m_intake));
-        
+
     new JoystickButton(m_helperController, Button.kRightStick.value).onTrue(new ShootAmp(m_intake));
 
     // extras
     new JoystickButton(m_helperController, Button.kA.value).onTrue(new StopShooter(m_shooter));
     new JoystickButton(m_helperController, Button.kStart.value).onTrue(new PrimeShooter(m_shooter));
-    new JoystickButton(m_helperController, Button.kB.value)
-        .onTrue(new ForceEject(m_intake));
+    new JoystickButton(m_helperController, Button.kB.value).onTrue(new ForceEject(m_intake));
 
     // climb the rope
     // new JoystickButton(m_driverController, Button.kA.value).onTrue(new Climb(m_robotClimber));
@@ -125,16 +123,17 @@ public class RobotContainer {
     // 3 is shoot, intake, shoot (input: pos)
     //  TODO: configure for other side
     // return m_chooser.getSelected();
+    // int sign = DriverStation.getAlliance().equals(Optional.of(Alliance.Blue)) ? 1 : -1;
     SequentialCommandGroup hi =
         new SequentialCommandGroup(
             new PrimeShooter(m_shooter),
             new WaitCommand(2),
-           new ForceEject(m_intake),
+            new ForceEject(m_intake),
             new DrivetoSwerve(
                 m_robotDrive,
                 new Pose2d(
                     m_robotDrive.getPose().getX(),
-                    m_robotDrive.getPose().getY() - 3,
+                    m_robotDrive.getPose().getY() - 2 /* *sign */,
                     new Rotation2d(0.0))));
     return hi;
   }

@@ -15,4 +15,9 @@ public class StopShooter extends Command {
   public void initialize() {
     m_shooter.setSpeed(0);
   }
+
+  @Override
+  public boolean isFinished() {
+    return true;
+  }
 }
