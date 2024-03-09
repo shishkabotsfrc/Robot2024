@@ -28,7 +28,7 @@ public class ShootAmp extends Command {
 
   @Override
   public boolean isFinished() {
-    if(counter>50) {
+    if (counter > 50) {
       return true;
     }
     return false;

@@ -16,7 +16,7 @@ public class ForceEject extends Command {
 
   @Override
   public void initialize() {
-    counter=0;
+    counter = 0;
     m_intake.setState(IntakeState.EJECT);
   }
 
@@ -27,10 +27,10 @@ public class ForceEject extends Command {
 
   @Override
   public boolean isFinished() {
-    if(!(m_intake.getIntakeHasNote())&&counter>60){
+    if (!(m_intake.getIntakeHasNote()) && counter > 60) {
       return true;
     }
-    if(counter>75) {
+    if (counter > 75) {
       return true;
     }
     return false;

@@ -15,19 +15,19 @@ public class StowIntake extends Command {
 
   @Override
   public void initialize() {
-    counter=0;
+    counter = 0;
     m_intake.setPivotTarget(PivotTarget.STOW);
   }
 
   @Override
   public void execute() {
-counter++;
+    counter++;
   }
 
   @Override
   public boolean isFinished() {
-    if(counter>50) {
-    return true;
+    if (counter > 50) {
+      return true;
     }
     return false;
   }
