@@ -25,6 +25,6 @@ public class AlignShotCommand extends SequentialCommandGroup {
         new ShootCommand(shooter, intake),
         new WaitCommand(3),
         new StopShooter(shooter));
-    addRequirements(drive,shooter,intake);
+    addRequirements(drive, shooter, intake);
   }
 }
