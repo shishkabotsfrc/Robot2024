@@ -14,6 +14,7 @@ public class ShootAmp extends Command {
     // TODO:choose one later after testing
     // m_intake = Intake.getInstance();
     m_intake = intake;
+    addRequirements(intake);
   }
 
   @Override

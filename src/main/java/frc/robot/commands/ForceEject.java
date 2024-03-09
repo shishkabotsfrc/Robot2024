@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
@@ -9,6 +9,8 @@ public class ForceEject extends Command {
 
   public ForceEject(Intake intake) {
     m_intake = intake;
+
+    addRequirements(m_intake);
   }
 
   @Override

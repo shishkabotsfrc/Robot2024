@@ -14,7 +14,7 @@ public class FeedIntake extends Command {
 
   public FeedIntake(Intake intake) {
     m_intake = intake;
-    addRequirements(m_intake);
+    addRequirements(intake);
   }
 
   public FeedIntake(Intake intake, Shooter shooter) {
