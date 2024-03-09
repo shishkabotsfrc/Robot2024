@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ForceEject;
+import frc.robot.commands.StowIntake;
 import frc.robot.commands.autonomous.AutoID;
 import frc.robot.commands.drive.DriveWithJoystick;
 import frc.robot.commands.drive.XPositionLock;
@@ -121,13 +122,14 @@ public class RobotContainer {
     // shoot the amp
     new JoystickButton(m_helperController, Button.kRightBumper.value)
         .onTrue(new ShootAmp(m_intake));
-
     new JoystickButton(m_helperController, Button.kRightStick.value).onTrue(new ShootAmp(m_intake));
+
+    new JoystickButton(m_helperController, Button.kStart.value).onTrue(new PrimeShooter(m_shooter));
+    new JoystickButton(m_helperController, Button.kB.value).onTrue(new ForceEject(m_intake));
 
     // extras
     new JoystickButton(m_helperController, Button.kA.value).onTrue(new StopShooter(m_shooter));
-    new JoystickButton(m_helperController, Button.kStart.value).onTrue(new PrimeShooter(m_shooter));
-    new JoystickButton(m_helperController, Button.kB.value).onTrue(new ForceEject(m_intake));
+    new JoystickButton(m_helperController, Button.kBack.value).onTrue(new StowIntake(m_intake));
 
     // climb the rope
     // new JoystickButton(m_driverController, Button.kA.value).onTrue(new Climb(m_robotClimber));

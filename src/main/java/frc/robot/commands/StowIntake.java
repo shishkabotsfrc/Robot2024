@@ -1,35 +1,33 @@
-package frc.robot.commands.rings;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.PivotTarget;
 
-public class ShootAmp extends Command {
-
+public class StowIntake extends Command {
   private Intake m_intake;
-  private int counter = 0;
+  private int counter;
 
-  public ShootAmp(Intake intake) {
-    // TODO:choose one later after testing
-    // m_intake = Intake.getInstance();
+  public StowIntake(Intake intake) {
     m_intake = intake;
     addRequirements(intake);
   }
 
   @Override
   public void initialize() {
-    m_intake.setPivotTarget(PivotTarget.AMP);
+    counter=0;
+    m_intake.setPivotTarget(PivotTarget.STOW);
   }
 
   @Override
   public void execute() {
-    counter++;
+counter++;
   }
 
   @Override
   public boolean isFinished() {
     if(counter>50) {
-      return true;
+    return true;
     }
     return false;
   }

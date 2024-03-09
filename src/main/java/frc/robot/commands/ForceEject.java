@@ -5,21 +5,34 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeState;
 
 public class ForceEject extends Command {
-  Intake m_intake;
+  private Intake m_intake;
+  private int counter;
 
   public ForceEject(Intake intake) {
     m_intake = intake;
 
-    addRequirements(m_intake);
+    addRequirements(intake);
   }
 
   @Override
   public void initialize() {
+    counter=0;
     m_intake.setState(IntakeState.EJECT);
   }
 
   @Override
+  public void execute() {
+    counter++;
+  }
+
+  @Override
   public boolean isFinished() {
-    return true;
+    if(!(m_intake.getIntakeHasNote())&&counter>60){
+      return true;
+    }
+    if(counter>75) {
+      return true;
+    }
+    return false;
   }
 }
