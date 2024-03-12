@@ -11,14 +11,14 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.vision.detectColor;
+import frc.robot.subsystems.vision.ColorSensor;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
   private static final double kPivotEncoderPositionFactor =
       360.0; // degrees, Should this be radians?
   private static final double kPivotEncoderVelocityFactor = 360. / 60.0; // degrees per second
-  private static final detectColor mcolorDetector = new detectColor();
+  private static final ColorSensor mcolorDetector = new ColorSensor();
 
   // // private static Intake mInstance;
   private PeriodicIO m_periodicIO;
