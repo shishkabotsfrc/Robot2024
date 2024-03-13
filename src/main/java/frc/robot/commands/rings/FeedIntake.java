@@ -2,7 +2,6 @@ package frc.robot.commands.rings;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Intake.IntakeState;
 import frc.robot.subsystems.Intake.PivotTarget;
 import frc.robot.subsystems.Shooter;
 
@@ -40,8 +39,8 @@ public class FeedIntake extends Command {
         m_intake.goToStow();
       }
     }
-    if (m_intake.isPivotAtTarget(PivotTarget.STOW) && gotNote >= 10) {
-      m_intake.setState(IntakeState.PULSE);
+    if (m_intake.isPivotAtTarget(PivotTarget.STOW) && gotNote >= 3) {
+      // m_intake.setState(IntakeState.PULSE);
       finish = true;
     }
   }

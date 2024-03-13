@@ -19,9 +19,9 @@ public class DriveWithJoystick extends Command {
   public void execute() {
 
     drive.drive(
-        -MathUtil.applyDeadband(controller.getLeftY(), OIConstants.kDriveDeadband),
-        -MathUtil.applyDeadband(controller.getLeftX(), OIConstants.kDriveDeadband),
-        -MathUtil.applyDeadband(controller.getRightX(), OIConstants.kDriveDeadband),
+        Math.pow(MathUtil.applyDeadband(controller.getLeftY(), OIConstants.kDriveDeadband), 3),
+        Math.pow(MathUtil.applyDeadband(controller.getLeftX(), OIConstants.kDriveDeadband), 3),
+        Math.pow(-MathUtil.applyDeadband(controller.getRightX(), OIConstants.kDriveDeadband), 5),
         true,
         true);
   }

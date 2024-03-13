@@ -19,7 +19,6 @@ public class Intake extends SubsystemBase {
       360.0; // degrees, Should this be radians?
   private static final double kPivotEncoderVelocityFactor = 360. / 60.0; // degrees per second
   private static final ColorSensor mcolorDetector = new ColorSensor();
-
   // // private static Intake mInstance;
   private PeriodicIO m_periodicIO;
   // // public static Intake getInstance() {
@@ -63,7 +62,7 @@ public class Intake extends SubsystemBase {
     mPivotPIDController = mPivotMotor.getPIDController();
     mPivotPIDController.setFeedbackDevice(mPivotEncoder);
 
-    mPivotPIDController.setP(1.4);
+    mPivotPIDController.setP(1.1);
     mPivotPIDController.setI(0.00016);
     mPivotPIDController.setD(0);
     // mPivotPIDController.setFF(0);
@@ -243,7 +242,7 @@ public class Intake extends SubsystemBase {
   public boolean getIntakeHasNote() {
 
     if (mcolorDetector.gotNote()) {
-      pulse();
+      // pulse();
       return true;
     }
     return false;

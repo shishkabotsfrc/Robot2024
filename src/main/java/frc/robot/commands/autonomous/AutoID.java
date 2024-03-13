@@ -6,9 +6,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.field.AprilTagInfo.MarkerType;
+import frc.robot.commands.ForceEject;
+import frc.robot.commands.StowIntake;
 import frc.robot.commands.drive.DrivetoSwerve;
 import frc.robot.commands.drive.SetPose;
 import frc.robot.commands.rings.AlignShotCommand;
+import frc.robot.commands.rings.FeedIntake;
+import frc.robot.commands.rings.PrimeShooter;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -34,8 +38,8 @@ public class AutoID extends SequentialCommandGroup {
     this.m_robotDrive = drive;
     this.m_intake = intake;
     this.m_shooter = shooter;
-    ringOffset = 14;
-    intakeOffset = ringOffset + 27;
+    // ringOffset = 14;
+    intakeOffset = 25;
     nextPosRed3Line = fillRedArray(nextPosRed3Line);
     nextPosBlue3Line = fillBlueArray(nextPosBlue3Line);
 
@@ -59,17 +63,17 @@ public class AutoID extends SequentialCommandGroup {
 
   private double[][] fillRedArray(double[][] arr) {
     for (int i = 0; i < arr[0].length; i++) {
-      arr[0][i] = inchToMeter(538.73 + intakeOffset);
-      arr[1][i] = inchToMeter(161.5 + (57 * i));
+      arr[1][i] = inchToMeter(538.73 + intakeOffset);
+      arr[0][i] = inchToMeter(161.5 + (57 * i));
     }
     return arr;
   }
 
   private double[][] fillBlueArray(double[][] arr) {
     for (int i = 0; i < arr[0].length; i++) {
-      arr[0][i] = inchToMeter(114 + intakeOffset);
+      arr[1][i] = 6.98 + inchToMeter(intakeOffset);
 
-      arr[1][i] = inchToMeter(161.5 + (57 * i));
+      arr[0][i] = 2.91 + inchToMeter((57 * i));
     }
     return arr;
   }
@@ -143,23 +147,23 @@ public class AutoID extends SequentialCommandGroup {
 
     double startPosX = m_robotDrive.getPose().getX();
     double startPosY = m_robotDrive.getPose().getY();
-    AlignShotCommand shootPre =
-        new AlignShotCommand(
-            m_robotDrive,
-            m_shooter,
-            m_intake,
-            List.of(MarkerType.SpeakerCenter, MarkerType.SpeakerOffCenter));
+    // AlignShotCommand shootPre =
+    //     new AlignShotCommand(
+    //         m_robotDrive,
+    //         m_shooter,
+    //         m_intake,
+    //         List.of(MarkerType.SpeakerCenter, MarkerType.SpeakerOffCenter));
+    PrimeShooter prep = new PrimeShooter(m_shooter);
+    WaitCommand wait = new WaitCommand(2);
+    ForceEject shootPre = new ForceEject(m_intake);
+
     autoStartLine getTheRing =
         new autoStartLine(m_robotDrive, m_intake, m_shooter, pos, nextPos3Line);
+    FeedIntake feed = new FeedIntake(m_intake);
+    StowIntake stow = new StowIntake(m_intake);
     DrivetoSwerve driveForward =
         new DrivetoSwerve(m_robotDrive, new Pose2d(startPosX, startPosY, new Rotation2d(0.0)));
-    AlignShotCommand shootFinal =
-        new AlignShotCommand(
-            m_robotDrive,
-            m_shooter,
-            m_intake,
-            List.of(MarkerType.SpeakerCenter, MarkerType.SpeakerOffCenter));
-
+    ForceEject shootFinal = new ForceEject(m_intake);
     double a = inchToMeter(0);
     double b = inchToMeter(0);
 
@@ -205,7 +209,16 @@ public class AutoID extends SequentialCommandGroup {
       getOut = new DrivetoSwerve(m_robotDrive, new Pose2d(a, a, new Rotation2d(0.0)));
     }
     return new SequentialCommandGroup(
-        setStarting(pos), shootPre, getTheRing, driveForward, shootFinal, getOut);
+        setStarting(pos),
+        prep,
+        wait,
+        shootPre,
+        getTheRing,
+        feed,
+        stow,
+        driveForward,
+        shootFinal,
+        getOut);
   }
 
   /*public SequentialCommandGroup get4(int pos) {
@@ -280,9 +293,9 @@ public class AutoID extends SequentialCommandGroup {
   public Command setStarting(int pos) {
     SetPose set = new SetPose(m_robotDrive, new Pose2d(0, 0, new Rotation2d(0)));
 
-    if (pos == 1) {
+    if (pos == 3) {
       if (alliance.equals("blue")) {
-        set = new SetPose(m_robotDrive, new Pose2d(1.72, 5.55, new Rotation2d(0)));
+        set = new SetPose(m_robotDrive, new Pose2d(0.76, 6.81, new Rotation2d(0)));
       } else {
         set = new SetPose(m_robotDrive, new Pose2d(15.06, 5.55, new Rotation2d(0)));
       }
