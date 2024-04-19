@@ -197,6 +197,9 @@ public class Intake extends SubsystemBase {
   public double intakeStateToSpeed(IntakeState state) {
     switch (state) {
       case INTAKE:
+        if (mcolorDetector.gotNote()) {
+          return 0;
+        }
         return Constants.Intake.k_intakeSpeed;
       case EJECT:
         return Constants.Intake.k_ejectSpeed;
