@@ -23,9 +23,9 @@ public class ColorSensor extends SubsystemBase {
   public boolean gotNote() {
     Color detectedColor = m_colorSensor.getColor();
     ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedColor);
-    if (!match.color.equals(kOrangeTarget)) {
-      System.err.println("[Color Sensor] Color matched = " + match.color);
-    }
+    // if (!match.color.equals(kOrangeTarget)) {
+    //   System.err.println("[Color Sensor] Color matched = " + match.color);
+    // }
     if (match.confidence < 0.5) {
       return false;
     }
@@ -46,6 +46,7 @@ public class ColorSensor extends SubsystemBase {
     Logger.recordOutput("ColorSensor/Green", detectedColor.green);
     Logger.recordOutput("ColorSensor/Blue", detectedColor.blue);
     Logger.recordOutput("ColorSensor/Confidence", match.confidence);
+    Logger.recordOutput("ColorSensor/DetectedColor", match.color.toHexString());
     Logger.recordOutput("ColorSensor/Hex", detectedColor.toHexString());
     Logger.recordOutput("ColorSensor/Proximity", m_colorSensor.getProximity());
     Logger.recordOutput("ColorSensor/IR", m_colorSensor.getIR());

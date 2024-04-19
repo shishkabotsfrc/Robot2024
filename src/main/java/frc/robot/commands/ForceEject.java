@@ -22,9 +22,9 @@ public class ForceEject extends Command {
 
   @Override
   public void execute() {
-    if (counter >= 10) {
-      m_intake.setState(IntakeState.PULSE);
-    }
+    // if (counter >= 10) {
+    //   m_intake.setState(IntakeState.PULSE);
+    // }
     counter++;
   }
 

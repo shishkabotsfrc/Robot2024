@@ -15,10 +15,8 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ForceEject;
 import frc.robot.commands.StowIntake;
 import frc.robot.commands.drive.DriveWithJoystick;
-import frc.robot.commands.drive.XPositionLock;
 import frc.robot.commands.rings.FeedIntake;
 import frc.robot.commands.rings.PrimeShooter;
-import frc.robot.commands.rings.ShootAmp;
 import frc.robot.commands.rings.StopShooter;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -36,7 +34,6 @@ public class RobotContainer {
   SendableChooser<SequentialCommandGroup> m_chooser = new SendableChooser<>();
 
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
-  XboxController m_helperController = new XboxController(OIConstants.kHelperControllerPort);
 
   public RobotContainer() {
     // SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -107,12 +104,10 @@ public class RobotContainer {
     //     .whileTrue(new ShootCommand(m_shooter, m_intake));
 
     // stops the robot
-    new JoystickButton(m_driverController, Button.kX.value)
-        .whileTrue(new XPositionLock(m_robotDrive));
+    // new JoystickButton(m_driverController, Button.kX.value)
+    //     .whileTrue(new XPositionLock(m_robotDrive));
 
     // feeds intake
-    new JoystickButton(m_helperController, Button.kLeftBumper.value)
-        .onTrue(new FeedIntake(m_intake));
 
     // shoots the ring + auto  adjust
     // new JoystickButton(m_helperController, Button.kRightStick.value)
@@ -121,16 +116,26 @@ public class RobotContainer {
     //             m_robotDrive, m_shooter, m_intake, List.of(MarkerType.SpeakerCenter)));
 
     // shoot the amp
-    new JoystickButton(m_helperController, Button.kRightBumper.value)
-        .onTrue(new ShootAmp(m_intake));
-    new JoystickButton(m_helperController, Button.kRightStick.value).onTrue(new ShootAmp(m_intake));
+    // new JoystickButton(m_helperController, Button.kRightBumper.value)
+    //     .onTrue(new ShootAmp(m_intake));
+    // new JoystickButton(m_helperController, Button.kRightStick.value).onTrue(new
+    // ShootAmp(m_intake));
 
-    new JoystickButton(m_helperController, Button.kStart.value).onTrue(new PrimeShooter(m_shooter));
-    new JoystickButton(m_helperController, Button.kB.value).onTrue(new ForceEject(m_intake));
-
-    // extras
-    new JoystickButton(m_helperController, Button.kA.value).onTrue(new StopShooter(m_shooter));
-    new JoystickButton(m_helperController, Button.kBack.value).onTrue(new StowIntake(m_intake));
+    // collect
+    new JoystickButton(m_driverController, Button.kA.value)
+        .onTrue(new SequentialCommandGroup(new StopShooter(m_shooter), new FeedIntake(m_intake)));
+    // aim
+    new JoystickButton(m_driverController, Button.kY.value)
+        .onTrue(new SequentialCommandGroup(new PrimeShooter(m_shooter), new StowIntake(m_intake)));
+    // shoot
+    new JoystickButton(m_driverController, Button.kRightBumper.value)
+        .onTrue(new SequentialCommandGroup(new PrimeShooter(m_shooter), new ForceEject(m_intake)));
+    // new JoystickButton(m_driverController, Button.kRightBumper.value)
+    //     .onTrue(new PrimeShooter(m_shooter));
+    // new JoystickButton(m_driverController, Button.kA.value).onTrue(new StopShooter(m_shooter));
+    // new JoystickButton(m_driverController, Button.kB.value).onTrue(new ForceEject(m_intake));
+    // new JoystickButton(m_driverController, Button.kY.value).onTrue(new StowIntake(m_intake));
+    // new JoystickButton(m_driverController, Button.kX.value).onTrue(new FeedIntake(m_intake));
 
     // climb the rope
     // new JoystickButton(m_driverController, Button.kA.value).onTrue(new Climb(m_robotClimber));

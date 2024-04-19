@@ -13,7 +13,7 @@ public class PrimeShooter extends Command {
 
   @Override
   public void initialize() {
-    m_Shooter.setSpeed(5700);
+    m_Shooter.setSpeed(3000);
   }
 
   @Override

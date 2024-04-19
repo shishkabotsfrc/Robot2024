@@ -8,7 +8,6 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.vision.ColorSensor;
@@ -62,8 +61,8 @@ public class Intake extends SubsystemBase {
     mPivotPIDController = mPivotMotor.getPIDController();
     mPivotPIDController.setFeedbackDevice(mPivotEncoder);
 
-    mPivotPIDController.setP(1.1);
-    mPivotPIDController.setI(0.00016);
+    mPivotPIDController.setP(1.0);
+    mPivotPIDController.setI(0.00020);
     mPivotPIDController.setD(0);
     // mPivotPIDController.setFF(0);
     // mPivotPIDController.setOutputRange(-1., 1.);
@@ -162,10 +161,9 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Pivot/Abs Enc (get)", mPivotEncoder.getPosition());
 
     Logger.recordOutput("Pivot/Angle", pivotTargetToAngle(m_periodicIO.pivot_target));
-    // Logger.recordOutput(
-    //     "Pivot/Abs Enc (getAbsolutePosition)", m_pivotEncoder.getAbsolutePosition());
-    // Logger.recordOutput("Pivot/Abs Enc (getPivotAngleDegrees)", getPivotAngleDegrees());
-    // Logger.recordOutput("Pivot/Setpoint", pivotTargetToAngle(m_periodicIO.pivot_target));
+    Logger.recordOutput("Pivot/Abs Enc (getAbsolutePosition)", mPivotEncoder.getPosition());
+    Logger.recordOutput("Pivot/Abs Enc (getPivotAngleDegrees)", getPivotAngleDegrees());
+    Logger.recordOutput("Pivot/Setpoint", pivotTargetToAngle(m_periodicIO.pivot_target));
 
     // Logger.recordOutput("Pivot/Power", m_periodicIO.intake_pivot_voltage);
     Logger.recordOutput("Pivot/Current", mPivotMotor.getOutputCurrent());
@@ -181,10 +179,10 @@ public class Intake extends SubsystemBase {
       case GROUND:
         return Constants.Intake.k_pivotAngleGround;
         // return 0.059415;
-      case SOURCE:
-        return Constants.Intake.k_pivotAngleSource;
-      case AMP:
-        return Constants.Intake.k_pivotAngleAmp;
+        // case SOURCE:
+        //   return Constants.Intake.k_pivotAngleSource;
+        // case AMP:
+        //   return Constants.Intake.k_pivotAngleAmp;
         // return 0.3832;
       case STOW:
         return Constants.Intake.k_pivotAngleStow;
@@ -205,11 +203,11 @@ public class Intake extends SubsystemBase {
       case EJECT2:
         return Constants.Intake.k_ejectSpeed + 0.25;
       case PULSE:
-        // Use the timer to pulse the intake on for a 1/16 second,
-        // then off for a 15/16 second
-        if (Timer.getFPGATimestamp() % 1.0 < (1.0 / 45.0)) {
-          return Constants.Intake.k_intakeSpeed;
-        }
+        // // Use the timer to pulse the intake on for a 1/16 second,
+        // // then off for a 15/16 second
+        // if (Timer.getFPGATimestamp() % 1.0 < (1.0 / 45.0)) {
+        //   return Constants.Intake.k_intakeSpeed;
+        // }
         return 0.0;
       case FEED_SHOOTER:
         return Constants.Intake.k_feedShooterSpeed;
@@ -241,10 +239,10 @@ public class Intake extends SubsystemBase {
 
   public boolean getIntakeHasNote() {
 
-    if (mcolorDetector.gotNote()) {
-      // pulse();
-      return true;
-    }
+    // if (mcolorDetector.gotNote()) {
+    //   // pulse();
+    //   return true;
+    // }
     return false;
 
     // return isPivotAtTarget(PivotTarget.GROUND);
@@ -257,24 +255,24 @@ public class Intake extends SubsystemBase {
     m_periodicIO.intake_state = IntakeState.INTAKE;
   }
 
-  public void goToSource() {
-    System.out.println("wigKV;WFE;K");
-    m_periodicIO.pivot_target = PivotTarget.SOURCE;
-    m_periodicIO.intake_state = IntakeState.NONE;
-  }
+  // public void goToSource() {
+  //   System.out.println("wigKV;WFE;K");
+  //   m_periodicIO.pivot_target = PivotTarget.SOURCE;
+  //   m_periodicIO.intake_state = IntakeState.NONE;
+  // }
 
-  public void goToAmp() {
-    System.out.println("lhirerglio");
+  // public void goToAmp() {
+  //   System.out.println("lhirerglio");
 
-    m_periodicIO.pivot_target = PivotTarget.SOURCE;
-    m_periodicIO.intake_state = IntakeState.NONE;
-  }
+  //   m_periodicIO.pivot_target = PivotTarget.SOURCE;
+  //   m_periodicIO.intake_state = IntakeState.NONE;
+  // }
 
   public void goToStow() {
     System.out.println("wfek;wef");
 
     m_periodicIO.pivot_target = PivotTarget.STOW;
-    // m_periodicIO.intake_state = IntakeState.NONE;
+    m_periodicIO.intake_state = IntakeState.NONE;
   }
 
   // Intake helper functions
@@ -289,7 +287,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void pulse() {
-    m_periodicIO.intake_state = IntakeState.PULSE;
+    // m_periodicIO.intake_state = IntakeState.PULSE;
   }
 
   public void feedShooter() {
@@ -310,17 +308,17 @@ public class Intake extends SubsystemBase {
     m_periodicIO.pivot_target = target;
   }
 
-  private void checkAutoTasks() {
-    // If the intake is set to GROUND, and the intake has a note, and the pivot is
-    // close to it's target
-    // Stop the intake and go to the SOURCE position
-    if (m_periodicIO.pivot_target == PivotTarget.GROUND
-        && getIntakeHasNote()
-        && isPivotAtTarget()) {
-      m_periodicIO.pivot_target = PivotTarget.STOW;
-      m_periodicIO.intake_state = IntakeState.PULSE;
-    }
-  }
+  // private void checkAutoTasks() {
+  //   // If the intake is set to GROUND, and the intake has a note, and the pivot is
+  //   // close to it's target
+  //   // Stop the intake and go to the SOURCE position
+  //   if (m_periodicIO.pivot_target == PivotTarget.GROUND
+  //       && getIntakeHasNote()
+  //       && isPivotAtTarget()) {
+  //     m_periodicIO.pivot_target = PivotTarget.STOW;
+  //     m_periodicIO.intake_state = IntakeState.PULSE;
+  //   }
+  // }
 
   private boolean isPivotAtTarget() {
     return Math.abs(mPivotEncoder.getPosition() - pivotTargetToAngle(m_periodicIO.pivot_target))
