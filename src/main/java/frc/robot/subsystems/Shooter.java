@@ -21,7 +21,7 @@ public class Shooter extends SubsystemBase {
   private SparkMaxPIDController mRightMotorPID;
 
   private double mMotorRPM = 0;
-  private SlewRateLimiter mSpeedLimiter = new SlewRateLimiter(3000);
+  private SlewRateLimiter mSpeedLimiter = new SlewRateLimiter(1500);
   public double limitedSpeed;
 
   public Shooter() {
