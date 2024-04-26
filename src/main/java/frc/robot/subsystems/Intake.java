@@ -14,6 +14,7 @@ import frc.robot.subsystems.vision.ColorSensor;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
+  // private int heldNoteIterations = 0;
   private static final double kPivotEncoderPositionFactor =
       360.0; // degrees, Should this be radians?
   private static final double kPivotEncoderVelocityFactor = 360. / 60.0; // degrees per second
@@ -197,20 +198,17 @@ public class Intake extends SubsystemBase {
   public double intakeStateToSpeed(IntakeState state) {
     switch (state) {
       case INTAKE:
-        if (mcolorDetector.gotNote()) {
-          return 0;
-        }
+        // if (!mcolorDetector.gotNote()) {
+        //   heldNoteIterations = 0;
+        // } else if (heldNoteIterations++ > 100) {
+        //   return 0;
+        // }
         return Constants.Intake.k_intakeSpeed;
       case EJECT:
         return Constants.Intake.k_ejectSpeed;
       case EJECT2:
         return Constants.Intake.k_ejectSpeed + 0.25;
       case PULSE:
-        // // Use the timer to pulse the intake on for a 1/16 second,
-        // // then off for a 15/16 second
-        // if (Timer.getFPGATimestamp() % 1.0 < (1.0 / 45.0)) {
-        //   return Constants.Intake.k_intakeSpeed;
-        // }
         return 0.0;
       case FEED_SHOOTER:
         return Constants.Intake.k_feedShooterSpeed;
