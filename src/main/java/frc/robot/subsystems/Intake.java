@@ -19,14 +19,8 @@ public class Intake extends SubsystemBase {
       360.0; // degrees, Should this be radians?
   private static final double kPivotEncoderVelocityFactor = 360. / 60.0; // degrees per second
   private static final ColorSensor mcolorDetector = new ColorSensor();
-  // // private static Intake mInstance;
+
   private PeriodicIO m_periodicIO;
-  // // public static Intake getInstance() {
-  // //   if (mInstance == null) {
-  // //     mInstance = new Intake();
-  // //   }
-  // //   return mInstance;
-  // // }
 
   private CANSparkMax mIntakeMotor;
   private RelativeEncoder mIntakeEncoder;
@@ -37,8 +31,6 @@ public class Intake extends SubsystemBase {
   private SparkMaxPIDController mPivotPIDController;
 
   public Intake() {
-
-    //   // Intake motor (same as the driving motor from max swerve)
     mIntakeMotor = new CANSparkMax(Constants.Intake.kIntakeMotorId, MotorType.kBrushless);
     mIntakeMotor.restoreFactoryDefaults();
     mIntakeMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
@@ -46,13 +38,6 @@ public class Intake extends SubsystemBase {
 
     mIntakeEncoder = mIntakeMotor.getEncoder();
 
-    //   // TODO: Figure out the constants
-    // mIntakeEncoder.setPositionConversionFactor(1.);
-    // mIntakeEncoder.setVelocityConversionFactor(1.);
-
-    // mIntakeMotor.burnFlash();
-
-    // Intake motor (same as the turning motor from max swerve)
     mPivotMotor = new CANSparkMax(Constants.Intake.kPivotMotorId, MotorType.kBrushless);
     mPivotMotor.restoreFactoryDefaults();
     mPivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
@@ -65,18 +50,6 @@ public class Intake extends SubsystemBase {
     mPivotPIDController.setP(1.0);
     mPivotPIDController.setI(0.00020);
     mPivotPIDController.setD(0);
-    // mPivotPIDController.setFF(0);
-    // mPivotPIDController.setOutputRange(-1., 1.);
-
-    // // Do we need this
-    // mPivotPIDController.setPositionPIDWrappingEnabled(true); // This may not be needed
-    // mPivotPIDController.setPositionPIDWrappingMinInput(0.);
-    // mPivotPIDController.setPositionPIDWrappingMaxInput(kPivotEncoderPositionFactor);
-
-    // mPivotEncoder.setPositionConversionFactor(kPivotEncoderPositionFactor);
-    // mPivotEncoder.setVelocityConversionFactor(kPivotEncoderVelocityFactor);
-
-    // mPivotMotor.burnFlash();
 
     m_periodicIO = new PeriodicIO();
   }
@@ -87,7 +60,6 @@ public class Intake extends SubsystemBase {
     IntakeState intake_state = IntakeState.NONE;
 
     // Output: Motor set values
-    // double intake_pivot_voltage = 0.0;
     double intake_speed = 0.0;
   }
 
@@ -112,17 +84,8 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // checkAutoTasks();
-
     // Pivot control
     double pivot_angle = pivotTargetToAngle(m_periodicIO.pivot_target);
-    // double pivot_angle = pivotTargetToAngle(PivotTarget.GROUND);
-
-    // m_periodicIO.intake_pivot_voltage = m_pivotPID.calculate(getPivotAngleDegrees(),
-    // pivot_angle);
-
-    // mPivotPIDController.setReference(275-60, ControlType.kPosition);
-
     mPivotPIDController.setReference(pivot_angle, ControlType.kPosition);
     // mPivotPIDController.setReference(, ControlType.kPosition);
 
@@ -154,23 +117,6 @@ public class Intake extends SubsystemBase {
   }
 
   // @Override
-  public void outputTelemetry() {
-    Logger.recordOutput("Intake/Intake State", m_periodicIO.intake_state.toString());
-    Logger.recordOutput("Intake/Pivot State", m_periodicIO.pivot_target.toString());
-
-    Logger.recordOutput("Pivot/Speed", intakeStateToSpeed(m_periodicIO.intake_state));
-    Logger.recordOutput("Pivot/Abs Enc (get)", mPivotEncoder.getPosition());
-
-    Logger.recordOutput("Pivot/Angle", pivotTargetToAngle(m_periodicIO.pivot_target));
-    Logger.recordOutput("Pivot/Abs Enc (getAbsolutePosition)", mPivotEncoder.getPosition());
-    Logger.recordOutput("Pivot/Abs Enc (getPivotAngleDegrees)", getPivotAngleDegrees());
-    Logger.recordOutput("Pivot/Setpoint", pivotTargetToAngle(m_periodicIO.pivot_target));
-
-    // Logger.recordOutput("Pivot/Power", m_periodicIO.intake_pivot_voltage);
-    Logger.recordOutput("Pivot/Current", mPivotMotor.getOutputCurrent());
-
-    Logger.recordOutput("Limit Switch", getIntakeHasNote());
-  }
 
   // @Override
   public void reset() {}
@@ -257,33 +203,26 @@ public class Intake extends SubsystemBase {
   }
 
   // public void goToSource() {
-  //   System.out.println("wigKV;WFE;K");
   //   m_periodicIO.pivot_target = PivotTarget.SOURCE;
   //   m_periodicIO.intake_state = IntakeState.NONE;
   // }
 
   // public void goToAmp() {
-  //   System.out.println("lhirerglio");
-
   //   m_periodicIO.pivot_target = PivotTarget.SOURCE;
   //   m_periodicIO.intake_state = IntakeState.NONE;
   // }
 
   public void goToStow() {
-    System.out.println("wfek;wef");
-
     m_periodicIO.pivot_target = PivotTarget.STOW;
     m_periodicIO.intake_state = IntakeState.NONE;
   }
 
   // Intake helper functions
   public void intake() {
-    System.out.println("in tasdke");
     m_periodicIO.intake_state = IntakeState.INTAKE;
   }
 
   public void eject() {
-    System.out.println("wertjweecfty6");
     m_periodicIO.intake_state = IntakeState.EJECT;
   }
 
@@ -309,29 +248,33 @@ public class Intake extends SubsystemBase {
     m_periodicIO.pivot_target = target;
   }
 
-  // private void checkAutoTasks() {
-  //   // If the intake is set to GROUND, and the intake has a note, and the pivot is
-  //   // close to it's target
-  //   // Stop the intake and go to the SOURCE position
-  //   if (m_periodicIO.pivot_target == PivotTarget.GROUND
-  //       && getIntakeHasNote()
-  //       && isPivotAtTarget()) {
-  //     m_periodicIO.pivot_target = PivotTarget.STOW;
-  //     m_periodicIO.intake_state = IntakeState.PULSE;
-  //   }
-  // }
-
   private boolean isPivotAtTarget() {
     return Math.abs(mPivotEncoder.getPosition() - pivotTargetToAngle(m_periodicIO.pivot_target))
         < 0.001;
   }
 
   public boolean isPivotAtTarget(PivotTarget pivotTarget) {
-
     return Math.abs(mPivotEncoder.getPosition() - pivotTargetToAngle(pivotTarget)) < 0.09;
   }
 
   public PivotTarget getPivotTarget() {
     return m_periodicIO.pivot_target;
+  }
+
+  public void outputTelemetry() {
+    Logger.recordOutput("Intake/Intake State", m_periodicIO.intake_state.toString());
+    Logger.recordOutput("Intake/Pivot State", m_periodicIO.pivot_target.toString());
+    Logger.recordOutput("Intake/Speed", mIntakeMotor.getOutputCurrent());
+    
+    Logger.recordOutput("Pivot/Current", mPivotMotor.getOutputCurrent());
+    Logger.recordOutput("Pivot/Speed", intakeStateToSpeed(m_periodicIO.intake_state));
+    Logger.recordOutput("Pivot/Abs Enc (get position)", mPivotEncoder.getPosition());
+    Logger.recordOutput("Pivot/Angle target", m_periodicIO.pivot_target);
+    Logger.recordOutput("Pivot/Abs Enc (getAbsolutePosition)", mPivotEncoder.getPosition());
+    Logger.recordOutput("Pivot/Abs Enc (getPivotAngleDegrees)", getPivotAngleDegrees());
+    Logger.recordOutput("Pivot/Setpoint", pivotTargetToAngle(m_periodicIO.pivot_target));
+    Logger.recordOutput("Pivot/Current", mPivotMotor.getOutputCurrent());
+
+    Logger.recordOutput("Has Note", getIntakeHasNote());
   }
 }
